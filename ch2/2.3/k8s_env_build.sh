@@ -8,14 +8,18 @@ swapoff -a
 # sed to comment the swap partition in /etc/fstab (Rmv blank)
 sed -i.bak -r 's/(.+swap.+)/#\1/' /etc/fstab
 
-# add kubernetes repo 
-curl https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | apt-key add -
-cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
-deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main
-EOF
+# add kubernetes repo
+## apt-get update && apt-get install gnupg lsb-release
+apt-get update && apt-get install gnupg lsb-release
+curl \
+  -fsSL https://pkgs.k8s.io/core:/stable:/v$2/deb/Release.key \
+  | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo \
+  "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] \
+  https://pkgs.k8s.io/core:/stable:/v$2/deb/ /" \
+  | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
 # add docker-ce repo with containerd
-apt-get update && apt-get install gnupg lsb-release
 curl -fsSL \
   https://download.docker.com/linux/ubuntu/gpg \
   | gpg --dearmor -o /etc/apt/keyrings/docker-archive-keyring.gpg
@@ -33,5 +37,6 @@ modprobe br_netfilter
 
 # local small dns & vagrant cannot parse and delivery shell code.
 echo "127.0.0.1 localhost" > /etc/hosts # localhost name will use by calico-node
-echo "$1 cp-k8s" >> /etc/hosts
-for (( i=1; i<=$2; i++  )); do echo "192.168.1.10$i w$i-k8s" >> /etc/hosts; done
+echo "$3 cp-k8s" >> /etc/hosts
+for (( i=1; i<=$1; i++  )); do echo "192.168.1.10$i w$i-k8s" >> /etc/hosts; done
+
