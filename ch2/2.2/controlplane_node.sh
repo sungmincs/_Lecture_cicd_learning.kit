@@ -36,3 +36,9 @@ find $HOME/_Lecture_cicd_learning.kit -regex ".*\.\(sh\)" -exec chmod 700 {} \;
 EOF
 chmod 700 /usr/local/bin/rerepo-cicd-learning.kit
 
+# extended k8s certifications all
+git clone https://github.com/yuyicai/update-kube-cert.git /tmp/update-kube-cert
+chmod 755 /tmp/update-kube-cert/update-kubeadm-cert.sh
+/tmp/update-kube-cert/update-kubeadm-cert.sh all --cri containerd
+rm -rf /tmp/update-kube-cert
+
