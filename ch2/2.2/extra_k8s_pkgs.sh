@@ -23,7 +23,7 @@ kubectl apply -f $EXTRA_PKGS_ADDR/metallb-native-v0.14.4.yaml
 # config metallb ip range and it cannot deploy now due to CRD cannot create yet 
 (sleep 600 && kubectl apply -f $EXTRA_PKGS_ADDR/metallb-iprange.yaml)&
 
-# nginx ingress ctrl v1.10.1(nodePort) 
+# nginx ingress ctrl v1.10.1(loadbalancer) 
 kubectl apply -f $EXTRA_PKGS_ADDR/ingress-ctrl-loadbalacer-v1.10.1.yaml 
 
 # metrics server v0.7.1 - insecure mode 
