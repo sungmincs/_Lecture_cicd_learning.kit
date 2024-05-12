@@ -24,7 +24,7 @@ kubectl apply -f $EXTRA_PKGS_ADDR/metallb-native-v0.14.4.yaml
 (sleep 600 && kubectl apply -f $EXTRA_PKGS_ADDR/metallb-iprange.yaml)&
 
 # nginx ingress ctrl v1.10.1(nodePort)
-kubectl apply -f $EXTRA_PKGS_ADDR/ingress-ctrl-nodeport-v1.10.1.yaml 
+kubectl apply -f $EXTRA_PKGS_ADDR/ingress-ctrl-loadbalancer-v1.10.1.yaml 
 
 # metrics server v0.7.1 - insecure mode 
 kubectl apply -f $EXTRA_PKGS_ADDR/metrics-server-notls-v0.7.1.yaml
