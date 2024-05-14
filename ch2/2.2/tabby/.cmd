@@ -2,14 +2,14 @@
 ## Windows 
 ## https://winget.run/pkg/Eugeny/Tabby
 ## winget install -e --id Eugeny.Tabby
-winget install -e --id Eugeny.Tabby -v 1.0.187
+winget install -e --id Eugeny.Tabby -v 1.0.207
 
 ## MacOS 
 ## https://formulae.brew.sh/cask/tabby
 ## brew install --cask tabby
 ## https://github.com/Homebrew/homebrew-cask/blob/master/Casks/tabby.rb
 ## https://github.com/Homebrew/homebrew-cask/blob/9f5cc2ad2d76791f7cbd679fe38d52a91a35acda/Casks/tabby.rb
-brew install --HEAD tabby-v1.0.187.rb
+brew install --HEAD tabby-v1.0.207.rb
 
 #the location of configuration file 
 # https://github.com/Eugeny/tabby/wiki/Config-file
