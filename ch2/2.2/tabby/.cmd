@@ -10,7 +10,7 @@ winget install -e --id Eugeny.Tabby -v 1.0.207
 ## https://github.com/Homebrew/homebrew-cask/blob/master/Casks/tabby.rb
 ## https://github.com/Homebrew/homebrew-cask/blob/9f5cc2ad2d76791f7cbd679fe38d52a91a35acda/Casks/tabby.rb
 ## tabby v1.0.207
-brew install --HEAD tabby.rb
+brew install --cask tabby.rb
 
 #the location of configuration file 
 # https://github.com/Eugeny/tabby/wiki/Config-file
