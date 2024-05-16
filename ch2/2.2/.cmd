@@ -8,7 +8,7 @@ winget install -e --id Oracle.VirtualBox -v 7.0.18
 ### MacOS 
 ### https://formulae.brew.sh/cask/virtualbox 
 ### brew install --cask virtualbox 
-### https://raw.githubusercontent.com/Homebrew/homebrew-cask/master/Casks/v/virtualbox.rb
+### https://github.com/Homebrew/homebrew-cask/blob/master/Casks/v/virtualbox.rb
 ### virtualbox v7.0.18
 brew install --cask ./virtualbox-v7.0.18/virtualbox.rb
 
@@ -23,7 +23,7 @@ winget install -e --id Hashicorp.Vagrant -v 2.4.1
 ### MacOS 
 ### https://formulae.brew.sh/cask/vagrant
 ### brew install --cask vagrant
-### https://raw.githubusercontent.com/Homebrew/homebrew-cask/master/Casks/v/vagrant.rb
+### https://github.com/Homebrew/homebrew-cask/blob/master/Casks/v/vagrant.rb
 ### vagrant v2.4.1 
 brew install --cask ./vagrant-v2.4.1/vagrant.rb
 
@@ -39,7 +39,7 @@ winget install -e --id Eugeny.Tabby -v 1.0.207
 ### MacOS 
 ### https://formulae.brew.sh/cask/tabby
 ### brew install --cask tabby
-### https://github.com/Homebrew/homebrew-cask/blob/master/Casks/tabby.rb
+### https://github.com/Homebrew/homebrew-cask/blob/master/Casks/t/tabby.rb
 ### tabby v1.0.207
 brew install --cask ./tabby-v1.0.207/tabby.rb
 
