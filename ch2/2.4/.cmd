@@ -1,41 +1,14 @@
-# virtualbox (1/3)
+# utm (1/2)
 ## installation 
-### Windows 
-### https://winget.run/pkg/Oracle/VirtualBox
-### https://winstall.app/apps/Oracle.VirtualBox
-winget install -e --id Oracle.VirtualBox -v 7.0.18
+### MacOS(arm64)
+### https://formulae.brew.sh/cask/utm
+### brew install --cask utm
+### https://github.com/Homebrew/homebrew-cask/blob/master/Casks/u/utm.rb
+### utm v4.5.2 
+brew install --cask ./utm-v4.5.2/utm.rb
 
-### MacOS 
-### https://formulae.brew.sh/cask/virtualbox 
-### brew install --cask virtualbox 
-### https://raw.githubusercontent.com/Homebrew/homebrew-cask/master/Casks/v/virtualbox.rb
-### virtualbox v7.0.18
-brew install --cask ./virtualbox-v7.0.18/virtualbox.rb
-
-
-# vagrant (2/3)
-## installation 
-### Windows 
-### https://winget.run/pkg/Hashicorp/Vagrant
-### https://winstall.app/apps/Hashicorp.Vagrant
-winget install -e --id Hashicorp.Vagrant -v 2.4.1 
-
-### MacOS 
-### https://formulae.brew.sh/cask/vagrant
-### brew install --cask vagrant
-### https://raw.githubusercontent.com/Homebrew/homebrew-cask/master/Casks/v/vagrant.rb
-### vagrant v2.4.1 
-brew install --cask ./vagrant-v2.4.1/vagrant.rb
-
-
-# tabby (3/3)
+# tabby (2/2)
 ## installation
-### Windows 
-### https://winget.run/pkg/Eugeny/Tabby
-### https://winstall.app/apps/Eugeny.Tabby
-### winget install -e --id Eugeny.Tabby
-winget install -e --id Eugeny.Tabby -v 1.0.207
-
 ### MacOS 
 ### https://formulae.brew.sh/cask/tabby
 ### brew install --cask tabby
