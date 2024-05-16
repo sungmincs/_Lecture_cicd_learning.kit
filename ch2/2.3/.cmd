@@ -8,6 +8,21 @@
 ### vmware-fusion v13.5.1
 brew install --cask ./vmware-fusion-v13.5.1/vmware-fusion.rb
 
+### vmware plugin 
+vagrant plugin install vagrant-vmware-desktop
+
+## configure vmware-fusion 
+### copy commands for vmware-fusion 
+sudo ./scripts/copy_launchctl-all-vmware-utility.sh 
+sudo ./scripts/copy_netstat-anvp.sh
+
+### run launchctl load vmware-utility.plist
+source ~/.zshrc 
+launchctl-load-vmware-utility
+
+# create vnet2 nic for k8s cluster int 
+sudo ./scripts/vf_net_create_vnet2
+
 
 # vagrant (2/3)
 ## installation 
