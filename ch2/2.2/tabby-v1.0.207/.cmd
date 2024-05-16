@@ -1,4 +1,17 @@
-# installation 
+# vagrant 
+## installation 
+
+
+
+# virtualbox 
+## installation
+
+
+
+# tabby 
+## installation
+
+
 ## Windows 
 ## https://winget.run/pkg/Eugeny/Tabby
 ## winget install -e --id Eugeny.Tabby
@@ -12,7 +25,7 @@ winget install -e --id Eugeny.Tabby -v 1.0.207
 ## tabby v1.0.207
 brew install --cask tabby.rb
 
-#the location of configuration file 
+# the location of configuration file 
 # https://github.com/Eugeny/tabby/wiki/Config-file
 ## On Windows, %APPDATA%/Tabby
 ## On macOS: ~/Library/Application Support/tabby
