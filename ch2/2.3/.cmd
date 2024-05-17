@@ -43,7 +43,7 @@ vagrant plugin install vagrant-vmware-desktop
 gem list --remote vagrant- | grep -i vmware
 
 
-READY TO RUN the `vagrant up` 
+# READY TO RUN the `vagrant up` 
 
 
 # tabby (3/3)
