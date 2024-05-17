@@ -42,6 +42,10 @@ vagrant plugin install vagrant-vmware-desktop
 ### check vagrant plugin list  
 gem list --remote vagrant- | grep -i vmware
 
+
+READY TO RUN the `vagrant up` 
+
+
 # tabby (3/3)
 ## installation
 ### MacOS 
