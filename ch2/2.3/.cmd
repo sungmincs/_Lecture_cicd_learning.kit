@@ -18,12 +18,14 @@ sudo ./scripts/copy_launchctl-all-vmware-utility.sh
 sudo ./scripts/copy_netstat-anvp.sh
 
 ### run launchctl load vmware-utility.plist
-source ~/.zshrc 
+### (optional) source ~/.zshrc 
 launchctl-load-vmware-utility
 
-# create vnet2 nic for k8s cluster int 
+### create vnet2 nic for k8s cluster int 
 sudo ./scripts/vf_net_create_vnet2
 
+### check vmnet (optional)
+ls /Library/Preferences/VMware\ Fusion
 
 # vagrant (2/3)
 ## installation 
