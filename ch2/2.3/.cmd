@@ -39,6 +39,9 @@ brew install --cask ./vagrant-v2.4.1/vagrant.rb
 ### vagrant-vmware plugin 
 vagrant plugin install vagrant-vmware-desktop
 
+### check vagrant plugin list  
+gem list --remote vagrant- | grep -i vmware
+
 # tabby (3/3)
 ## installation
 ### MacOS 
