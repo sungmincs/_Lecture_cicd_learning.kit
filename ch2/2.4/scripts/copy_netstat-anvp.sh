@@ -5,4 +5,4 @@ cat <<EOF > /usr/local/bin/netstat-anvp
 netstat -anvp tcp | awk 'NR<3 || /LISTEN/'
 EOF
 
-sudo chmod 777 /usr/local/bin/netstat-anvp
+sudo chmod 775 /usr/local/bin/netstat-anvp
