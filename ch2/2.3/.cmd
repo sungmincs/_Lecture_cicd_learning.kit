@@ -3,10 +3,14 @@
 ### MacOS(arm64)
 ### https://formulae.brew.sh/cask/vmware-fusion
 ### brew install --cask vmware-fusion
-### brew install --cask virtualbox 
 ### https://github.com/Homebrew/homebrew-cask/blob/master/Casks/v/vmware-fusion.rb
 ### vmware-fusion v13.5.1
 brew install --cask ./vmware-fusion-v13.5.1/vmware-fusion.rb
+
+### brew install --cask vagrant-vmware-utility
+### https://github.com/Homebrew/homebrew-cask/blob/master/Casks/v/vagrant-vmware-utility.rb
+### vagrant-vmware-utility v1.0.22
+brew install --cask ./vagrant-vmware-utility-1.0.22/vagrant-vmware-utility.rb
 
 ### vmware plugin 
 vagrant plugin install vagrant-vmware-desktop
