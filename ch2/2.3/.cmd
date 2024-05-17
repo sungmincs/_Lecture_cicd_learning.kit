@@ -12,9 +12,6 @@ brew install --cask ./vmware-fusion-v13.5.1/vmware-fusion.rb
 ### vagrant-vmware-utility v1.0.22
 brew install --cask ./vagrant-vmware-utility-1.0.22/vagrant-vmware-utility.rb
 
-### vmware plugin 
-vagrant plugin install vagrant-vmware-desktop
-
 ## configure vmware-fusion 
 ### copy commands for vmware-fusion 
 sudo ./scripts/copy_launchctl-all-vmware-utility.sh 
@@ -37,6 +34,8 @@ sudo ./scripts/vf_net_create_vnet2
 ### vagrant v2.4.1 
 brew install --cask ./vagrant-v2.4.1/vagrant.rb
 
+### vagrant-vmware plugin 
+vagrant plugin install vagrant-vmware-desktop
 
 # tabby (3/3)
 ## installation
