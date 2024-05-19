@@ -6,17 +6,24 @@ spec:
   selector:
     matchLabels:
       app: worklog-backend
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:
-        app: nginx
+        app: worklog-backend
     spec:
       containers:
       - name: worklog-backend
-        image: worklog-backend:latest
+        image: worklog-backend:buildtest1
         ports:
         - containerPort: 80
+        env:
+        - name: MONGO_HOST
+          value: worklog-mongodb.default.svc.cluster.local
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: root
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          value: mypassw0rd
 ---
 apiVersion: v1
 kind: Service
@@ -29,7 +36,7 @@ spec:
     - name: http
       port: 80
   selector:
-    app: nginx
+    app: worklog-backend
   type: ClusterIP
 ---
 apiVersion: networking.k8s.io/v1

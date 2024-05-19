@@ -1,0 +1,83 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: worklog-mongodb-creds
+data:
+  username: cm9vdA==          # root
+  password: bXlwYXNzdzByZA==  # mypassw0rd
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-worklog-mongodb
+  annotations:
+    nfs.io/storage-path: worklog-mongodb
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: managed-nfs-storage
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: worklog-mongodb
+  name: worklog-mongodb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worklog-mongodb
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: worklog-mongodb
+    spec:
+      containers:
+      - image: mongo:4.4.29-focal
+        name: mongo
+        livenessProbe:
+          exec:
+            command:
+              - mongosh
+              - --eval
+              - "db.adminCommand('ping')"
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 6
+        readinessProbe:
+          exec:
+            command:
+              - mongosh
+              - --eval
+              - "db.adminCommand('ping')"
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 6
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: worklog-mongodb-creds
+              key: username
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: worklog-mongodb-creds
+              key: password
+        volumeMounts:
+        - name: "worklog-mongodb-data-dir"
+          mountPath: "/data/db"
+      volumes:
+      - name: "worklog-mongodb-data-dir"
+        persistentVolumeClaim:
+          claimName: "worklog-mongodb-data"
