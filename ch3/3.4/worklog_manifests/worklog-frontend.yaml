@@ -50,6 +50,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: nginx
+            name: worklog-frontend
             port:
               number: 80
