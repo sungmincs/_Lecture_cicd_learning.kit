@@ -62,7 +62,7 @@ spec:
               - /usr/bin/mongo
               - --eval
               - "db.adminCommand('ping')"
-          initialDelaySeconds: 30
+          initialDelaySeconds: 10
           periodSeconds: 10
           timeoutSeconds: 5
           successThreshold: 1
@@ -73,7 +73,7 @@ spec:
               - /usr/bin/mongo
               - --eval
               - "db.adminCommand('ping')"
-          initialDelaySeconds: 30
+          initialDelaySeconds: 5
           periodSeconds: 10
           timeoutSeconds: 5
           successThreshold: 1
