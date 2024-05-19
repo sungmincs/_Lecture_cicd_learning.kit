@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: worklog-frontend
-        image: worklog-frontend:buildtest1
+        image: sungminl/worklog-frontend:buildtest1
         ports:
         - containerPort: 5173
         env:
