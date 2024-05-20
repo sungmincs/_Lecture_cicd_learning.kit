@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       full_sha: ${{ steps.vars.outputs.full_sha }}
-      short_sha: ${{ steps.vars.outputs.short_sha }
-      branch: ${{ steps.vars.outputs.branch }
+      short_sha: ${{ steps.vars.outputs.short_sha }}
+      branch: ${{ steps.vars.outputs.branch }}
     steps:
       - uses: actions/checkout@v4
       - id: vars
@@ -55,7 +55,7 @@ jobs:
   notify-success-result:
     if: ${{ success() }}
     runs-on: ubuntu-latest
-    needs: [init-and-test]
+    needs: [init-and-test, build, deploy]
     steps:
       - name: Slack Notification Success
         run: |
