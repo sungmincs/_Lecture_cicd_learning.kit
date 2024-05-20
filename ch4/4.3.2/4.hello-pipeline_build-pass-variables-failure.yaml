@@ -41,13 +41,13 @@ jobs:
       - name: Build image
         run: |
           echo "Let's build the image for ${{ needs.init-and-test.outputs.full_sha }}"
-          echo "build successful and published image with the following tags:"
-          echo "Tags: ${{ needs.init-and-test.outputs.full_sha }}, ${{ needs.init-and-test.outputs.short_sha }}"
+          echo "Oops, something went wrong with this build.."
+          exit 1
   deploy:
     runs-on: ubuntu-latest
     needs: [init-and-test, build]
     steps:
-      - name: Build image
+      - name: Deploy image
         run: |
           echo "Let's deploy the image"
           echo "Deploying our image ${{ needs.init-and-test.outputs.full_sha }} to the cluster"
