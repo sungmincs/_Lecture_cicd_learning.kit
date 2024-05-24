@@ -4,8 +4,8 @@
 ### https://formulae.brew.sh/cask/vmware-fusion
 ### brew install --cask vmware-fusion
 ### https://github.com/Homebrew/homebrew-cask/blob/master/Casks/v/vmware-fusion.rb
-### vmware-fusion v13.5.1
-brew install --cask ./vmware-fusion-v13.5.1/vmware-fusion.rb
+### vmware-fusion v13.5.2
+brew install --cask ./vmware-fusion-v13.5.2/vmware-fusion.rb
 
 ### brew install --cask vagrant-vmware-utility
 ### https://github.com/Homebrew/homebrew-cask/blob/master/Casks/v/vagrant-vmware-utility.rb
