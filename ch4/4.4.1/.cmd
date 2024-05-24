@@ -7,3 +7,7 @@
 192.168.1.11 jenkins.myk8s.local
 ```
 ### now the Jenkins should be accessible from the host browser with admin/admin
+
+
+
+

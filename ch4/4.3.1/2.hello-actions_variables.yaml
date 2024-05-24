@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+env:
+  MY_NAME: Cute Octocat
+
 jobs:
   my-first-job:
     runs-on: ubuntu-latest
@@ -14,7 +17,6 @@ jobs:
 
       - name: Say Hello Github Actions
         run: echo "Hello Github Actions!"
-
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
@@ -30,5 +32,11 @@ jobs:
           ls ${{ github.workspace }}
           echo "workspace structure"
           tree ${{ github.workspace }}
+      - name: Inject environment variable
+        run: echo "My name is ${MY_NAME}, and this name is from my global environment variable"
+      - name: use global environment variable
+        env:
+          WHAT_I_LOVE: learning CI/CD with Github Actions
+        run: echo "I love ${WHAT_I_LOVE}!, and this is from step environment variable!"
       - run: echo "🍏 This job's status is ${{ job.status }}."
 

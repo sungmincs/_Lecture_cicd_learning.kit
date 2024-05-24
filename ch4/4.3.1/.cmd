@@ -1,15 +1,7 @@
-# Create ssh keypair for the Github repository interaction
-## Create key pair in k8s controller node,
-ssh-keygen -t ed25519 -C "your_email@example.com"
-### > Enter a file in which to save the key (/home/YOU/.ssh/id_ALGORITHM):[Press enter]
-### > Enter passphrase (empty for no passphrase): [Type a passphrase]
-### > Enter same passphrase again: [Type passphrase again]
-## Copy your ssh pubkey and add it to your github settings
-### github.com -> settings -> SSH and GPG key
-
 # Create Github Actions file
 ## create workflows directory and create action files
 mkdir -p ~/workspace/worklog-frontend/.github/workflows/
+
 ## Create a new action file, "hello-actions.yaml" in "~/workspace/worklog-frontend/.github/workflows/" and type the following
 ### ^ this should be the same as `cp 1.hello-actions-hello.yaml ~/workspace/worklog-frontend/.github/workflows/`
 ```
