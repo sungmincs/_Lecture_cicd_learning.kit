@@ -18,6 +18,8 @@
 ## dashboard -> Jenkins 관리 -> Security
 ### Git Host Key Verification Configuration -> Host Key Verification Strategy -> Accept first connection
 
+# Install plugins
+## Github, Github, Branch Source
 # Create a new pipeline
 ## dashboard -> 새로운 Item -> item name: worklog-backend-pipeline / Multibranch Pipeline
 ### Display Name: worklog-backend-pipeline
