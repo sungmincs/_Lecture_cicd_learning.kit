@@ -30,7 +30,7 @@ jobs:
           echo "Sending a 'start' notification to Slack for build ${{ steps.vars.outputs.short_sha }}"
       - name: Run test
         run: |
-          echo "let's run test for ${{ steps.vars.outputs.short_sha }} in ${{ steps.vars.output.branch }}"
+          echo "let's run a test for ${{ steps.vars.outputs.short_sha }} in ${{ steps.vars.output.branch }}"
           echo "running test for ${{ steps.vars.outputs.full_sha }}"
           echo "Test Passed!"
   build:
