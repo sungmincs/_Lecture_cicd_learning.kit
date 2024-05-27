@@ -11,7 +11,7 @@ pipeline {
                 script {
                     try {
                         echo "Let's build the image"
-                        exit 1
+                        sh "exit 1"
                     }
                     catch (all) {
                         echo "Oops, something went wrong with this build.."

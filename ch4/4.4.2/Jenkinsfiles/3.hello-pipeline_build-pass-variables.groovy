@@ -28,7 +28,7 @@ pipeline {
                     }
                 }
             }
-        }        }
+        }
         stage('Deploy Image') {
             steps {
                 echo "Let's deploy the image"
