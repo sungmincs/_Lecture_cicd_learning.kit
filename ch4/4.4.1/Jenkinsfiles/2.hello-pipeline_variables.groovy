@@ -20,7 +20,7 @@ pipeline {
     }
     post {
         always {
-            echo 'See you soon again, ${MY_NAME}!'
+            echo "See you soon again, ${MY_NAME}!"
         }
     }
 }
