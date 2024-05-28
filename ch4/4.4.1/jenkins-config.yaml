@@ -26,33 +26,33 @@ jenkins:
       value: "true"
     templates:
       - name: "default"
-	namespace: "default"
-	id: 14bc718b11f9a4cea39e9531ec6db3e728e1a56afb6cae41fdbcc4455bb0e611
-	containers:
-	- name: "jnlp"
-	  alwaysPullImage: false
-	  args: "^${computer.jnlpmac} ^${computer.name}"
-	  envVars:
-	    - envVar:
-		key: "JENKINS_URL"
-		value: "http://jenkins.default.svc.cluster.local:8080/"
-	  image: "jenkins/inbound-agent:3206.vb_15dcf73f6a_9-3"
-	  privileged: "false"
-	  resourceLimitCpu: 512m
-	  resourceLimitMemory: 512Mi
-	  resourceRequestCpu: 512m
-	  resourceRequestMemory: 512Mi
-	  ttyEnabled: false
-	  workingDir: /home/jenkins/agent
-	idleMinutes: 0
-	instanceCap: 2147483647
-	label: "jenkins-jenkins-agent "
-	nodeUsageMode: "NORMAL"
-	podRetention: Never
-	showRawYaml: true
-	serviceAccount: "default"
-	slaveConnectTimeoutStr: "100"
-	yamlMergeStrategy: override
+        namespace: "default"
+        id: 14bc718b11f9a4cea39e9531ec6db3e728e1a56afb6cae41fdbcc4455bb0e611
+        containers:
+        - name: "jnlp"
+          alwaysPullImage: false
+          args: "^${computer.jnlpmac} ^${computer.name}"
+          envVars:
+            - envVar:
+              key: "JENKINS_URL"
+              value: "http://jenkins.default.svc.cluster.local:8080/"
+          image: "jenkins/inbound-agent:3206.vb_15dcf73f6a_9-3"
+          privileged: "false"
+          resourceLimitCpu: 512m
+          resourceLimitMemory: 512Mi
+          resourceRequestCpu: 512m
+          resourceRequestMemory: 512Mi
+          ttyEnabled: false
+          workingDir: /home/jenkins/agent
+        idleMinutes: 0
+        instanceCap: 2147483647
+        label: "jenkins-jenkins-agent "
+        nodeUsageMode: "NORMAL"
+        podRetention: Never
+        showRawYaml: true
+        serviceAccount: "default"
+        slaveConnectTimeoutStr: "100"
+        yamlMergeStrategy: override
   crumbIssuer:
     standard:
       excludeClientIPFromCrumb: true

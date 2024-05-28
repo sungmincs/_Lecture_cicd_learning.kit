@@ -6,7 +6,7 @@ jvopt2="-Dcasc.jenkins.config=https://raw.githubusercontent.com/sungmincs/_Lectu
 jvopt3="-Dhudson.model.DownloadService.noSignatureCheck=true"
 helm upgrade --install jenkins edu/jenkins \
 --set controller.admin.password=admin \
---set controller.image.tag="2\.440\.3-jdk17" \
+--set controller.image.tag="2.452.1-lts-jdk17" \
 --set controller.ingress.enabled="true" \
 --set controller.ingress.ingressClassName="nginx" \
 --set controller.ingress.hostName="jenkins.myk8s.local" \
@@ -17,7 +17,7 @@ helm upgrade --install jenkins edu/jenkins \
 --set controller.runAsUser=1000 \
 --set controller.runAsGroup=1000 \
 --set controller.serviceType=NodePort \
---set controller.nodePort=40000 \
+--set controller.nodePort=32123 \
 --set controller.tolerations[0].key=node-role.kubernetes.io/control-plane \
 --set controller.tolerations[0].effect=NoSchedule \
 --set controller.tolerations[0].operator=Exists \
