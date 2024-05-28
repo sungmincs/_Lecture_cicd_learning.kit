@@ -20,8 +20,7 @@ pipeline {
     }
     post {
         always {
-            echo 'Job finished. Recording the duration of the job..'
-            cleanWs()
+            echo 'Job finished. Sending slack notifications ..'
         }
         success {
             echo 'Build Success, Notifying to slack..'
