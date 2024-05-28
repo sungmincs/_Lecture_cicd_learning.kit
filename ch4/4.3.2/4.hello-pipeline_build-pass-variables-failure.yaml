@@ -44,6 +44,7 @@ jobs:
       - name: Build image
         run: |
           echo "Let's build the image for ${{ needs.init-and-test.outputs.full_sha }}"
+          echo "The change commit message to build is '${{ needs.init-and-test.outputs.commit_message }}'"
           echo "Oops, something went wrong with this build.."
           exit 1
   deploy:
