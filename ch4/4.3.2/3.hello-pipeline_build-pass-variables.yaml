@@ -12,6 +12,7 @@ jobs:
       full_sha: ${{ steps.vars.outputs.full_sha }}
       short_sha: ${{ steps.vars.outputs.short_sha }}
       branch: ${{ steps.vars.outputs.branch }}
+      commit_message: ${{ steps.vars.outputs.commit_message }}
     steps:
       - uses: actions/checkout@v4
       - id: vars
@@ -20,11 +21,13 @@ jobs:
           full_sha=${{ github.sha }}
           short_sha=$(echo ${full_sha} | cut -c1-8)
           branch=$(echo ${GITHUB_REF#refs/heads/} | tr '/' '-')
+          commit_message=$(git log -1 --format="*%s* by _%an_")
 
           # Export slack vars to outputs
           echo "full_sha=${full_sha}" >> $GITHUB_OUTPUT
           echo "short_sha=${short_sha}" >> $GITHUB_OUTPUT
           echo "branch=${branch}" >> $GITHUB_OUTPUT
+          echo "commit_message=${commit_message}" >> $GITHUB_OUTPUT
       - name: Notify starting
         run: |
           echo "Sending a 'start' notification to Slack for build ${{ steps.vars.outputs.short_sha }}"
@@ -42,7 +45,7 @@ jobs:
         run: |
           echo "Let's build the image for ${{ needs.init-and-test.outputs.full_sha }}"
           echo "build successful and published image with the following tags:"
-          echo "Tags: ${{ needs.init-and-test.outputs.full_sha }}, ${{ needs.init-and-test.outputs.short_sha }}"
+          echo "Tags: ${{ needs.init-and-test.outputs.short_sha }}, ${{ needs.init-and-test.outputs.full_sha }}"
   deploy:
     runs-on: ubuntu-latest
     needs: [init-and-test, build]
@@ -59,8 +62,9 @@ jobs:
     steps:
       - name: Slack Notification Success
         run: |
-          echo "Your deployment has been completed"
-          echo "Tags: ${{ needs.init-and-test.outputs.full_sha }}, ${{ needs.init-and-test.outputs.short_sha }}"
+          echo "Your pipeline has been completed"
+          echo "Commit Message: ${{ needs.init-and-test.outputs.commit_message }}"
+          echo "Tags: ${{ needs.init-and-test.outputs.short_sha }}, ${{ needs.init-and-test.outputs.full_sha }}"
 
   notify-failure-result:
     if: ${{ failure() }}
@@ -70,4 +74,5 @@ jobs:
       - name: Slack Notification Failure
         run: |
           echo "Your pipeline has been failed"
-          echo "Tags: ${{ needs.init-and-test.outputs.full_sha }}, ${{ needs.init-and-test.outputs.short_sha }}"
+          echo "Commit Message: ${{ needs.init-and-test.outputs.commit_message }}"
+          echo "Tags: ${{ needs.init-and-test.outputs.short_sha }}, ${{ needs.init-and-test.outputs.full_sha }}"

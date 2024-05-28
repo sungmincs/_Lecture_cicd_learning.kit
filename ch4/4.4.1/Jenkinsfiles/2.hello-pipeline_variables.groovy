@@ -1,8 +1,7 @@
+MY_NAME = 'Jenkins the builder'
+
 pipeline {
     agent any
-    environment {
-        MY_NAME = 'Jenkins the builder'
-    }
     stages{
         stage('Hello Jenkins') {
             steps {
@@ -10,11 +9,9 @@ pipeline {
             }
         }
         stage('Nice to meet you') {
-            environment {
-                WHAT_I_LOVE = 'learning CI/CD with Jenkins pipeline'
-            }
+            whatILove = 'learning CI/CD with Jenkins pipeline'
             steps {
-                sh 'echo "I love ${WHAT_I_LOVE}!, and this is from stage environment variable!"'
+                sh 'echo "I love ${whatILove}!, and this is from stage environment variable!"'
             }
         }
     }

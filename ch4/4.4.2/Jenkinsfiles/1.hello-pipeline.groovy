@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    stages{
+    stages {
         stage('Run Test') {
             steps {
                 echo "Let's run a test"

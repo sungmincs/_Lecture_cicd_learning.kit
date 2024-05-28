@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    stages{
+    stages {
         stage('Run Test') {
             steps {
                 echo "Let's run a test"
@@ -8,22 +8,32 @@ pipeline {
         }
         stage('Build Image') {
             steps {
-                script {
-                    try {
-                        echo "Let's build the image"
-                        sh "exit 1"
-                    }
-                    catch (all) {
-                        echo "Oops, something went wrong with this build.."
-                        currentBuild.result='FAILURE'
-                    }
-                }
+                echo "Let's build the image"
+                sh 'exit 1'
             }
         }
         stage('Deploy Image') {
             steps {
                 echo "Let's deploy the image"
             }
+        }
+    }
+    post {
+        always {
+            echo 'Job finished. Recording the duration of the job..'
+            cleanWs()
+        }
+        success {
+            echo 'Build Success, Notifying to slack..'
+            echo 'Slack: successful'
+        }
+        failure {
+            echo 'Build Failed, Notifying to slack..'
+            echo 'Slack: failed'
+        }
+        aborted {
+            echo 'Build Aborted, Notifying to slack..'
+            echo 'Slack: aborted'
         }
     }
 }
