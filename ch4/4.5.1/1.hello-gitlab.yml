@@ -1,0 +1,19 @@
+stages:
+  - hello
+  - nice to meet you
+
+hello:
+  stage: hello
+  only:
+    refs:
+      - main
+  script:
+    - echo "hello Gitlab CI/CD Pipeline"
+
+nice to meet you:
+  stage: nice to meet you
+  only:
+    refs:
+      - main
+  script:
+    - echo "This is going to be so much fun, GitLab!"

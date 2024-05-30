@@ -59,7 +59,6 @@ pipeline {
         aborted {
             echo 'Build Aborted, Notifying to slack..'
             sendSlackMessage('aborted', commitMessage, shortSHA, fullSHA)
-
         }
     }
 }
