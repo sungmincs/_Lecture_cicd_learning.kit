@@ -3,7 +3,7 @@ def shortSHA
 def branch
 def commitMessage
 
-def sendSlackMessage(statusMessage) {
+def sendSlackMessage(statusMessage, commitMessage, shortSHA, fullSHA) {
     echo "Your pipeline has been ${statusMessage}"
     echo "Commit Message: ${commitMessage}"
     echo "Tags: ${shortSHA}, ${fullSHA}"
@@ -50,15 +50,15 @@ pipeline {
         }
         success {
             echo 'Build Success, Notifying to slack..'
-            sendSlackMessage('completed')
+            sendSlackMessage('completed', commitMessage, shortSHA, fullSHA)
         }
         failure {
             echo 'Build Failed, Notifying to slack..'
-            sendSlackMessage('failed')
+            sendSlackMessage('failed', commitMessage, shortSHA, fullSHA)
         }
         aborted {
             echo 'Build Aborted, Notifying to slack..'
-            sendSlackMessage('aborted')
+            sendSlackMessage('aborted', commitMessage, shortSHA, fullSHA)
 
         }
     }
