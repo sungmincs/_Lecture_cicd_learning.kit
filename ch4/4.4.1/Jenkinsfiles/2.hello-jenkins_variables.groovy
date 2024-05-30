@@ -2,10 +2,10 @@ MY_NAME = 'Jenkins the builder'
 
 pipeline {
     agent any
-    stages{
+    stages {
         stage('Hello Jenkins') {
             steps {
-                sh 'echo "My name is ${MY_NAME}, and this name is from my global environment variable"'
+                echo "My name is ${MY_NAME}, and this name is from my global environment variable"
             }
         }
         stage('Nice to meet you') {

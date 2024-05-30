@@ -19,7 +19,7 @@
 ### Git Host Key Verification Configuration -> Host Key Verification Strategy -> Accept first connection
 
 # Install plugins
-## Github, Github Branch Source
+## Plugins: Github, Github Branch Source, Pipeline: Stage View
 # Create a new pipeline
 ## dashboard -> 새로운 Item -> item name: worklog-backend-pipeline / Multibranch Pipeline
 ### Display Name: worklog-backend-pipeline
@@ -27,6 +27,6 @@
 ### GitHub: https://github.com/slinfra/worklog-backend.git
 ### GitHub credentials (username/PAT)
 
-
-
+# Git Clone Sample Repo
+git clone https://github.com/slinfra/worklog-backend.git
 
