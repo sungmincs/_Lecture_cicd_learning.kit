@@ -1,0 +1,71 @@
+.slack-notification-message: &slack-notification-message
+  - 'echo "Commit Message: ${COMMIT_MESSAGE}"'
+  - 'echo "Tags: ${SHORT_SHA}, ${FULL_SHA}"'
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "main"
+      variables:
+        FULL_SHA: ${CI_COMMIT_SHA}
+        SHORT_SHA: ${CI_COMMIT_SHORT_SHA}
+        BRANCH: ${CI_COMMIT_BRANCH}
+
+stages:
+  - init
+  - unit test
+  - build
+  - deploy
+  - notify
+
+init variables:
+  stage: init
+  script:
+    - echo "COMMIT_MESSAGE=\"$(git log -1 --format='*%s* by _%an_')\"" > vars.env
+    - cat vars.env
+  artifacts:
+    reports:
+      dotenv: vars.env
+
+run test:
+  stage: unit test
+  script:
+    - echo "let's run a test for ${SHORT_SHA} in ${BRANCH}"
+    - echo "running test for ${FULL_SHA}"
+    - echo "Test Passed!"
+
+build image:
+  stage: build
+  script:
+    - echo "Let's build the image for ${FULL_SHA}"
+    - echo "The change commit message to build is '${COMMIT_MESSAGE}'"
+    - echo "build successful and published image with the following tags:"
+    - 'echo "Tags: ${SHORT_SHA}, ${FULL_SHA}"'
+
+deploy image:
+  stage: deploy
+  script:
+    - echo "Let's deploy the image"
+    - echo "Deploying our image ${FULL_SHA} to the cluster"
+
+notify:
+  when: always
+  stage: notify
+  script:
+    - echo "Job finished. Sending slack notifications .."
+
+notify_success:
+  when: on_success
+  stage: notify
+  script:
+    - echo 'Build Success, Notifying to slack..'
+    - echo 'Your pipeline has been completed'
+    - *slack-notification-message
+
+notify_failure:
+  when: on_failure
+  stage: notify
+  script:
+    - echo 'Build Failed, Notifying to slack..'
+    - echo 'Your pipeline has been failed'
+    - *slack-notification-message

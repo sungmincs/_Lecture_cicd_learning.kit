@@ -1,0 +1,33 @@
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "main"
+
+stages:
+  - unit test
+  - build
+  - deploy
+
+run test:
+  stage: unit test
+  only:
+    refs:
+      - main
+  script:
+    - echo "Let's run a unit test "
+
+build image:
+  stage: build
+  only:
+    refs:
+      - main
+  script:
+    - echo "Let's build the image"
+
+deploy image:
+  stage: deploy
+  only:
+    refs:
+      - main
+  script:
+    - echo "Let's deploy the image"

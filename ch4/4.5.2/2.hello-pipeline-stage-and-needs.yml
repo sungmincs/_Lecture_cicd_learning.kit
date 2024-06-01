@@ -1,0 +1,38 @@
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "main"
+
+stages:
+  - unit test
+  - build
+  - deploy
+
+run test:
+  stage: unit test
+  script:
+    - echo "Let's run a unit test "
+
+# This runs in parallel with the test above
+run test2:
+  stage: unit test
+  script:
+    - echo "Let's run a unit test "
+
+build image:
+  stage: build
+  script:
+    - echo "Let's build the image"
+
+# This runs once build image step above is done
+build image depending on prev:
+  stage: build
+  needs:
+    - build image
+  script:
+    - echo "Let's build the arm64 image"
+
+deploy image:
+  stage: deploy
+  script:
+    - echo "Let's deploy the image"
