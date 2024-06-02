@@ -1,0 +1,62 @@
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "main"
+
+stages:
+  - unit test
+  - build
+  - deploy
+  - notify
+
+run test:
+  stage: unit test
+  script:
+    - echo "Let's run a unit test "
+
+# This runs in parallel with the test above
+run test2:
+  stage: unit test
+  script:
+    - echo "Let's run a unit test "
+
+build image:
+  stage: build
+  script:
+    - echo "Let's build the image"
+
+# This runs once build image step above is done
+build image depending on prev:
+  stage: build
+  needs:
+    - build image
+  script:
+    - echo "Let's build the image"
+    - echo "Oops, something went wrong with this build.."
+    - exit 1
+
+deploy image:
+  stage: deploy
+  script:
+    - echo "Let's deploy the image"
+
+notify:
+  when: always
+  stage: notify
+  script:
+    - echo "Job finished. Sending slack notifications .."
+
+notify_success:
+  when: on_success
+  stage: notify
+  script:
+    - echo "Build Success, Notifying to slack.."
+    # Yaml syntax limitation when string contains colon
+    - "echo 'Slack: successful'"
+
+notify_failure:
+  when: on_failure
+  stage: notify
+  script:
+    - echo "Build Failed, Notifying to slack.."
+    - "echo 'Slack: failed'"
