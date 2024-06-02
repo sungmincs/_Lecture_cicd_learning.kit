@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worklog-backend
+spec:
+  selector:
+    matchLabels:
+      app: worklog-backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: worklog-backend
+    spec:
+      containers:
+      - name: worklog-backend
+        image: sungminl/worklog-backend:buildtest1
+        ports:
+        - containerPort: 80
+        env:
+        - name: MONGO_HOST
+          value: worklog-mongodb.default.svc.cluster.local
+        - name: IMAGE_TAG
+          value: buildtest1
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: worklog-mongodb-creds
+              key: username
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: worklog-mongodb-creds
+              key: password
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 6
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: worklog-backend
+  labels:
+    app: worklog-backend
+spec:
+  ports:
+    - name: http
+      port: 80
+  selector:
+    app: worklog-backend
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: worklog-backend
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: worklog-backend.myk8s.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: worklog-backend
+            port:
+              number: 80
