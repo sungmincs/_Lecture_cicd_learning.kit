@@ -36,7 +36,8 @@ jenkins:
               - envVar:
                   key: "JENKINS_URL"
                   value: "http://jenkins.default.svc.cluster.local:8080/"
-            image: "jenkins/inbound-agent:3248.v65ecb_254c298-3-jdk17"
+            #image: "jenkins/inbound-agent:3248.v65ecb_254c298-3-jdk17"
+            image: "jenkins/jnlp-agent-docker:latest"
             privileged: "false"
             resourceLimitCpu: 512m
             resourceLimitMemory: 512Mi
@@ -46,7 +47,7 @@ jenkins:
             workingDir: /home/jenkins/agent
           idleMinutes: 0
           instanceCap: 2147483647
-          label: "jenkins-jenkins-agent "
+          label: "jenkins-jenkins-agent"
           nodeUsageMode: "NORMAL"
           podRetention: Never
           showRawYaml: true
