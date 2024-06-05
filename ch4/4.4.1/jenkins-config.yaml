@@ -36,7 +36,6 @@ jenkins:
               - envVar:
                   key: "JENKINS_URL"
                   value: "http://jenkins.default.svc.cluster.local:8080/"
-            #image: "jenkins/inbound-agent:3248.v65ecb_254c298-3-jdk17"
             image: "sungminl/inbound-agent-docker:3248.v65ecb_254c298-3-jdk17"
             privileged: "false"
             resourceLimitCpu: 512m
@@ -54,6 +53,10 @@ jenkins:
           serviceAccount: "default"
           slaveConnectTimeoutStr: "100"
           yamlMergeStrategy: override
+          volumes:
+            - hostPathVolume:
+                hostPath: "/var/run/docker.sock"
+                mountPath: "/var/run/docker.sock"
   crumbIssuer:
     standard:
       excludeClientIPFromCrumb: true

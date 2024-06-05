@@ -1,7 +1,7 @@
 FROM jenkins/inbound-agent:3248.v65ecb_254c298-3-jdk17
 
 USER root
-# Install common toolings
+# Install docker
 RUN apt-get update \
     && install -m 0755 -d /etc/apt/keyrings \
     && curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc \
@@ -11,6 +11,9 @@ RUN apt-get update \
        $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
        tee /etc/apt/sources.list.d/docker.list > /dev/null \
     && apt-get update \
-    && apt-get install -y docker-ce \
+    && apt-get install -y docker-ce
+# Ensure to have the same docker GID(998) between the host and container
+RUN groupmod -g 900 systemd-network \
+    && groupmod -g 998 docker \
     && usermod -aG docker jenkins
 USER jenkins
