@@ -62,22 +62,12 @@ spec:
               - /usr/bin/mongo
               - --eval
               - "db.adminCommand('ping')"
-          initialDelaySeconds: 10
-          periodSeconds: 10
-          timeoutSeconds: 5
-          successThreshold: 1
-          failureThreshold: 6
         readinessProbe:
           exec:
             command:
               - /usr/bin/mongo
               - --eval
               - "db.adminCommand('ping')"
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          timeoutSeconds: 5
-          successThreshold: 1
-          failureThreshold: 6
         env:
         - name: MONGO_INITDB_ROOT_USERNAME
           valueFrom:

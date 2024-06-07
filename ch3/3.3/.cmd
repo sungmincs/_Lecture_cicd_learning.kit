@@ -4,6 +4,7 @@ https://hub.docker.com/
 
 ## build docker container
 ### build Frontend
+### TODO: use more meaningful tag name (such as `buildtag1`)
 cd ~/workspace/worklog-frontend
 docker build . -t <dockerhub_username>/worklog-frontend:buildtest1
 #### This should fail with permission denied error

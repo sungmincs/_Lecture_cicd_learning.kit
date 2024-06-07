@@ -8,10 +8,12 @@ docker --version
 ### When forking, uncheck `Copy the main branch only`
 
 ## Inside the control plane node
+## TODO: change it to cicd-lab from workspace
 mkdir ~/workspace
 cd ~/workspace
 git clone https://github.com/<github_username>/worklog-frontend_v1.git
 git clone https://github.com/<github_username>/worklog-backend_v1.git
+
 
 
 

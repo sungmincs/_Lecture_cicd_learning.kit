@@ -14,3 +14,6 @@ jobs:
 
       - name: Say Hello Github Actions
         run: echo "Hello Github Actions!"
+
+      - name: This is my repository
+        run: ls -l
