@@ -1,10 +1,12 @@
 # Install Jenkins
+## add helm repo
+helm repo add edu https://k8s-edu.github.io/Lkv1_main/helm-charts/v1.30/cicd/
 ## install helm script
 ./install_jenkins.sh
 
 ## update host setting
 ```
-192.168.1.11 jenkins.myk8s.local
+192.168.1.99 jenkins.myk8s.local
 ```
 ### now the Jenkins should be accessible from the host browser with admin/admin
 

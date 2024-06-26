@@ -1,13 +1,13 @@
 # Check Load balancer IP
-## The external IP of the following output should be 192.168.1.11
+## The external IP of the following output should be 192.168.1.99
 kubectl get svc -n ingress-nginx ingress-nginx-controller
 
 ## Open this file using `Notepad` via administrator mode
 C:\Windows\System32\drivers\etc\hosts
 ## add following lines
 ```
-192.168.1.11 worklog-frontend.myk8s.local
-192.168.1.11 worklog-backend.myk8s.local
+192.168.1.99 worklog-frontend.myk8s.local
+192.168.1.99 worklog-backend.myk8s.local
 ```
 
 # Update `hosts` file in the host computer
