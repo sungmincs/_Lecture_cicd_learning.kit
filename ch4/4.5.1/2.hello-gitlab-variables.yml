@@ -1,0 +1,23 @@
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "main"
+
+variables:
+  GLOBAL_NAME: GitLab CI/CD Pipeline
+
+stages:
+  - hello
+  - nice to meet you
+
+hello:
+  stage: hello
+  script:
+    - echo "hello '${GLOBAL_NAME}'"
+
+nice to meet you:
+  stage: nice to meet you
+  variables:
+    WHAT_I_LOVE: "learning CI/CD with GitLab CI/CD Pipeline"
+  script:
+    - echo "I love ${WHAT_I_LOVE}!, and this is from local variable!"

@@ -1,0 +1,13 @@
+stages:
+  - hello
+  - nice to meet you
+
+hello:
+  stage: hello
+  script:
+    - echo "hello Gitlab CI/CD Pipeline"
+
+nice to meet you:
+  stage: nice to meet you
+  script:
+    - echo "This is going to be so much fun, GitLab!"
