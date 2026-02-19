@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ##### Addtional configuration for All-in-one >> replace to extra-k8s-pkgs
-EXTRA_PKGS_ADDR="https://raw.githubusercontent.com/sysnet4admin/IaC/main/k8s/extra-pkgs/v1.30"
+EXTRA_PKGS_ADDR="https://raw.githubusercontent.com/sysnet4admin/IaC/main/k8s/extra-pkgs/v1.35"
 
 curl $EXTRA_PKGS_ADDR/get_helm_v3.14.0.sh | bash 
 # helm completion on bash-completion dir & alias+
@@ -9,7 +9,7 @@ helm completion bash > /etc/bash_completion.d/helm
 echo 'alias h=helm' >> ~/.bashrc
 echo 'complete -F __start_helm h' >> ~/.bashrc
 # helm repo add for prom 
-helm repo add edu https://k8s-edu.github.io/Lkv1_main/helm-charts/v1.30/cicd/
+helm repo add edu https://k8s-edu.github.io/Lkv1_main/helm-charts/v1.35/cicd/
 
 # metallb v0.14.4
 kubectl apply -f $EXTRA_PKGS_ADDR/metallb-native-v0.14.4.yaml
