@@ -3,7 +3,7 @@
 ##### Addtional configuration for All-in-one >> replace to extra-k8s-pkgs
 EXTRA_PKGS_ADDR="https://raw.githubusercontent.com/sysnet4admin/IaC/main/k8s/extra-pkgs/v1.35"
 
-curl $EXTRA_PKGS_ADDR/get_helm_v3.14.0.sh | bash 
+curl $EXTRA_PKGS_ADDR/get_helm_v4.0.4.sh | bash 
 # helm completion on bash-completion dir & alias+
 helm completion bash > /etc/bash_completion.d/helm
 echo 'alias h=helm' >> ~/.bashrc
@@ -12,7 +12,7 @@ echo 'complete -F __start_helm h' >> ~/.bashrc
 helm repo add edu https://k8s-edu.github.io/Lkv1_main/helm-charts/v1.35/cicd/
 
 # metallb v0.14.4
-kubectl apply -f $EXTRA_PKGS_ADDR/metallb-native-v0.14.4.yaml
+kubectl apply -f $EXTRA_PKGS_ADDR/metallb-native-v0.15.3.yaml
 
 # split metallb CRD due to it cannot apply at once. 
 # it looks like Operator limitation
@@ -26,16 +26,16 @@ kubectl apply -f $EXTRA_PKGS_ADDR/metallb-native-v0.14.4.yaml
 (sleep 600 && kubectl apply -f $EXTRA_PKGS_ADDR/metallb-iprange.yaml)&
 
 # nginx ingress ctrl v1.10.1(loadbalancer) 
-kubectl apply -f $EXTRA_PKGS_ADDR/ingress-ctrl-loadbalancer-v1.10.1.yaml 
+kubectl apply -f $EXTRA_PKGS_ADDR/ingress-ctrl-loadbalancer-v1.14.1.yaml 
 
 # metrics server v0.7.1 - insecure mode 
-kubectl apply -f $EXTRA_PKGS_ADDR/metrics-server-notls-v0.7.1.yaml
+kubectl apply -f $EXTRA_PKGS_ADDR/metrics-server-notls-v0.8.0.yaml
 
 # NFS dir configuration
 curl $EXTRA_PKGS_ADDR/nfs_exporter.sh | bash -s -- "dynamic-vol"
 
 # nfs-provsioner v4.0.2 installer 
-kubectl apply -f $EXTRA_PKGS_ADDR/nfs-provisioner-v4.0.2.yaml
+kubectl apply -f $EXTRA_PKGS_ADDR/csi-driver-nfs-v4.12.1.yaml
 
 # storageclass installer & set default storageclass
 kubectl apply -f $EXTRA_PKGS_ADDR/storageclass.yaml 
