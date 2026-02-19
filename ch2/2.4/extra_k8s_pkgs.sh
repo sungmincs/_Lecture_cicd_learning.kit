@@ -11,7 +11,7 @@ echo 'complete -F __start_helm h' >> ~/.bashrc
 # helm repo add for prom 
 helm repo add edu https://k8s-edu.github.io/Lkv1_main/helm-charts/v1.35/cicd/
 
-# metallb v0.14.4
+# metallb v0.15.3
 kubectl apply -f $EXTRA_PKGS_ADDR/metallb-native-v0.15.3.yaml
 
 # split metallb CRD due to it cannot apply at once. 
@@ -25,16 +25,16 @@ kubectl apply -f $EXTRA_PKGS_ADDR/metallb-native-v0.15.3.yaml
 # config metallb ip range and it cannot deploy now due to CRD cannot create yet 
 (sleep 600 && kubectl apply -f $EXTRA_PKGS_ADDR/metallb-iprange.yaml)&
 
-# nginx ingress ctrl v1.10.1(loadbalancer) 
+# nginx ingress ctrl v1.14.1(loadbalancer) 
 kubectl apply -f $EXTRA_PKGS_ADDR/ingress-ctrl-loadbalancer-v1.14.1.yaml 
 
-# metrics server v0.7.1 - insecure mode 
+# metrics server v0.8.0 - insecure mode 
 kubectl apply -f $EXTRA_PKGS_ADDR/metrics-server-notls-v0.8.0.yaml
 
 # NFS dir configuration
 curl $EXTRA_PKGS_ADDR/nfs_exporter.sh | bash -s -- "dynamic-vol"
 
-# nfs-provsioner v4.0.2 installer 
+# csi-driver-nfs v4.12.1 installer 
 kubectl apply -f $EXTRA_PKGS_ADDR/csi-driver-nfs-v4.12.1.yaml
 
 # storageclass installer & set default storageclass
