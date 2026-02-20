@@ -1,6 +1,6 @@
 # Install Jenkins
 ## add helm repo
-helm repo add edu https://k8s-edu.github.io/Lkv1_main/helm-charts/v1.30/cicd/
+helm repo add edu https://k8s-edu.github.io/Lkv1_main/helm-charts/v1.35/cicd/
 ## install helm script
 ./install_jenkins.sh
 

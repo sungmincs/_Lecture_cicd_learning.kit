@@ -9,7 +9,7 @@ helm completion bash > /etc/bash_completion.d/helm
 echo 'alias h=helm' >> ~/.bashrc
 echo 'complete -F __start_helm h' >> ~/.bashrc
 # helm repo add for prom 
-helm repo add edu https://k8s-edu.github.io/Lkv1_main/helm-charts/v1.30/cicd/
+helm repo add edu https://k8s-edu.github.io/Lkv1_main/helm-charts/v1.35/cicd/
 
 # metallb v0.15.3
 kubectl apply -f $EXTRA_PKGS_ADDR/metallb-native-v0.15.3.yaml
