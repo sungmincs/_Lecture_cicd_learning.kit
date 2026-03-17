@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: worklog-backend
+spec:
+  replicas: 3
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: worklog-backend
+  template:
+    metadata:
+      labels:
+        app: worklog-backend
+    spec:
+      containers:
+        - name: worklog-backend
+          image: <dockerhub_username>/worklog-backend:buildtest1
+          ports:
+            - containerPort: 8000
+  strategy:
+    blueGreen:
+      activeService: worklog-backend-active
+      previewService: worklog-backend-preview
+      autoPromotionEnabled: false

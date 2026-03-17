@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worklog-backend
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: worklog-backend
+  template:
+    metadata:
+      labels:
+        app: worklog-backend
+    spec:
+      containers:
+        - name: worklog-backend
+          image: <dockerhub_username>/worklog-backend:latest
+          ports:
+            - containerPort: 8000

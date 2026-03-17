@@ -1,0 +1,46 @@
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+
+stages:
+  - test
+  - build
+  - deploy
+
+variables:
+  DOCKER_REPOSITORY: worklog-backend
+
+test:
+  stage: test
+  image: python:3.12.3-slim-bookworm
+  script:
+    - pip install poetry
+    - poetry install
+    - poetry run pytest
+
+build:
+  stage: build
+  image: docker:24
+  services:
+    - docker:24-dind
+  needs: [test]
+  before_script:
+    - echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+  script:
+    - SHORT_SHA=$(echo $CI_COMMIT_SHA | cut -c1-7)
+    - docker build -t $DOCKERHUB_USERNAME/$DOCKER_REPOSITORY:$SHORT_SHA .
+    - docker push $DOCKERHUB_USERNAME/$DOCKER_REPOSITORY:$SHORT_SHA
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+
+deploy:
+  stage: deploy
+  image: bitnami/kubectl:latest
+  needs: [build]
+  before_script:
+    - mkdir -p $HOME/.kube
+    - echo "$KUBE_CONFIG" | base64 -d > $HOME/.kube/config
+  script:
+    - SHORT_SHA=$(echo $CI_COMMIT_SHA | cut -c1-7)
+    - kubectl set image deployment/worklog-backend
+        worklog-backend=$DOCKERHUB_USERNAME/$DOCKER_REPOSITORY:$SHORT_SHA

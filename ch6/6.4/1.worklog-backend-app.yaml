@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: worklog-backend
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/<github_username>/worklog-backend_v1.git
+    targetRevision: main
+    path: deploy_manifest
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
