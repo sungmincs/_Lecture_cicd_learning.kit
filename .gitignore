@@ -1,2 +1,9 @@
 .vagrant/
 .DS_Store
+__pycache__/
+*.pyc
+*.pptx
+*.zip
+Content.md
+slides/
+_RECORDINGS/
