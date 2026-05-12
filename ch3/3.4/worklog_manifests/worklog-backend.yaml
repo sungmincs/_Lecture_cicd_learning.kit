@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: worklog-backend
-        image: sungminl/worklog-backend:buildtest1
+        image: <dockerhub_username>/worklog-backend:buildtest1
         ports:
         - containerPort: 80
         env:
