@@ -14,19 +14,21 @@ helm repo add edu https://k8s-edu.github.io/Lkv1_main/helm-charts/v1.35/cicd/
 # metallb v0.15.3
 kubectl apply -f $EXTRA_PKGS_ADDR/metallb-native-v0.15.3.yaml
 
-# split metallb CRD due to it cannot apply at once. 
+# split metallb CRD due to it cannot apply at once.
 # it looks like Operator limitation
-# QA: 
-# - 240sec cannot deploy on intel MAC. So change Seconds 
-# - 300sec can deploy but safety range is from 540 - 600 
+# QA:
+# - 240sec cannot deploy on intel MAC. So change Seconds
+# - 300sec can deploy but safety range is from 540 - 600
 
-# config metallb layer2 mode 
+# config metallb layer2 mode
 (sleep 540 && kubectl apply -f $EXTRA_PKGS_ADDR/metallb-l2mode.yaml)&
-# config metallb ip range and it cannot deploy now due to CRD cannot create yet 
+# config metallb ip range and it cannot deploy now due to CRD cannot create yet
 (sleep 600 && kubectl apply -f $EXTRA_PKGS_ADDR/metallb-iprange.yaml)&
 
-# nginx ingress ctrl v1.14.1(loadbalancer) 
-kubectl apply -f $EXTRA_PKGS_ADDR/ingress-ctrl-loadbalancer-v1.14.1.yaml 
+# nginx gateway fabric v2.3.0 (loadbalancer)
+# Note: `kubectl create` (not `apply`) — CRDs are too large for the
+# last-applied annotation that `apply` writes (262144 byte limit).
+kubectl create -f $EXTRA_PKGS_ADDR/nginx-gateway-loadbalancer-v2.3.0.yaml
 
 # metrics server v0.8.0 - insecure mode 
 kubectl apply -f $EXTRA_PKGS_ADDR/metrics-server-notls-v0.8.0.yaml
