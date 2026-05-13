@@ -49,7 +49,8 @@ spec:
   selector:
     matchLabels:
       app: worklog-mongodb
-  strategy: {}
+  strategy:
+    type: Recreate  # mongod.lock 충돌 방지 — 새 Pod 시작 전 기존 Pod 완전 종료
   template:
     metadata:
       labels:
