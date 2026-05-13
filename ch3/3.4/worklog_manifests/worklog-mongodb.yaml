@@ -56,20 +56,18 @@ spec:
         app: worklog-mongodb
     spec:
       containers:
-      - image: mongo:4.4.29-focal
+      - image: mongo:8.0
         name: mongo
         livenessProbe:
-          exec:
-            command:
-              - /usr/bin/mongo
-              - --eval
-              - "db.adminCommand('ping')"
+          tcpSocket:
+            port: 27017
+          initialDelaySeconds: 15
+          periodSeconds: 10
         readinessProbe:
-          exec:
-            command:
-              - /usr/bin/mongo
-              - --eval
-              - "db.adminCommand('ping')"
+          tcpSocket:
+            port: 27017
+          initialDelaySeconds: 5
+          periodSeconds: 10
         env:
         - name: MONGO_INITDB_ROOT_USERNAME
           valueFrom:
