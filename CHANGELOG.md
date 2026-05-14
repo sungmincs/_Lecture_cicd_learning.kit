@@ -9,7 +9,7 @@
 | Python | `3.12.3` | `3.14` | patch 고정 → 최신 | `sungmincs/worklog-backend` | ✅ 빌드 + /health |
 | Poetry | `1.8.0` | 제거 | 2026 기준 uv 대비 다운로드 절반. FastAPI 공식 문서 언급 없음 | `sungmincs/worklog-backend` | — |
 | uv | 미사용 | `0.11.14` | 2026 생태계 표준. FastAPI 공식 권장 | `sungmincs/worklog-backend` | ✅ 빌드 + API 응답 |
-| React | `^18.2.0` | `^19.0.0` | 최신 stable (Dec 2024 출시) | `sungmincs/worklog-frontend-mock` | ❌ 검증 예정 |
+| React | `^18.2.0` | `^19.0.0` (19.2.6) | 최신 stable (Dec 2024 출시) | `sungmincs/worklog-frontend-mock` | ✅ 빌드 + HTTP 200 + 마운트 확인 |
 
 ---
 
