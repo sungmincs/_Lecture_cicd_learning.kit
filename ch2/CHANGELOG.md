@@ -16,3 +16,9 @@
 - **Before**: Docker 설치만
 - **After**: 설치 후 `/etc/docker/daemon.json` → `{"ipv6": false}` 적용
 - **이유**: Vagrant VM 환경에서 Docker Hub 연결 시 IPv6 주소로 시도 → "no route to host" 오류 발생. 학습자가 `docker build` 시 별도 옵션 없이 사용 가능하도록.
+
+### controlplane_node.sh — NGF LB IP `192.168.1.99` 고정
+- **Before**: MetalLB 동적 할당 (pool 첫 번째 IP `192.168.1.11` 자동 할당)
+- **After**: sleep 700s 후 MetalLB annotation으로 `192.168.1.99` 고정
+- **이유**: 강의 가이드(ch3, ch4, ch6) 전체가 `192.168.1.99`를 사용. 동적 할당 시 vagrant up 순서에 따라 IP가 달라져 hosts 파일 설정이 틀릴 수 있음.
+- **방식**: `kubectl annotate svc nginx-gateway-nginx -n nginx-gateway metallb.universe.tf/loadBalancerIPs="192.168.1.99"`

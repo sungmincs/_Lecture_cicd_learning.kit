@@ -10,6 +10,11 @@
 | Poetry | `1.8.0` | 제거 | 2026 기준 uv 대비 다운로드 절반. FastAPI 공식 문서 언급 없음 | `sungmincs/worklog-backend` | — |
 | uv | 미사용 | `0.11.14` | 2026 생태계 표준. FastAPI 공식 권장 | `sungmincs/worklog-backend` | ✅ 빌드 + API 응답 |
 | React | `^18.2.0` | `^19.0.0` (19.2.6) | 최신 stable (Dec 2024 출시) | `sungmincs/worklog-frontend-mock` | ✅ 빌드 + HTTP 200 + 마운트 확인 |
+| Jenkins | `2.440.3` | `2.541.3` | EOL May 2024 | `k8s-edu/Lkv1_main` chart, `ch4/4.5/` | ❌ 설치 검증 예정 |
+| Jenkins chart | `5.1.12` | `5.2.0` | Jenkins 버전 업 | `k8s-edu/Lkv1_main/helm-charts/v1.35/cicd/` | ❌ 설치 검증 예정 |
+| inbound-agent | `3248.v65ecb_254c298-3` | `3355.v388858a_47b_33-20` | Jenkins 버전 업 | `ch4/4.5/jenkins-config.yaml` | ❌ 설치 검증 예정 |
+| Argo CD | `v2.11.0` | `v3.4.2` | 2.x 전체 EOL | `k8s-edu/Lkv1_main` chart | ❌ 설치 검증 예정 |
+| Argo CD chart | `6.9.0` | `9.5.14` | Argo CD v3 대응 | `k8s-edu/Lkv1_main/helm-charts/v1.35/cicd/` | ❌ 설치 검증 예정 |
 
 ---
 
@@ -22,12 +27,17 @@
 | 이미지 필드 | `sungminl/<name>` | `<dockerhub_username>/<name>` | 하드코딩 시 arch mismatch 오류, 학습자 혼동 | `ch3/3.4/worklog_manifests/` (Public) | ✅ K8s 배포 + pods Ready |
 | Vite allowedHosts | 미설정 | `[".myk8s.local"]` | Vite 5.4+ Host 헤더 검증 강화 — K8s 배포 시 403 차단 | `sungmincs/worklog-frontend-mock` vite.config.ts | ✅ K8s 배포 + HTTP 200 |
 | ch3 가이드 | 모든 단계 직접 입력 | `[AI 프롬프트]` / `[학습자 직접]` 분리 | sed/vi 설명이 핵심 학습 흐름 방해 | `prompt-guardrails/ch3/` (Internal) | ❌ 강의 시나리오 미검증 |
+| NGF LB IP | 동적 (`.11` 자동할당) | `192.168.1.99` 고정 | 강의 가이드 전체 `.99` 사용 — 동적 할당 시 불일치 발생 | `ch2/2.4/controlplane_node.sh` (Public) | ❌ 신규 vagrant up 검증 예정 |
+| Jenkins 접근 | Ingress + NodePort | HTTPRoute (`jenkins.myk8s.local`) | Gateway API 전환으로 Ingress 불가 | `ch4/4.5/jenkins-httproute.yaml` (신규, Public) | ❌ 설치 검증 예정 |
+| Jenkins update-center | 2.452.1 스냅샷 (2024-05-15) | 2.541.x 스냅샷 (2026-05-13) | EOL 버전 플러그인 목록 갱신 | `ch4/4.5/update-center.json` (Public) | ❌ 설치 검증 예정 |
 
 ---
 
 ## 챕터별 상세
 
 - [ch2 변경 이력](ch2/CHANGELOG.md)
+- [ch3 변경 이력](ch3/CHANGELOG.md)
+- [ch4 변경 이력](ch4/CHANGELOG.md)
 - [ch3 변경 이력](ch3/CHANGELOG.md)
 
 ---
