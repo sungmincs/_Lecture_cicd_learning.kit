@@ -15,9 +15,11 @@ helm upgrade --install jenkins edu/jenkins \
 --set controller.nodeSelector."kubernetes\.io/hostname"=cp-k8s \
 --set controller.runAsUser=1000 \
 --set controller.runAsGroup=1000 \
---set controller.serviceType=NodePort \
---set controller.nodePort=32123 \
+--set controller.serviceType=ClusterIP \
 --set controller.tolerations[0].key=node-role.kubernetes.io/control-plane \
 --set controller.tolerations[0].effect=NoSchedule \
 --set controller.tolerations[0].operator=Exists \
 --set persistence.enabled=true
+
+# HTTPRoute: jenkins.myk8s.local → jenkins:8080 (NGINX Gateway Fabric)
+kubectl apply -f /root/_Lecture_cicd_learning.kit/ch4/4.5/jenkins-httproute.yaml
