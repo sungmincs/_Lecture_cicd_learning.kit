@@ -46,7 +46,7 @@ echo "Wait 30 seconds for restarting the Control-Plane Node..." ; sleep 30
 # Fix NGF LB IP to 192.168.1.99 via MetalLB annotation
 # extra_k8s_pkgs.sh applies MetalLB IPAddressPool at ~600s → NGF gets first available IP (.11)
 # At 700s, patch the NGF service to force reassignment to .99
-(sleep 700 && kubectl annotate svc nginx-gateway-nginx -n nginx-gateway \
+(sleep 700 && kubectl annotate svc nginx-gateway-nginx -n default \
   metallb.universe.tf/loadBalancerIPs="192.168.1.99" --overwrite \
   && echo "NGF LB IP fixed to 192.168.1.99") &
 
