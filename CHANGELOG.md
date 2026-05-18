@@ -10,11 +10,11 @@
 | Poetry | `1.8.0` | 제거 | 2026 기준 uv 대비 다운로드 절반. FastAPI 공식 문서 언급 없음 | `sungmincs/worklog-backend` | — |
 | uv | 미사용 | `0.11.14` | 2026 생태계 표준. FastAPI 공식 권장 | `sungmincs/worklog-backend` | ✅ 빌드 + API 응답 |
 | React | `^18.2.0` | `^19.0.0` (19.2.6) | 최신 stable (Dec 2024 출시) | `sungmincs/worklog-frontend-mock` | ✅ 빌드 + HTTP 200 + 마운트 확인 |
-| Jenkins | `2.440.3` | `2.541.3` | EOL May 2024 | `k8s-edu/Lkv1_main` chart, `ch4/4.5/` | ❌ 설치 검증 예정 |
-| Jenkins chart | `5.1.12` | `5.2.0` | Jenkins 버전 업 | `k8s-edu/Lkv1_main/helm-charts/v1.35/cicd/` | ❌ 설치 검증 예정 |
-| inbound-agent | `3248.v65ecb_254c298-3` | `3355.v388858a_47b_33-20` | Jenkins 버전 업 | `ch4/4.5/jenkins-config.yaml` | ❌ 설치 검증 예정 |
-| Argo CD | `v2.11.0` | `v3.4.2` | 2.x 전체 EOL | `k8s-edu/Lkv1_main` chart | ❌ 설치 검증 예정 |
-| Argo CD chart | `6.9.0` | `9.5.14` | Argo CD v3 대응 | `k8s-edu/Lkv1_main/helm-charts/v1.35/cicd/` | ❌ 설치 검증 예정 |
+| Jenkins | `2.440.3` | `2.541.3` | EOL May 2024 | `k8s-edu/Lkv1_main` chart, `ch4/4.5/` | ✅ HTTP 200 + X-Jenkins: 2.541.3 |
+| Jenkins chart | `5.1.12` | `5.2.0` | Jenkins 버전 업 | `k8s-edu/Lkv1_main/helm-charts/v1.35/cicd/` | ✅ |
+| inbound-agent | `3248.v65ecb_254c298-3` | `3355.v388858a_47b_33-20` | Jenkins 버전 업 | `ch4/4.5/jenkins-config.yaml` | ✅ |
+| Argo CD | `v2.11.0` | `v3.4.2` | 2.x 전체 EOL | `k8s-edu/Lkv1_main` chart | ✅ HTTP 200 확인 |
+| Argo CD chart | `6.9.0` | `9.5.14` | Argo CD v3 대응 | `k8s-edu/Lkv1_main/helm-charts/v1.35/cicd/` | ✅ |
 
 ---
 
@@ -40,7 +40,6 @@
 - [ch3 변경 이력](ch3/CHANGELOG.md)
 - [ch4 변경 이력](ch4/CHANGELOG.md)
 - [ch6 변경 이력](ch6/CHANGELOG.md)
-- [ch3 변경 이력](ch3/CHANGELOG.md)
 
 ---
 
