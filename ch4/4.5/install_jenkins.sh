@@ -9,7 +9,7 @@ helm upgrade --install jenkins edu/jenkins \
 --set controller.image.tag="2.541.3-lts-jdk17" \
 --set controller.initContainerEnv[0].name="JENKINS_UC" \
 --set controller.initContainerEnv[0].value="https://raw.githubusercontent.com/sungmincs/_Lecture_cicd_learning.kit/main/ch4/4.5/update-center.json" \
---set controller.installLatestPlugins=false \
+--set controller.installLatestPlugins=true \
 --set controller.jenkinsOpts="$jkopt1 $jkopt2" \
 --set controller.javaOpts="$jvopt1 $jvopt2 $jvopt3" \
 --set controller.nodeSelector."kubernetes\.io/hostname"=cp-k8s \
