@@ -27,9 +27,10 @@
 | 이미지 필드 | `sungminl/<name>` | `<dockerhub_username>/<name>` | 하드코딩 시 arch mismatch 오류, 학습자 혼동 | `ch3/3.4/worklog_manifests/` (Public) | ✅ K8s 배포 + pods Ready |
 | Vite allowedHosts | 미설정 | `[".myk8s.local"]` | Vite 5.4+ Host 헤더 검증 강화 — K8s 배포 시 403 차단 | `sungmincs/worklog-frontend-mock` vite.config.ts | ✅ K8s 배포 + HTTP 200 |
 | ch3 가이드 | 모든 단계 직접 입력 | `[AI 프롬프트]` / `[학습자 직접]` 분리 | sed/vi 설명이 핵심 학습 흐름 방해 | `prompt-guardrails/ch3/` (Internal) | ❌ 강의 시나리오 미검증 |
-| NGF LB IP | 동적 (`.11` 자동할당) | `192.168.1.99` 고정 | 강의 가이드 전체 `.99` 사용 — 동적 할당 시 불일치 발생 | `ch2/2.4/controlplane_node.sh` (Public) | ❌ 신규 vagrant up 검증 예정 |
-| Jenkins 접근 | Ingress + NodePort | HTTPRoute (`jenkins.myk8s.local`) | Gateway API 전환으로 Ingress 불가 | `ch4/4.5/jenkins-httproute.yaml` (신규, Public) | ❌ 설치 검증 예정 |
-| Jenkins update-center | 2.452.1 스냅샷 (2024-05-15) | 2.541.x 스냅샷 (2026-05-13) | EOL 버전 플러그인 목록 갱신 | `ch4/4.5/update-center.json` (Public) | ❌ 설치 검증 예정 |
+| NGF LB IP | 동적 (`.11` 자동할당) | `192.168.1.99` 고정 | 강의 가이드 전체 `.99` 사용 — 동적 할당 시 불일치 발생 | `ch2/2.4/controlplane_node.sh` (Public) | ⏳ 자동 할당 재검증 중 |
+| Jenkins 접근 | Ingress + NodePort | HTTPRoute (`jenkins.myk8s.local`) | Gateway API 전환으로 Ingress 불가 | `ch4/4.5/jenkins-httproute.yaml` (신규, Public) | ✅ HTTP 200 확인 |
+| Jenkins update-center | 2.452.1 스냅샷 (2024-05-15) | 2.541.x 스냅샷 (2026-05-13) | EOL 버전 플러그인 목록 갱신 | `ch4/4.5/update-center.json` (Public) | ✅ Jenkins 2.541.3 설치 확인 |
+| Argo CD 접근 | Ingress (`ingressClassName: nginx`) | HTTPRoute + ReferenceGrant | Gateway API 전환으로 Ingress 불가 | `ch6/6.2/argocd-httproute.yaml` (신규, Public) | ✅ HTTP 200 확인 |
 
 ---
 
@@ -38,6 +39,7 @@
 - [ch2 변경 이력](ch2/CHANGELOG.md)
 - [ch3 변경 이력](ch3/CHANGELOG.md)
 - [ch4 변경 이력](ch4/CHANGELOG.md)
+- [ch6 변경 이력](ch6/CHANGELOG.md)
 - [ch3 변경 이력](ch3/CHANGELOG.md)
 
 ---
