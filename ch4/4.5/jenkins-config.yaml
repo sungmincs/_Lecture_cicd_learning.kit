@@ -67,7 +67,6 @@ jenkins:
   - name: "jenkins-jenkins-agent"
   markupFormatter: "plainText"
   mode: NORMAL
-  myViewsTabBar: "standard"
   numExecutors: 2
   primaryView:
     all:
@@ -99,7 +98,6 @@ jenkins:
   views:
   - all:
       name: "all"
-  viewsTabBar: "standard"
 globalCredentialsConfiguration:
   configuration:
     providerFilter: "none"
