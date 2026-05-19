@@ -47,6 +47,9 @@
 
 | 날짜 | 변경 |
 |------|------|
+| 2026-05-19 | ch4.5 Jenkins 검증 완전 완료 (persistence=true + JCasC numExecutors:2 + NFS 이슈 해결) |
+| 2026-05-18 | ch4.5 Jenkins 빌드 SUCCESS (persistence=false 환경), deprecated 설정 3개 제거 |
+| 2026-05-15 | Jenkins 2.541.3 + Argo CD v3.4.2 K8s 검증, NGF .99 자동 할당 vagrant up 검증, CHANGELOG 구조 정비 |
 | 2026-05-14 | Node 24, Python 3.14 + uv, React 19, vite allowedHosts K8s E2E 검증 완료 |
 | 2026-05-13 | MongoDB 8.0, Gateway API, placeholder, IPv6 fix 적용 |
 | 2026-05-12 | ch3.4 e2e 검증 (Phase 7), SSoT 분리 규칙 수립 |
