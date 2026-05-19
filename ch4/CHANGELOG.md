@@ -146,3 +146,24 @@ mkdir -p /nfs_shared/dynamic-vol/default/jenkins
 - `4.hello-pipeline_build-pass-variables-function.groovy` (함수 재사용 패턴) ✅ SUCCESS
 
 검증 저장소: `sysnet4admin/worklog-frontend-mock` (fork), Jenkins 2.541.3, `agent any` 방식
+
+---
+
+### ch4.7~4.8 GitLab CI 검증 완료 [2026-05-19]
+
+> ⚠️ **강의자 필수 확인 사항**
+>
+> GitLab.com 새 계정에서 shared runner 사용 시 **전화번호 인증 필수** (스팸 방지 정책). 학습자에게 사전 안내 필요.
+
+**4.7 GitLab CI Hello World:**
+- `1.hello-gitlab.yml` (hello + nice to meet you stage) ✅
+- `2.hello-gitlab-variables.yml` ($CI_*, 사용자 변수) ✅
+
+**4.8 GitLab CI 빌드 파이프라인:**
+- `1.hello-pipeline.yml` (3단계 stages) ✅
+- `2.hello-pipeline-stage-and-needs.yml` (`needs`로 병렬/순차 제어) ✅
+- `3.hello-pipeline_build-failure.yml` (빌드 실패 → notify_failure) ✅ 의도된 실패 확인
+- `4.hello-pipeline_build-pass-variables.yml` (dotenv artifact로 변수 전달) ✅
+- `5.hello-pipeline_build-pass-variables-anchor.yml` (YAML anchor 재사용) ✅
+
+검증 저장소: `SysNet4Admin/worklog-backend` (GitLab fork)
