@@ -77,6 +77,15 @@ export default defineConfig(() => {
 
 ---
 
+### ch3/3.2~3.4 GUARDRAIL.md 제거 → prompt-guardrails/ch3/로 대체
+
+- **Before**: 각 서브섹션에 개별 `GUARDRAIL.md` 파일 존재 (`ch3/3.2/GUARDRAIL.md` 등)
+- **After**: `prompt-guardrails/ch3/3.2-worklog-download.md` 등 통합 가이드로 대체 (Internal only)
+- **이유**: 기존 GUARDRAIL.md는 B방향(파일 제공) 기반 구버전 가이드. A방향 전환과 함께 prompt-guardrails 구조로 재편. 가이드는 Internal에만 존재하고 학습자에게 노출 안 됨.
+- **반영 위치**: Public에서 3개 파일 삭제, Internal의 `prompt-guardrails/ch3/` 신규 작성
+
+---
+
 ### ch3 가이드 — AI 프롬프트 vs 학습자 직접 입력 분리
 
 - **이유**: `sed`, `vi`, `kubectl edit` 같은 편집 도구 설명이 핵심 학습(docker build, kubectl apply) 흐름을 방해.

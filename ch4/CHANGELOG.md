@@ -36,6 +36,30 @@
 - **접근 URL**: `http://jenkins.myk8s.local` (hosts: `192.168.1.99 jenkins.myk8s.local`)
 - **반영 위치**: `ch4/4.5/install_jenkins.sh`, `ch4/4.5/jenkins-httproute.yaml` (신규)
 
+### Jenkins `2.555.2` 시도 → 롤백 (`2.541.3` 유지)
+
+- **시도**: update-center.json이 core version `2.555.2` 기준 스냅샷이라 버전 일치를 위해 `2.555.2-lts-jdk17`으로 변경 시도
+- **결과**: Docker Hub에 `jenkins/jenkins:2.555.2-lts-jdk17` 이미지가 존재하지 않아 `ImagePullBackOff` → 실패
+- **결론**: `2.541.3-lts-jdk17` 유지. update-center.json의 core version(`2.555.2`)과 실제 Jenkins 이미지 버전이 다를 수 있음 — UC 스냅샷 기준 버전은 플러그인 호환성 참고용이며 Jenkins 이미지 태그와 반드시 일치하지 않음
+
+---
+
+### `installLatestPlugins` 변경 이력 및 최종 결론
+
+검증 과정에서 여러 번 변경됨:
+
+| 변경 | 값 | 이유 | 결과 |
+|---|---|---|---|
+| 최초 설정 | `false` | 버전 고정 의도 | 플러그인 의존성 충족 안 됨 |
+| 1차 변경 | `true` | 플러그인 설치 안 되는 버그 수정 시도 | 녹화 시점에 따라 버전 달라질 수 있음 |
+| 최종 결론 | `false` + `installPlugins` 명시 | 버전 고정 + 의존성 충족 | ✅ |
+
+**최종 설정**: `installLatestPlugins=false` + `installPlugins`에 버전 명시 (update-center.json 스냅샷 기준)
+
+> `installLatestPlugins=false`만 쓰면 플러그인이 설치 안 되는 게 아님. `installPlugins` 목록이 있어야 그 버전대로 설치됨. Helm chart 기본 `installPlugins`의 `configuration-as-code:1775`가 너무 낮아 다른 플러그인 의존성 충족 못 함 → `2077`로 override 필수.
+
+---
+
 ### jenkins-config.yaml — deprecated 설정 제거 + numExecutors 수정
 
 > ⚠️ **강의자 필수 확인 사항**
