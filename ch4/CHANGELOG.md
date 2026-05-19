@@ -118,3 +118,19 @@ mkdir -p /nfs_shared/dynamic-vol/default/jenkins
 - **After**: Argo CD `v3.4.2`, chart `9.5.14`
 - **이유**: 2.x 시리즈 전체 EOL. 3.x가 현재 지원 라인.
 - **반영 위치**: `k8s-edu/Lkv1_main/helm-charts/v1.35/cicd/argo-cd/`
+
+---
+
+### ch4.3~4.4 GitHub Actions 검증 완료 [2026-05-19]
+
+**4.3 GitHub Actions Hello World:**
+- `1.hello-actions_basic.yaml` ✅
+- `2.hello-actions_variables.yaml` (Context, env 변수) ✅
+
+**4.4 GitHub Actions 빌드 파이프라인:**
+- `1.hello-pipeline.yaml` (test→build→deploy, `needs`) ✅
+- `2.hello-pipeline_build-failure.yaml` (build 실패 → notify 실행) ✅ (의도된 실패 포함)
+- `3.hello-pipeline_build-pass-variables.yaml` (Job 간 outputs 전달) ✅
+- `4.hello-pipeline_build-pass-variables-failure.yaml` (Variables + 실패 분기) ✅
+
+검증 저장소: `sysnet4admin/worklog-frontend-mock` (fork)
