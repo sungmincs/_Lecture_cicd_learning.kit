@@ -134,3 +134,15 @@ mkdir -p /nfs_shared/dynamic-vol/default/jenkins
 - `4.hello-pipeline_build-pass-variables-failure.yaml` (Variables + 실패 분기) ✅
 
 검증 저장소: `sysnet4admin/worklog-frontend-mock` (fork)
+
+---
+
+### ch4.6 Jenkins 빌드 파이프라인 검증 완료 [2026-05-19]
+
+**4.6 Jenkins 빌드 파이프라인:**
+- `1.hello-pipeline.groovy` (test→build→deploy stage) ✅ SUCCESS
+- `2.hello-pipeline_build-failure.groovy` (build 실패 → post.failure 실행) ✅ FAILURE 확인 + post.failure 정상 작동
+- `3.hello-pipeline_build-pass-variables.groovy` (stage 간 변수 전달) ✅ SUCCESS
+- `4.hello-pipeline_build-pass-variables-function.groovy` (함수 재사용 패턴) ✅ SUCCESS
+
+검증 저장소: `sysnet4admin/worklog-frontend-mock` (fork), Jenkins 2.541.3, `agent any` 방식
