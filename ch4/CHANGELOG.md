@@ -36,6 +36,58 @@
 - **접근 URL**: `http://jenkins.myk8s.local` (hosts: `192.168.1.99 jenkins.myk8s.local`)
 - **반영 위치**: `ch4/4.5/install_jenkins.sh`, `ch4/4.5/jenkins-httproute.yaml` (신규)
 
+### jenkins-config.yaml — deprecated 설정 제거 + numExecutors 수정
+
+> ⚠️ **강의자 필수 확인 사항**
+>
+> `jenkins-config.yaml`의 설정 변경 내용. Jenkins 2.541.3 업그레이드 과정에서 발견된 이슈.
+
+**제거된 설정 3개** (Jenkins 2.541.3에서 deprecated/제거됨):
+
+| 설정 | 역할 | 제거 이유 |
+|---|---|---|
+| `agentProtocols` (`JNLP4-connect`, `Ping`) | agent 통신 허용 프로토콜 명시 | 최신 Jenkins에서 이 방식 제거. 설정 시 JCasC가 `ConfiguratorException`을 던져 **Jenkins 자체가 기동 안 됨** |
+| `myViewsTabBar` | Jenkins UI "My Views" 탭 스타일 | Deprecated. 동일하게 JCasC 초기화 실패 원인 |
+| `viewsTabBar` | Jenkins UI 뷰 탭 스타일 | Deprecated. 동일 |
+
+> 이 세 설정이 제거되지 않으면 `Failed ConfigurationAsCode.init` 오류로 Jenkins가 시작하지 못함.
+> `numExecutors: 0`이 유지되던 실제 원인도 JCasC 초기화 실패 때문이었음.
+
+**수정된 설정:**
+- `numExecutors: 0` → `numExecutors: 2` (built-in executor 없으면 빌드 대기 상태 지속)
+
+---
+
+### install_jenkins.sh — 플러그인 설치 수정 + NFS 사전 생성
+
+**플러그인 관련:**
+- `installLatestPlugins=false` + `installPlugins` 명시로 버전 고정
+- `configuration-as-code` 버전을 Helm chart 기본값 `1775` → `2077`로 override 필수
+  - 기본값(`1775`)이 너무 낮아 다른 플러그인(kubernetes, workflow-aggregator 등)의 의존성 충족 못 함 → init 컨테이너 CrashLoop
+- 현재 고정 버전: `kubernetes:4214`, `workflow-aggregator:596`, `git:5.2.2`, `configuration-as-code:2077`
+
+**NFS 사전 생성 추가:**
+```bash
+mkdir -p /nfs_shared/dynamic-vol/default/jenkins
+```
+- `csi-driver-nfs`가 PVC 생성 시 NFS 디렉토리를 자동 생성해야 하는데, 일시적 상태 문제로 생성 실패하는 경우 발생
+- 재설치 시에도 동일 문제 발생 가능 → 사전 생성으로 방지
+
+---
+
+### Jenkinsfile — `kubernetes agent` → `agent any`
+
+> ⚠️ **강의자 필수 확인 사항**
+>
+> `sysnet4admin/worklog-frontend-mock` 저장소의 `Jenkinsfile` 변경 필요.
+
+- **Before**: `agent { kubernetes { label 'jenkins-jenkins-agent' } }` — Kubernetes Pod agent 사용
+- **After**: `agent any` — Built-in executor 사용
+- **이유**: Hello World 단계(ch4.5)에서는 Kubernetes cloud 설정이 없어 agent pod 생성 불가. `agent any`로 built-in executor 사용이 적절.
+- **참고**: ch4.6 이후 실제 Docker build가 필요한 파이프라인에서는 Kubernetes agent 또는 다른 방식 재검토 필요.
+
+---
+
 ### Argo CD `v2.11.0` → `v3.4.2`
 
 - **Before**: Argo CD `v2.11.0` (2.x 전체 EOL), chart `6.9.0`
