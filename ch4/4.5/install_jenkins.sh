@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+
+# Jenkins PVC가 마운트할 NFS 디렉토리를 미리 생성
+# csi-driver-nfs가 자동 생성에 실패하는 경우를 방지 (재설치 시에도 안전)
+mkdir -p /nfs_shared/dynamic-vol/default/jenkins
 jkopt1="--sessionTimeout=1440"
 jkopt2="--sessionEviction=86400"
 jvopt1="-Duser.timezone=Asia/Seoul"
