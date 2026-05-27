@@ -25,7 +25,7 @@
 - ch5 완료 (CI/CD 파이프라인 기본 구성)
 - ch6 완료 (Argo CD 설치 및 구성)
 - Docker Hub에 worklog-backend, worklog-frontend 이미지가 push된 상태
-- Kubernetes 클러스터에 Ingress Controller(nginx) 설치 완료
+- Kubernetes 클러스터에 NGINX Gateway Fabric 설치 완료 (ch2)
 
 ## 순서 (Sequence)
 ### Step 1: MongoDB 배포 [학습자 직접]
@@ -61,7 +61,7 @@
 | Backend | `kubectl get pods -l app=worklog-backend` | worklog-backend Pod Running |
 | DB 연결 | `kubectl logs -l app=worklog-backend` | "Connected to MongoDB" 로그 |
 | Frontend | `kubectl get pods -l app=worklog-frontend` | worklog-frontend Pod Running |
-| Ingress | `kubectl get ingress` | backend, frontend Ingress 존재 |
+| HTTPRoute | `kubectl get httproute` | backend, frontend HTTPRoute 존재 |
 | 통합 테스트 | 브라우저에서 worklog-frontend.myk8s.local 접속 | 화면 정상 표시, 데이터 CRUD 동작 |
 
 ## 플레이스홀더 (Placeholders)
@@ -73,4 +73,4 @@
 - ⛔ `<dockerhub_username>`을 임의로 채우지 말 것 — 수강생의 실제 Docker Hub 계정 사용
 - ⛔ MongoDB Secret의 비밀번호는 학습용 — 실무에서는 강력한 비밀번호 사용 필요
 - ✅ Backend는 MONGODB_URI Secret을 통해 MongoDB에 연결
-- ✅ Frontend는 Ingress를 통해 외부 접속 가능
+- ✅ Frontend는 HTTPRoute(NGINX Gateway Fabric)를 통해 외부 접속 가능
