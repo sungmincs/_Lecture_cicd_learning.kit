@@ -1,4 +1,4 @@
-# GUARDRAIL: 8.5 [GitLab] Worklog App 배포해보기
+# GUARDRAIL: 7.10 [GitLab] Worklog App 배포해보기
 
 ## 범위 (Scope)
 ### 이 단계에서 다루는 것
@@ -14,7 +14,7 @@
 
 ## 사전 조건 (Prerequisites)
 - ch5/5.4.x 완료 (GitLab CI/CD 파이프라인 이해)
-- ch8/8.2 완료 (MongoDB, Backend, Frontend가 K8s에 배포된 상태)
+- ch7/7.7 완료 (MongoDB, Backend, Frontend가 K8s에 배포된 상태)
 - Docker Hub 계정 및 Access Token 준비
 - GitLab에 worklog-frontend, worklog-backend 저장소 존재
 
@@ -27,12 +27,12 @@
 - 기대 결과: 각 저장소에 Variables 등록 완료
 
 ### Step 2: Frontend 파이프라인 적용
-- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch8/8.4/1.frontend-build-deploy.yml .gitlab-ci.yml`
+- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch7/7.10/1.frontend-build-deploy.yml .gitlab-ci.yml`
 - 명령어: `git add . && git commit -m "cicd: add frontend GitLab pipeline" && git push origin main`
 - 기대 결과: GitLab 파이프라인 자동 트리거, Frontend 이미지 빌드 및 배포
 
 ### Step 3: Backend 파이프라인 적용
-- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch8/8.4/2.backend-build-deploy.yml .gitlab-ci.yml`
+- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch7/7.10/2.backend-build-deploy.yml .gitlab-ci.yml`
 - 명령어: `git add . && git commit -m "cicd: add backend GitLab pipeline" && git push origin main`
 - 기대 결과: GitLab 파이프라인 자동 트리거, Backend 이미지 빌드/테스트 및 배포
 

@@ -1,4 +1,4 @@
-# GUARDRAIL: 9.2 배포 환경의 중요성 (namespace 분리)
+# GUARDRAIL: 8.2 배포 환경의 중요성 (namespace 분리)
 
 ## 범위 (Scope)
 ### 이 단계에서 다루는 것
@@ -7,8 +7,8 @@
 - 멀티 환경 운영의 필요성과 실무 패턴 이해
 
 ### 이 단계에서 다루지 않는 것
-- 실제 CI/CD 파이프라인 구현 (9.4~9.9에서 다룸)
-- PR/Branch/Tag 기반 배포 전략 이론 (9.3에서 다룸)
+- 실제 CI/CD 파이프라인 구현 (8.4~8.9에서 다룸)
+- PR/Branch/Tag 기반 배포 전략 이론 (8.3에서 다룸)
 - NetworkPolicy, ResourceQuota 등 namespace 수준 보안/자원 제한
 - Helm values 파일을 이용한 환경별 설정 분리
 
@@ -57,4 +57,4 @@
 - ⛔ 이미 존재하는 namespace에 대해 `kubectl create namespace`를 실행하면 에러가 발생한다. 이 경우 무시하거나 `kubectl create namespace dev --dry-run=client -o yaml | kubectl apply -f -` 를 사용한다.
 - ⛔ prod namespace에 실수로 테스트 워크로드를 배포하지 않도록 주의한다.
 - ✅ namespace 분리는 논리적 격리이며, 완전한 보안 격리가 필요하면 별도 클러스터를 사용한다.
-- ✅ 이 단계에서 생성한 namespace는 이후 9.4~9.9에서 계속 사용된다.
+- ✅ 이 단계에서 생성한 namespace는 이후 8.4~8.9에서 계속 사용된다.

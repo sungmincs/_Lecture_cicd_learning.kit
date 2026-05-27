@@ -1,4 +1,4 @@
-# GUARDRAIL: 9.4 [GitHub] PR/Branch/Tag 기반 배포 파이프라인 만들기
+# GUARDRAIL: 8.4 [GitHub] PR/Branch/Tag 기반 배포 파이프라인 만들기
 
 ## 범위 (Scope)
 ### 이 단계에서 다루는 것
@@ -9,20 +9,20 @@
 - 환경별 이미지 태깅 전략 (pr-N, dev-SHA, staging-SHA, vX.Y.Z)
 
 ### 이 단계에서 다루지 않는 것
-- Argo CD 연동 (9.5에서 다룸)
-- Jenkins / GitLab 기반 파이프라인 (9.6~9.7, 9.8~9.9에서 다룸)
+- Argo CD 연동 (8.5에서 다룸)
+- Jenkins / GitLab 기반 파이프라인 (8.6~8.7, 8.8~8.9에서 다룸)
 - Helm 차트를 이용한 환경별 values 파일 분리
 - 환경별 approval gate (수동 승인 프로세스)
 
 ## 사전 조건 (Prerequisites)
 - ch5/5.2 또는 5.3 완료 (GitHub Actions 빌드/배포 파이프라인 기본 이해)
-- ch9/9.2 완료 (dev, staging, prod namespace 생성)
-- ch9/9.3 완료 (develop, release/1.0 브랜치 생성)
+- ch8/8.2 완료 (dev, staging, prod namespace 생성)
+- ch8/8.3 완료 (develop, release/1.0 브랜치 생성)
 - GitHub Secrets 등록: DOCKERHUB_TOKEN, CP_K8S_CONTEXT
 
 ## 순서 (Sequence)
 ### Step 1: 멀티 환경 파이프라인 파일 복사
-- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch9/9.4/1.multi-env-pipeline.yaml .github/workflows/multi-env-pipeline.yaml`
+- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch8/8.4/1.multi-env-pipeline.yaml .github/workflows/multi-env-pipeline.yaml`
 - 기대 결과: `.github/workflows/` 디렉토리에 멀티 환경 파이프라인 파일 생성
 
 ### Step 2: YAML 파일에서 플레이스홀더 수정

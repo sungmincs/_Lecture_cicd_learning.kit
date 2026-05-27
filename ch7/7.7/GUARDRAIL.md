@@ -1,4 +1,4 @@
-# GUARDRAIL: 8.2 Worklog App의 백엔드와 DB
+# GUARDRAIL: 7.7 Worklog App의 백엔드와 DB
 
 ## 범위 (Scope)
 ### 이 단계에서 다루는 것
@@ -9,7 +9,7 @@
 - 전체 스택 통합 검증
 
 ### 이 단계에서 다루지 않는 것
-- CI/CD 파이프라인을 통한 자동 배포 (8.3~8.5에서 다룸)
+- CI/CD 파이프라인을 통한 자동 배포 (7.8~7.10에서 다룸)
 - PersistentVolume을 활용한 MongoDB 데이터 영속성
 - MongoDB ReplicaSet 구성
 

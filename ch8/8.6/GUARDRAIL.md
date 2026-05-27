@@ -1,4 +1,4 @@
-# GUARDRAIL: 9.6 [Jenkins] PR/Branch/Tag 기반 배포 파이프라인 만들기
+# GUARDRAIL: 8.6 [Jenkins] PR/Branch/Tag 기반 배포 파이프라인 만들기
 
 ## 범위 (Scope)
 ### 이 단계에서 다루는 것
@@ -8,20 +8,20 @@
 - Jenkins credentials를 활용한 Docker Hub, kubeconfig 관리
 
 ### 이 단계에서 다루지 않는 것
-- Argo CD 연동 (9.7에서 다룸)
-- GitHub Actions / GitLab 기반 파이프라인 (9.4~9.5, 9.8~9.9에서 다룸)
+- Argo CD 연동 (8.7에서 다룸)
+- GitHub Actions / GitLab 기반 파이프라인 (8.4~8.5, 8.8~8.9에서 다룸)
 - Jenkins Shared Library를 이용한 파이프라인 재사용
 - Webhook 기반 자동 트리거 설정 (ch4에서 다룸)
 
 ## 사전 조건 (Prerequisites)
 - ch5/5.4 또는 5.5 완료 (Jenkins 빌드/배포 파이프라인 기본 이해)
-- ch9/9.2 완료 (dev, staging, prod namespace 생성)
-- ch9/9.3 완료 (develop, release/1.0 브랜치 생성)
+- ch8/8.2 완료 (dev, staging, prod namespace 생성)
+- ch8/8.3 완료 (develop, release/1.0 브랜치 생성)
 - Jenkins credentials 등록: dockerhub-credentials (Username/Password), kube-config (Secret file)
 
 ## 순서 (Sequence)
 ### Step 1: Jenkins 멀티 환경 파이프라인 파일 복사
-- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch9/9.6/1.multi-env-pipeline.groovy Jenkinsfile`
+- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch8/8.6/1.multi-env-pipeline.groovy Jenkinsfile`
 - 기대 결과: 프로젝트 루트에 Jenkinsfile 생성/덮어쓰기
 
 ### Step 2: Groovy 파일에서 플레이스홀더 수정

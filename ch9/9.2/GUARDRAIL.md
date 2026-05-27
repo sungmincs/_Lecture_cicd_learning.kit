@@ -1,4 +1,4 @@
-# GUARDRAIL: A.001 AI 시대에 변화하는 CI/CD
+# GUARDRAIL: 9.2 AI 시대에 변화하는 CI/CD
 
 ## 범위 (Scope)
 ### 이 단계에서 다루는 것

@@ -1,4 +1,4 @@
-# GUARDRAIL: 9.8 [GitLab] PR/Branch/Tag 기반 배포 파이프라인 만들기
+# GUARDRAIL: 8.8 [GitLab] PR/Branch/Tag 기반 배포 파이프라인 만들기
 
 ## 범위 (Scope)
 ### 이 단계에서 다루는 것
@@ -9,20 +9,20 @@
 - GitLab CI/CD variables를 활용한 Docker Hub, kubeconfig 관리
 
 ### 이 단계에서 다루지 않는 것
-- Argo CD 연동 (9.9에서 다룸)
-- GitHub Actions / Jenkins 기반 파이프라인 (9.4~9.5, 9.6~9.7에서 다룸)
+- Argo CD 연동 (8.9에서 다룸)
+- GitHub Actions / Jenkins 기반 파이프라인 (8.4~8.5, 8.6~8.7에서 다룸)
 - GitLab environments를 이용한 배포 추적
 - 환경별 approval gate (수동 승인 프로세스)
 
 ## 사전 조건 (Prerequisites)
 - ch5/5.6 또는 5.7 완료 (GitLab CI/CD 빌드/배포 파이프라인 기본 이해)
-- ch9/9.2 완료 (dev, staging, prod namespace 생성)
-- ch9/9.3 완료 (develop, release/1.0 브랜치 생성)
+- ch8/8.2 완료 (dev, staging, prod namespace 생성)
+- ch8/8.3 완료 (develop, release/1.0 브랜치 생성)
 - GitLab CI/CD Variables 등록: DOCKERHUB_USERNAME, DOCKERHUB_TOKEN, KUBE_CONFIG
 
 ## 순서 (Sequence)
 ### Step 1: 멀티 환경 파이프라인 파일 복사
-- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch9/9.8/1.multi-env-pipeline.yml .gitlab-ci.yml`
+- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch8/8.8/1.multi-env-pipeline.yml .gitlab-ci.yml`
 - 기대 결과: 프로젝트 루트에 .gitlab-ci.yml 생성/덮어쓰기
 
 ### Step 2: 코드 커밋 및 푸시

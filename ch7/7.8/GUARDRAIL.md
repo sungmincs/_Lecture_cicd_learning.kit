@@ -1,4 +1,4 @@
-# GUARDRAIL: 8.3 [GitHub] Worklog App 배포해보기
+# GUARDRAIL: 7.8 [GitHub] Worklog App 배포해보기
 
 ## 범위 (Scope)
 ### 이 단계에서 다루는 것
@@ -14,7 +14,7 @@
 
 ## 사전 조건 (Prerequisites)
 - ch5/5.2.x 완료 (GitHub Actions 파이프라인 이해)
-- ch8/8.2 완료 (MongoDB, Backend, Frontend가 K8s에 배포된 상태)
+- ch7/7.7 완료 (MongoDB, Backend, Frontend가 K8s에 배포된 상태)
 - Docker Hub 계정 및 Access Token 준비
 - GitHub에 worklog-frontend_v1, worklog-backend_v1 저장소 존재
 
@@ -27,12 +27,12 @@
 - 기대 결과: 각 저장소에 Secrets 등록 완료
 
 ### Step 2: Frontend 파이프라인 적용
-- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch8/8.2/1.frontend-build-deploy.yaml .github/workflows/build-deploy.yaml`
+- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch7/7.8/1.frontend-build-deploy.yaml .github/workflows/build-deploy.yaml`
 - 명령어: `git add . && git commit -m "cicd: add frontend build and deploy pipeline" && git push origin main`
 - 기대 결과: GitHub Actions 자동 트리거, Frontend 이미지 빌드 및 배포
 
 ### Step 3: Backend 파이프라인 적용
-- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch8/8.2/2.backend-build-deploy.yaml .github/workflows/build-deploy.yaml`
+- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch7/7.8/2.backend-build-deploy.yaml .github/workflows/build-deploy.yaml`
 - 명령어: `git add . && git commit -m "cicd: add backend build and deploy pipeline" && git push origin main`
 - 기대 결과: GitHub Actions 자동 트리거, Backend 이미지 빌드/테스트 및 배포
 

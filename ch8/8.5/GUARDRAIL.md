@@ -1,4 +1,4 @@
-# GUARDRAIL: 9.5 [GitHub] Full CI/CD workflow (Argo CD)
+# GUARDRAIL: 8.5 [GitHub] Full CI/CD workflow (Argo CD)
 
 ## 범위 (Scope)
 ### 이 단계에서 다루는 것
@@ -8,18 +8,18 @@
 - PR → develop → release → tag 전체 배포 흐름 실습
 
 ### 이 단계에서 다루지 않는 것
-- Jenkins / GitLab 기반 워크플로우 (9.6~9.7, 9.8~9.9에서 다룸)
+- Jenkins / GitLab 기반 워크플로우 (8.6~8.7, 8.8~8.9에서 다룸)
 - Argo CD ApplicationSet을 이용한 동적 환경 생성
 - Argo Rollouts를 이용한 카나리/블루그린 배포 (ch7에서 다룸)
 
 ## 사전 조건 (Prerequisites)
-- ch9/9.4 완료 (멀티 환경 파이프라인 기본 이해)
+- ch8/8.4 완료 (멀티 환경 파이프라인 기본 이해)
 - ch6 완료 (Argo CD 설치 및 설정)
 - GitHub Secrets 등록: DOCKERHUB_TOKEN, CP_K8S_CONTEXT, ARGOCD_ADMIN_PASSWORD
 
 ## 순서 (Sequence)
 ### Step 1: Full CI/CD 파이프라인 파일 복사
-- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch9/9.5/1.full-cicd-workflow.yaml .github/workflows/full-cicd-workflow.yaml`
+- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch8/8.5/1.full-cicd-workflow.yaml .github/workflows/full-cicd-workflow.yaml`
 - 기대 결과: `.github/workflows/` 디렉토리에 파이프라인 파일 생성
 
 ### Step 2: YAML 파일에서 플레이스홀더 수정
@@ -31,7 +31,7 @@
 - 기대 결과: GitHub Actions 트리거
 
 ### Step 4: Argo CD Application 생성
-- 명령어: `kubectl apply -f ~/_Lecture_cicd_learning.kit/ch9/9.5/2.argocd-apps-multi-env.yaml`
+- 명령어: `kubectl apply -f ~/_Lecture_cicd_learning.kit/ch8/8.5/2.argocd-apps-multi-env.yaml`
 - `<github_username>` 플레이스홀더를 사전에 수정
 - 기대 결과: argocd namespace에 3개 Application 생성
 
