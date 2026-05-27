@@ -2,6 +2,13 @@
 
 ## [2026-05]
 
+### ch4/4.3/.cmd 오타 수정 [2026-05-27]
+
+- `cd ~/workflows/workflog-frontend` (L28, L73) → `cd ~/workspace/worklog-frontend-mock`
+- 이유: `workflows/workflog-frontend` 경로 미존재. 실제 클론 경로 `~/workspace/worklog-frontend-mock`와 불일치
+
+---
+
 ### Jenkins `2.440.3` → `2.541.3`
 
 > ⚠️ **강의자 필수 확인 사항**

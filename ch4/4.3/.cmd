@@ -25,7 +25,7 @@ jobs:
 ```
 
 ## Check-in the git file and push to the registry
-cd ~/workflows/workflog-frontend
+cd ~/workspace/worklog-frontend-mock
 git add .
 git commit -m "my first actions pipeline"
 git push origin main
@@ -70,7 +70,7 @@ jobs:
       - run: echo "🍏 This job's status is ${{ job.status }}."
 ```
 ## Check-in the git file and push to the registry
-cd ~/workflows/workflog-frontend
+cd ~/workspace/worklog-frontend-mock
 git add .
 git commit -m "add more steps for the details"
 git push origin main

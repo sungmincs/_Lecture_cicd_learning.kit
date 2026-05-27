@@ -2,6 +2,14 @@
 
 ## [2026-05]
 
+### ch3/3.2 GUARDRAIL.md 신규 작성 [2026-05-27]
+
+- 챕터 구조 재편(3.2~3.8) 시 3.2 GUARDRAIL.md가 누락된 채로 남아있었음
+- 3.3~3.8과 동일한 형식으로 신규 작성 (범위/사전 조건/실행 지침/주의사항)
+- Internal `prompt-guardrails/ch3/3.2-worklog-download.md` 와 내용 정합성 유지
+
+---
+
 ### ch3 실행 검증 중 발견 버그 수정 [2026-05-27]
 
 **3.8/.cmd + GUARDRAIL.md — curl → python3 수정**
