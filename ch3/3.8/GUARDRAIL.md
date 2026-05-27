@@ -93,9 +93,11 @@ kubectl describe pod <pod-name>
 
 kubectl get endpoints worklog-backend
 # 정상이면 IP 표시, readiness 실패면 <none>
+# K8s 1.33+에서 deprecated 경고 출력됨 — 결과는 동일하게 동작
 
-kubectl exec -it <pod-name> -- curl -s localhost:80/health
+kubectl exec <pod-name> -- python3 -c "import urllib.request; print(urllib.request.urlopen('http://localhost/health').read().decode())"
 # Pod 내부에서 직접 health endpoint 테스트
+# (worklog-backend 이미지에 curl/wget 없음 → python3으로 대체)
 ```
 
 ### AI와 분석 `[AI 프롬프트]`

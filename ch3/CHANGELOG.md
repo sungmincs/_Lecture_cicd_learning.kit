@@ -2,6 +2,19 @@
 
 ## [2026-05]
 
+### ch3 실행 검증 중 발견 버그 수정 [2026-05-27]
+
+**3.8/.cmd + GUARDRAIL.md — curl → python3 수정**
+- Before: `kubectl exec -it <pod-name> -- curl -s localhost:80/health`
+- After: `kubectl exec <pod-name> -- python3 -c "import urllib.request; print(urllib.request.urlopen('http://localhost/health').read().decode())"`
+- 이유: worklog-backend 이미지(python:3.x-slim)에 curl/wget 없음. python3은 항상 존재
+
+**3.8/.cmd + GUARDRAIL.md — kubectl get endpoints 경고 설명 추가**
+- `kubectl get endpoints` K8s 1.33+에서 deprecated 경고 출력됨 — 기능은 정상 동작
+- GUARDRAIL.md에 주석으로 설명 추가
+
+---
+
 ### ch3 검토 중 발견 버그 수정 [2026-05-27]
 
 **3.2/.cmd — 저장소 이름 불일치 수정 (pre-existing)**
