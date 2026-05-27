@@ -2,6 +2,14 @@
 
 ## [2026-05]
 
+### 6.2/.cmd 신규 추가 [2026-05-27]
+
+- 누락된 `.cmd` 파일 추가 (ch4~ch9 전수 점검 중 발견)
+- GUARDRAIL.md의 Step 1~4 순서를 그대로 반영
+- install.sh의 HTTPRoute 전환 단계 포함
+
+---
+
 ### ch6.2 Argo CD — Ingress → HTTPRoute (Gateway API) 전환
 
 - **Before**: `argocd-manifest.yaml`의 `kind: Ingress`, `ingressClassName: nginx`
