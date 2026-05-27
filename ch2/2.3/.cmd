@@ -52,5 +52,36 @@ brew install --cask ./tabby-v1.0.207/tabby.rb
 ## Windows 
 cp ./tabby-v1.0.207/config.yaml $env:APPDATA/tabby/
 
-## MacOS 
+## MacOS
 cp ./tabby-v1.0.207/config.yaml ~/Library/Application\ Support/tabby/
+
+
+# K8s 클러스터 구성 (vagrant up)
+## Run from the directory containing the Vagrantfile (ch2/2.3/)
+cd ~/_Lecture_cicd_learning.kit/ch2/2.3
+vagrant up
+
+## Wait for provisioning to complete (~15-20 minutes)
+## The following are installed automatically:
+## - Kubernetes 1.35.2 (1 control-plane + 3 workers)
+## - MetalLB v0.15.3 (LoadBalancer)
+## - NGINX Gateway Fabric v2.3.0 (HTTP routing — LB IP: 192.168.1.99)
+## - Helm v4.0.4
+## - metrics-server v0.8.0
+## - NFS StorageClass (default)
+
+
+# Verify cluster (SSH into control-plane)
+sshpass -p "vagrant" ssh root@192.168.1.10
+
+## Check nodes
+kubectl get nodes
+
+## Check NGINX Gateway Fabric and MetalLB
+kubectl get pods -A | grep -E "nginx-gateway|metallb"
+
+## Check LoadBalancer IP (should show 192.168.1.99 for nginx-gateway-nginx)
+kubectl get svc -A | grep LoadBalancer
+
+## Check Gateway object
+kubectl get gateway -A

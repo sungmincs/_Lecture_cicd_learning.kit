@@ -2,6 +2,16 @@
 
 ## [2026-05]
 
+### 2.3/2.4 .cmd + GUARDRAIL.md — vagrant up 및 클러스터 검증 추가 [2026-05-28]
+
+- **Before**: .cmd가 VirtualBox/Vagrant/Tabby 설치만 다루고 `vagrant up` 미포함. GUARDRAIL "다루지 않는 것: Vagrant VM 생성/실행"으로 잘못 명시
+- **After**: `vagrant up` + 클러스터 검증 (노드, NGINX Gateway Fabric, MetalLB, LB IP) 단계 추가
+- **GUARDRAIL 범위 수정**: vagrant up + NGINX Gateway Fabric 포함으로 정정. "자동 설치 구성 요소" 섹션 신규 추가
+- **HTTPRoute 경고 추가**: ingress-nginx가 아닌 NGINX Gateway Fabric 사용임을 명시 (AI 오안내 방지)
+- **이유**: Gateway Fabric 전환이 scripts에만 반영되고 학습자 가이드(.cmd/GUARDRAIL)에는 미반영 상태였음
+
+---
+
 ### extra_k8s_pkgs.sh — K8s 라우팅 전환
 - **Before**: NGINX Ingress Controller
 - **After**: NGINX Gateway Fabric v2.3.0 (Gateway API)
