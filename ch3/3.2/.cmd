@@ -3,23 +3,19 @@ apt update && apt install docker-ce -y
 docker --version
 
 # Fork the following sample app repositories
-## https://github.com/sungmincs/worklog-frontend_v1
-## https://github.com/sungmincs/worklog-backend_v1
+## https://github.com/sungmincs/worklog-frontend-mock
+## https://github.com/sungmincs/worklog-backend
 ### When forking, uncheck `Copy the main branch only`
 
 ## Inside the control plane node
-## TODO: change it to cicd-lab from workspace
 mkdir ~/workspace
 cd ~/workspace
-git clone https://github.com/<github_username>/worklog-frontend_v1.git
-git clone https://github.com/<github_username>/worklog-backend_v1.git
-
-
-
+git clone https://github.com/<github_username>/worklog-frontend-mock.git
+git clone https://github.com/<github_username>/worklog-backend.git
 
 # Run Sample App
 ## Run fullstack (frontend, backend, and database) locally
-cd worklog-frontend_v1
+cd worklog-frontend-mock
 docker compose up
 
 # Access locally running sample App

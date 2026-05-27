@@ -2,6 +2,72 @@
 
 ## [2026-05]
 
+### ch3 검토 중 발견 버그 수정 [2026-05-27]
+
+**3.2/.cmd — 저장소 이름 불일치 수정 (pre-existing)**
+- Before: `worklog-frontend_v1.git`, `worklog-backend_v1.git` (구버전 repo명)
+- After: `worklog-frontend-mock.git`, `worklog-backend.git` (현행 repo명)
+- 이유: 3.3~3.7이 `~/workspace/worklog-frontend-mock/` 경로 참조 → 클론 디렉토리명 일치 필요
+
+**3.3/.cmd — 빌드 전 명령어 제거**
+- `docker history <image>:buildtest1`, `docker images | grep worklog` → 3.4로 이동
+- 이유: 3.3은 Dockerfile 분석 단계. 이미지는 3.4에서 빌드됨
+
+**3.5/.cmd + GUARDRAIL.md — 절대 경로로 수정**
+- Before: `cat ch3/3.6/worklog_manifests/...` (상대 경로 → CWD 의존)
+- After: `cat ~/_Lecture_cicd_learning.kit/ch3/3.6/worklog_manifests/...`
+- 핵심 질문 2에 worklog-mongodb.yaml cat 추가 (base64 값 출처 명시)
+
+**3.6/.cmd — LB 확인 명령 수정**
+- Before: `kubectl get svc -n ingress-nginx ingress-nginx-controller` (잘못된 참조)
+- After: `kubectl get gateway nginx-gateway -o wide` (NGINX Gateway Fabric 정확한 명령)
+
+**3.6/worklog_manifests/worklog-backend.yaml — Secret 중복 제거**
+- `worklog-mongodb-creds` Secret이 worklog-backend.yaml + worklog-mongodb.yaml 양쪽 정의 → worklog-mongodb.yaml에만 유지
+
+**3.8/.cmd + GUARDRAIL.md — 진단 명령 보완**
+- 시나리오 1: 재현 명령 주석 해제, `kubectl get pods` 추가
+- 시나리오 3: `kubectl get endpoints worklog-backend` 추가
+- GUARDRAIL 시나리오 1 복구: `kubectl rollout status` 추가
+- .cmd 끝에 cleanup 추가
+
+**Internal 3.8 — Exit Code 143 설명 수정**
+- Before: "SIGTERM (정상 종료)" → After: "K8s SIGTERM (liveness 실패·rolling update로 인한 강제 종료)"
+
+---
+
+### ch3 챕터 구조 재편 — 3.2~3.4에서 3.2~3.8로 확장 [2026-05-27]
+
+**변경 배경:**
+- 기존 ch3 (3.2~3.4, 3섹션)이 빈약하다는 판단 → 사전 강의 k8s kit 수강자 기준으로 보강
+- A방향(학습자가 AI와 함께 처음부터 작성) 기반으로 각 섹션 .cmd + GUARDRAIL.md 신규 작성
+
+**섹션별 변경:**
+
+| 기존 | 신규 | 내용 |
+|------|------|------|
+| 3.3 (Docker 빌드+K8s 배포) | 3.3 | Dockerfile 분석 (신규 분리) |
+| — | 3.4 | Docker 빌드 & push (신규 분리) |
+| — | 3.5 | CI/CD 관점 K8s 오브젝트 재이해 (신규) |
+| 3.4 (K8s 배포) | 3.6 | K8s 배포 (번호 이동, .cmd 정리) |
+| — | 3.7 | 이미지 업데이트 수동 재배포 체험 (신규) |
+| — | 3.8 | CI/CD 특화 트러블슈팅 (신규) |
+
+**3.5 설계 의도 (k8s kit과의 차별화):**
+- k8s kit: K8s 오브젝트 자체를 가르침 (Deployment, Service, Secret 기본 개념)
+- ch3.5: 같은 오브젝트를 "CI/CD 맥락"으로 재해석
+  - Deployment → 이미지 태그 교체 = 배포 단위
+  - Secret → 파이프라인 로그에 DB 비번이 찍히면 안 되는 이유
+  - imagePullSecrets → Docker Hub rate limit + private registry 인증
+
+**3.8 설계 의도 (CI/CD 특화 트러블슈팅):**
+- ImagePullBackOff: 파이프라인이 push 전에 deploy하거나 태그 오타
+- CrashLoopBackOff: 새 이미지 환경변수 누락, `--previous` 플래그로 첫 오류 확인
+- readinessProbe 실패: Pod Running인데 트래픽 차단 → `kubectl rollout status` 타임아웃 원인
+- 진단 흐름도: `kubectl get pods` 상태 → 다음 명령 판단
+
+---
+
 ### worklog-frontend-mock — `vite.config.ts` `allowedHosts` 추가
 
 > ⚠️ **강의자 필수 확인 사항**
