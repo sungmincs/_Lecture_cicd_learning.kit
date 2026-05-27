@@ -1,8 +1,3 @@
-def fullSHA
-def shortSHA
-def branch
-def commitMessage
-
 def sendSlackMessage(statusMessage, commitMessage, shortSHA, fullSHA) {
     echo "Your pipeline has been ${statusMessage}"
     echo "Commit Message: ${commitMessage}"
@@ -15,6 +10,7 @@ pipeline {
         DOCKER_REPOSITORY = '<dockerhub_username>/worklog-backend'
         DOCKERHUB_USERNAME = '<dockerhub_username>'
         DOCKERHUB_TOKEN = credentials('dockerhub-token')
+        GITHUB_CREDENTIALS = credentials('github-token')
         AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
         ARGOCD_ADMIN_PASSWORD = credentials('argocd-admin-password')
@@ -26,42 +22,39 @@ pipeline {
         stage('Init Variables') {
             steps {
                 script {
-                    fullSHA = sh(script: "git log -n 1 --pretty=format:'%H'", returnStdout: true)
-                    shortSHA = fullSHA[0..8]
-                    branch = env.BRANCH_NAME
-                    commitMessage = sh(script: "git log -1 --format='*%s* by _%an_'", returnStdout: true)
+                    env.FULL_SHA = sh(script: "git log -n 1 --pretty=format:'%H'", returnStdout: true).trim()
+                    env.SHORT_SHA = env.FULL_SHA.take(8)
+                    env.COMMIT_MESSAGE = sh(script: "git log -1 --format='*%s* by _%an_'", returnStdout: true).trim()
                 }
             }
         }
         stage('Run Test') {
-            agent {
-                docker {
-                    image 'python:3.12.3-slim-bookworm'
-                }
-            }
             steps {
-                script {
-                    echo "let's run a test for ${shortSHA} in ${branch}"
-                    echo "running test for ${fullSHA}"
-                    sh 'pip install poetry'
-                    echo 'Test Passed!'
-                }
+                sh '''
+                    curl -LsSf https://astral.sh/uv/install.sh | sh
+                    export PATH="$HOME/.local/bin:$PATH"
+                    uv sync --extra dev
+                    TESTING=true uv run coverage run --source ./src/worklog -m pytest --disable-warnings -v
+                    uv run coverage report
+                '''
             }
         }
         stage('Build Image') {
             steps {
-                echo "Let's build the image for ${shortSHA} in ${branch}"
-                echo "The change commit message to build is '${commitMessage}'"
+                echo "Let's build the image for ${env.SHORT_SHA} in ${env.BRANCH_NAME}"
+                echo "The change commit message to build is '${env.COMMIT_MESSAGE}'"
                 sh """
+                    docker run --privileged --rm tonistiigi/binfmt --install all 2>/dev/null || true
+                    docker buildx rm eks-builder 2>/dev/null || true
+                    docker buildx create --name eks-builder --driver docker-container --use
                     echo ${DOCKERHUB_TOKEN} | docker login --username ${DOCKERHUB_USERNAME} --password-stdin
-                    docker build . \
-                        -t ${DOCKER_REPOSITORY}:${fullSHA} \
-                        -t ${DOCKER_REPOSITORY}:${shortSHA}
-                    docker push ${DOCKER_REPOSITORY}:${shortSHA}
-                    docker push ${DOCKER_REPOSITORY}:${fullSHA}
+                    docker buildx build --platform linux/amd64,linux/arm64 \\
+                        -t ${DOCKER_REPOSITORY}:${env.FULL_SHA} \\
+                        -t ${DOCKER_REPOSITORY}:${env.SHORT_SHA} \\
+                        --push .
                 """
                 echo 'build successful and published image with the following tags:'
-                echo "Tags: ${shortSHA}, ${fullSHA}"
+                echo "Tags: ${env.SHORT_SHA}, ${env.FULL_SHA}"
             }
         }
         stage('Configure AWS') {
@@ -74,16 +67,18 @@ pipeline {
         }
         stage('Update Manifest') {
             steps {
-                echo "Updating deploy manifest with new image tag ${shortSHA}"
+                echo "Updating deploy manifest with new image tag ${env.SHORT_SHA}"
                 sh """
                     cd deploy_manifest
-                    sed -i "s|image: .*worklog-backend:.*|image: ${DOCKER_REPOSITORY}:${shortSHA}|" worklog-backend.yaml
-                    sed -i "s|value: .*# IMAGE_TAG|value: ${shortSHA} # IMAGE_TAG|" worklog-backend.yaml
+                    sed -i "s|image: .*worklog-backend:.*|image: ${DOCKER_REPOSITORY}:${env.SHORT_SHA}|" worklog-backend.yaml
+                    sed -i "s|value: .*# IMAGE_TAG|value: ${env.SHORT_SHA} # IMAGE_TAG|" worklog-backend.yaml
                     git config user.name "jenkins"
                     git config user.email "jenkins@myk8s.local"
+                    git remote set-url origin "https://\$GITHUB_CREDENTIALS_USR:\$GITHUB_CREDENTIALS_PSW@github.com/<github_username>/worklog-backend.git"
                     git add .
-                    git commit -m "deploy: update image tag to ${shortSHA}"
-                    git push origin main
+                    git diff --staged --quiet || git commit -m "deploy: update image tag to ${env.SHORT_SHA}"
+                    git pull --rebase origin ${env.BRANCH_NAME} || git rebase --abort
+                    git push origin HEAD:${env.BRANCH_NAME}
                 """
             }
         }
@@ -92,9 +87,9 @@ pipeline {
                 echo "Syncing Argo CD application ${ARGOCD_APP_NAME}"
                 sh """
                     ARGOCD_SERVER=\$(kubectl get svc argocd-server -n argocd -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
-                    argocd login \${ARGOCD_SERVER} \
-                        --username admin \
-                        --password ${ARGOCD_ADMIN_PASSWORD} \
+                    argocd login \${ARGOCD_SERVER} \\
+                        --username admin \\
+                        --password ${ARGOCD_ADMIN_PASSWORD} \\
                         --insecure
                     argocd app sync ${ARGOCD_APP_NAME}
                     argocd app wait ${ARGOCD_APP_NAME} --health --timeout 120
@@ -109,15 +104,15 @@ pipeline {
         }
         success {
             echo 'Build Success, Notifying to slack..'
-            sendSlackMessage('completed', commitMessage, shortSHA, fullSHA)
+            sendSlackMessage('completed', env.COMMIT_MESSAGE, env.SHORT_SHA, env.FULL_SHA)
         }
         failure {
             echo 'Build Failed, Notifying to slack..'
-            sendSlackMessage('failed', commitMessage, shortSHA, fullSHA)
+            sendSlackMessage('failed', env.COMMIT_MESSAGE, env.SHORT_SHA, env.FULL_SHA)
         }
         aborted {
             echo 'Build Aborted, Notifying to slack..'
-            sendSlackMessage('aborted', commitMessage, shortSHA, fullSHA)
+            sendSlackMessage('aborted', env.COMMIT_MESSAGE, env.SHORT_SHA, env.FULL_SHA)
         }
     }
 }

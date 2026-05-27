@@ -1,69 +1,69 @@
-# GUARDRAIL: 9.6 [Jenkins] PR/Branch/Tag 기반 배포 파이프라인 만들기
+# GUARDRAIL: 9.6 CD 강화 — 이미지 취약점 스캔 (Trivy)
 
 ## 범위 (Scope)
 ### 이 단계에서 다루는 것
-- Jenkins Multibranch Pipeline을 사용한 멀티 환경 배포 파이프라인 구현
-- Branch 이름 기반 환경 판별 (develop → dev, release/* → staging)
-- Tag 기반 프로덕션 배포 (v*.*.* → prod)
-- Jenkins credentials를 활용한 Docker Hub, kubeconfig 관리
+- Trivy로 빌드된 Docker 이미지의 OS/패키지 취약점 탐지
+- CRITICAL, HIGH 심각도의 취약점 발견 시 파이프라인 실패
+- 빌드 후 push 전(또는 직후) 스캔 단계를 CD 파이프라인에 삽입
+- GitHub Actions / Jenkins / GitLab CI 각각에 trivy 스캔 단계 추가
 
 ### 이 단계에서 다루지 않는 것
-- Argo CD 연동 (9.7에서 다룸)
-- GitHub Actions / GitLab 기반 파이프라인 (9.4~9.5, 9.8~9.9에서 다룸)
-- Jenkins Shared Library를 이용한 파이프라인 재사용
-- Webhook 기반 자동 트리거 설정 (ch4에서 다룸)
+- pip-audit 의존성 취약점 스캔 (9.4에서 다룸)
+- prod 수동 승인 게이트 (9.7에서 다룸)
+- Trivy를 사용한 파일시스템/코드 스캔
+- 취약점 수정 방법 — 탐지와 인식이 목표
 
 ## 사전 조건 (Prerequisites)
-- ch5/5.4 또는 5.5 완료 (Jenkins 빌드/배포 파이프라인 기본 이해)
-- ch9/9.2 완료 (dev, staging, prod namespace 생성)
-- ch9/9.3 완료 (develop, release/1.0 브랜치 생성)
-- Jenkins credentials 등록: dockerhub-credentials (Username/Password), kube-config (Secret file)
+- ch8 완료 (멀티환경 파이프라인 구성 — GitHub/Jenkins/GitLab 중 하나 이상)
+- dev/staging/prod namespace 존재
+- 학습자 fork 저장소에 기존 파이프라인 파일 존재
+- 9.3, 9.4, 9.5 완료 (lint, security scan, coverage 단계 추가)
+- Docker Hub에 학습자 이미지가 push된 이력 존재
 
 ## 순서 (Sequence)
-### Step 1: Jenkins 멀티 환경 파이프라인 파일 복사
-- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch9/9.6/1.multi-env-pipeline.groovy Jenkinsfile`
-- 기대 결과: 프로젝트 루트에 Jenkinsfile 생성/덮어쓰기
 
-### Step 2: Groovy 파일에서 플레이스홀더 수정
-- `<dockerhub_username>`을 본인 Docker Hub 사용자 이름으로 변경
-- 기대 결과: DOCKER_REPOSITORY 값이 올바르게 설정됨
+### Step 1: 파이프라인 파일 복사 [학습자 직접]
+사용하는 CI 도구에 맞게 복사:
+- GitHub Actions: `cp ~/_Lecture_cicd_learning.kit/ch9/9.6/1.trivy-github.yaml .github/workflows/trivy.yaml`
+- Jenkins: `cp ~/_Lecture_cicd_learning.kit/ch9/9.6/2.trivy-jenkins.groovy Jenkinsfile`
+- GitLab CI: `cp ~/_Lecture_cicd_learning.kit/ch9/9.6/3.trivy-gitlab.yml .gitlab-ci.yml`
 
-### Step 3: 코드 커밋 및 푸시
-- 명령어: `git add . && git commit -m "cicd: add multi-environment Jenkins pipeline" && git push origin main`
-- 기대 결과: main 브랜치에 Jenkinsfile 반영
+### Step 2: 플레이스홀더 수정 [AI 프롬프트]
+- `<dockerhub_username>` 수정
+- Jenkins 파일의 `<github_username>` 수정
+- AI 프롬프트 예시: "파이프라인의 <dockerhub_username>과 <github_username>을 내 계정명으로 바꿔줘"
 
-### Step 4: Jenkins Multibranch Pipeline 생성
-- Jenkins Dashboard → New Item → Multibranch Pipeline
-- Branch Sources에 Git 저장소 추가, 브랜치/태그 탐색 활성화
-- 기대 결과: develop, release/1.0, main 브랜치 각각에 파이프라인 생성
+### Step 3: 커밋 및 푸시 [학습자 직접]
+- 명령어: `git add . && git commit -m "cd: add trivy image vulnerability scan" && git push origin main`
+- 기대 결과: CI 파이프라인이 자동 트리거됨
 
-### Step 5: Scan Multibranch Pipeline
-- Dashboard → worklog-backend-multi-env → Scan Multibranch Pipeline Now
-- 기대 결과: 각 브랜치별 빌드 트리거
+### Step 4: 파이프라인 실행 결과 확인 [학습자 직접]
+- trivy 스캔 job 로그에서 취약점 목록 확인
+- CRITICAL/HIGH 취약점이 있으면 파이프라인 실패 → 탐지 결과를 기록
+- 기대 결과: 스캔 결과 테이블 형식으로 출력, 취약점 수 확인
 
-### Step 6: 각 환경 배포 확인
-- 명령어: `kubectl get pods -n dev`, `kubectl get pods -n staging`, `kubectl get pods -n prod`
-- 기대 결과: 각 namespace에 worklog-backend Pod Running
+### Step 5: 취약점 탐지 결과 분석 [학습자 직접]
+- 취약한 패키지, CVE 번호, 심각도 확인
+- 베이스 이미지 변경으로 취약점을 줄일 수 있는지 탐색
+- 기대 결과: 이미지 취약점의 존재 인식 및 대응 방향 이해
 
 ## 검증 (Validation)
 | 단계 | 검증 방법 | 기대 결과 |
 |------|----------|----------|
-| Multibranch 설정 | Jenkins Dashboard 확인 | 브랜치별 파이프라인 목록 표시 |
-| 환경 판별 | Init Variables stage 로그 | 올바른 environment/namespace 출력 |
-| 이미지 빌드 | Docker Hub 저장소 확인 | 환경별 태그로 이미지 존재 |
-| dev 배포 | `kubectl get pods -n dev` | worklog-backend Pod Running |
-| staging 배포 | `kubectl get pods -n staging` | worklog-backend Pod Running |
-| prod 배포 | `kubectl get pods -n prod` | worklog-backend Pod Running |
+| 파이프라인 트리거 | CI 대시보드 확인 | trivy job 실행 |
+| 빌드 완료 | build job 로그 | 이미지 빌드 및 push 성공 |
+| trivy 스캔 | scan job 로그 | 취약점 테이블 출력 |
+| 취약점 없음 | CI 상태 | 파이프라인 성공 |
+| 취약점 있음 | CI 상태 | 파이프라인 실패 (exit-code: 1) |
 
 ## 플레이스홀더 (Placeholders)
 | 플레이스홀더 | 설명 | AI가 임의로 채워도 되는가? |
 |-------------|------|------------------------|
 | `<dockerhub_username>` | Docker Hub 사용자 이름 | ❌ 반드시 확인 필요 |
-| `<github_username>` | GitHub 사용자 이름 (Jenkins 설정 시) | ❌ 반드시 확인 필요 |
+| `<github_username>` | GitHub 사용자 이름 (Jenkins용) | ❌ 반드시 확인 필요 |
 
 ## 주의사항 (Cautions)
-- ⛔ Jenkins Multibranch Pipeline에서 Tag Discovery를 활성화해야 태그 기반 배포가 동작한다.
-- ⛔ credentials ID (dockerhub-credentials, kube-config)가 Jenkins에 등록된 이름과 정확히 일치해야 한다.
-- ⛔ Docker agent를 사용하는 stage (Run Test)에서는 호스트의 Docker socket이 마운트되어야 한다.
-- ✅ Multibranch Pipeline은 브랜치 삭제 시 자동으로 해당 파이프라인을 제거한다.
-- ✅ Scan Multibranch Pipeline을 실행하면 모든 브랜치가 한 번에 빌드될 수 있으므로 주의한다.
+- ⛔ Trivy 스캔은 빌드 후 이미지가 push된 이후에 실행된다 — 스캔 실패 시 이미 push된 이미지는 삭제하거나 태그로 관리한다
+- ⛔ CRITICAL/HIGH 취약점이 많은 베이스 이미지(예: ubuntu)를 사용하면 파이프라인이 자주 실패할 수 있다 — slim, distroless 이미지 사용을 검토
+- ✅ 학습 단계에서는 `exit-code: '1'` 을 `exit-code: '0'`으로 바꿔 취약점이 있어도 파이프라인이 통과하게 하여 결과만 확인할 수도 있다
+- ✅ Trivy 결과는 테이블 형식으로 출력된다 — CVE ID, 패키지명, 심각도를 기록해두는 습관을 들인다

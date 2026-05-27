@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: worklog-backend-prod
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/<github_username>/worklog-backend.git
+    targetRevision: main
+    path: deploy_manifest
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: prod
+  syncPolicy: {}  # 자동 sync 비활성화 — prod는 수동 승인 필요

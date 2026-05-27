@@ -1,52 +1,76 @@
-# GUARDRAIL: 9.3 PR / Branch / Tag 기반 배포 패턴
+# GUARDRAIL: 9.3 CI 강화 — Lint (ruff)
 
 ## 범위 (Scope)
 ### 이 단계에서 다루는 것
-- PR 기반 배포 패턴: PR 생성/merge 이벤트에 따른 배포 전략
-- Branch 기반 배포 패턴: 브랜치별 배포 대상 환경 매핑 (develop → dev, release/* → staging, main → staging)
-- Tag 기반 배포 패턴: Git 태그(v*.*.*)를 이용한 프로덕션 릴리스
-- 실습을 위한 develop, release/1.0 브랜치 생성
+- Python linter ruff를 사용한 코드 스타일 검사 자동화
+- 기존 파이프라인에 lint job을 추가하는 패턴 학습
+- GitHub Actions / Jenkins / GitLab CI 각각에 lint 단계 추가
+- ruff 설정 파일(ruff.toml)로 검사 규칙 제어
 
 ### 이 단계에서 다루지 않는 것
-- 파이프라인 구현 (9.4~9.9에서 다룸)
-- GitFlow, Trunk-based development 등 브랜치 전략 상세 이론
-- SemVer 버전 관리 자동화 도구 (semantic-release 등)
+- 보안 취약점 스캔 (9.4에서 다룸)
+- 테스트 커버리지 임계값 설정 (9.5에서 다룸)
+- ruff fix(자동 수정) — 파이프라인에서는 탐지만 수행
 
 ## 사전 조건 (Prerequisites)
-- ch3 완료 (worklog-backend 저장소 준비)
-- ch9/9.2 완료 (dev/staging/prod namespace 생성)
+- ch8 완료 (멀티환경 파이프라인 구성 — GitHub/Jenkins/GitLab 중 하나 이상)
+- dev/staging/prod namespace 존재
+- 학습자 fork 저장소에 기존 파이프라인 파일 존재
+- worklog-backend 소스 코드에 `src/worklog/` 디렉토리 존재
 
 ## 순서 (Sequence)
-### Step 1: 배포 패턴 개념 이해
-- PR-based: PR 이벤트(opened, synchronize) 발생 시 dev namespace에 preview 배포
-- Branch-based: develop 브랜치 push → dev, release/* push → staging
-- Tag-based: v*.*.* 태그 생성 시 prod namespace에 배포
-- 기대 결과: 각 패턴의 트리거 조건과 대상 환경을 이해
 
-### Step 2: develop 브랜치 생성
-- 명령어: `git checkout -b develop && git push origin develop`
-- 기대 결과: origin에 develop 브랜치 생성
+### Step 1: ruff 설정 파일 복사 [학습자 직접]
+- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch9/9.3/ruff.toml ruff.toml`
+- 기대 결과: 프로젝트 루트에 ruff.toml 생성
 
-### Step 3: release/1.0 브랜치 생성
-- 명령어: `git checkout -b release/1.0 && git push origin release/1.0`
-- 기대 결과: origin에 release/1.0 브랜치 생성
+### Step 2: ruff 로컬 실행으로 이슈 확인 [학습자 직접]
+- 명령어:
+  ```
+  uv sync --extra dev
+  uv run ruff check src/
+  ```
+- 기대 결과: 린트 위반 항목 목록 출력 (또는 "All checks passed!")
 
-### Step 4: main 브랜치로 복귀
-- 명령어: `git checkout main`
-- 기대 결과: main 브랜치에서 다음 단계 진행 준비 완료
+### Step 3: 파이프라인 파일 복사 [학습자 직접]
+사용하는 CI 도구에 맞게 복사:
+- GitHub Actions: `cp ~/_Lecture_cicd_learning.kit/ch9/9.3/1.lint-github.yaml .github/workflows/lint.yaml`
+- Jenkins: `cp ~/_Lecture_cicd_learning.kit/ch9/9.3/2.lint-jenkins.groovy Jenkinsfile` (기존 파일에 stage 추가 방식 권장)
+- GitLab CI: `cp ~/_Lecture_cicd_learning.kit/ch9/9.3/3.lint-gitlab.yml .gitlab-ci.yml`
+
+### Step 4: 플레이스홀더 수정 [AI 프롬프트]
+- Jenkins 파일의 `<github_username>` 수정
+- AI 프롬프트 예시: "Jenkinsfile의 <github_username>을 내 GitHub 계정명으로 바꿔줘"
+
+### Step 5: 커밋 및 푸시 [학습자 직접]
+- 명령어: `git add . && git commit -m "ci: add lint gate with ruff" && git push origin main`
+- 기대 결과: CI 파이프라인이 자동 트리거됨
+
+### Step 6: 파이프라인 실행 결과 확인 [학습자 직접]
+- GitHub: Actions 탭 → lint job 결과 확인
+- Jenkins: 파이프라인 콘솔 로그 → Lint stage 확인
+- GitLab: CI/CD → Pipelines → lint job 확인
+- 기대 결과: lint job이 성공 또는 실패 (위반 항목이 있으면 실패)
+
+### Step 7: lint 오류가 있는 경우 수정 [AI 프롬프트]
+- AI 프롬프트 예시: "ruff check 결과에서 나온 오류들을 수정해줘"
+- 수정 후 재푸시 → 파이프라인 재실행 → lint 통과 확인
 
 ## 검증 (Validation)
 | 단계 | 검증 방법 | 기대 결과 |
 |------|----------|----------|
-| 브랜치 생성 | `git branch -a` | develop, release/1.0 브랜치가 로컬 및 원격에 존재 |
-| 현재 브랜치 | `git branch --show-current` | main |
+| ruff.toml 생성 | `ls ruff.toml` | 파일 존재 |
+| 로컬 lint | `uv run ruff check src/` | 통과 또는 위반 목록 |
+| 파이프라인 트리거 | CI 대시보드 확인 | lint job 실행 |
+| lint 통과 | CI 대시보드 확인 | lint job 성공 |
 
 ## 플레이스홀더 (Placeholders)
 | 플레이스홀더 | 설명 | AI가 임의로 채워도 되는가? |
 |-------------|------|------------------------|
-| 없음 | - | - |
+| `<github_username>` | GitHub 사용자 이름 (Jenkins용) | ❌ 반드시 확인 필요 |
 
 ## 주의사항 (Cautions)
-- ⛔ 이미 동일한 이름의 브랜치가 존재하면 `git checkout -b`가 실패한다. 이 경우 `git checkout develop`으로 전환한다.
-- ✅ 브랜치 이름 규칙(develop, release/*)은 이후 파이프라인에서 환경 판별 조건으로 사용되므로 정확히 일치해야 한다.
-- ✅ Tag 기반 배포는 9.4~9.9에서 직접 실습한다.
+- ⛔ lint 실패 시 파이프라인 전체가 중단된다 — 처음에는 위반 항목이 많을 수 있으므로 ruff.toml로 ignore 범위를 조정하면서 점진적으로 도입한다
+- ⛔ E501 (라인 길이 초과)은 기본 ignore 처리 — 너무 많은 위반이 발생하면 학습 흐름이 끊길 수 있음
+- ✅ lint는 test보다 앞에 배치하는 것이 좋다 — 빠르게 실패해서 빠른 피드백 제공
+- ✅ `uv run ruff check src/` 로컬에서 먼저 통과시킨 후 push하는 습관을 들인다

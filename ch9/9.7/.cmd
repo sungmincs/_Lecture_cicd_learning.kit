@@ -1,19 +1,24 @@
-# Apply full CI/CD Jenkins pipeline with Argo CD
-## Jenkins + Argo CD 통합 파이프라인 복사
-cd ~/workspace/worklog-backend
-cp ~/_Lecture_cicd_learning.kit/ch9/9.7/1.full-cicd-workflow.groovy Jenkinsfile
-git add .
-git commit -m "cicd: full CI/CD Jenkins workflow with Argo CD"
-git push origin main
+# 9.7 CD 강화 — prod 수동 승인 게이트
 
-# Trigger pipeline in Jenkins
-### Dashboard -> Scan Multibranch Pipeline Now
+# prod Argo CD Application에 syncPolicy 제거 (방법 1: YAML 적용)
+kubectl apply -f ~/_Lecture_cicd_learning.kit/ch9/9.7/1.argocd-prod-manual.yaml
 
-# Verify
-## Argo CD Application 목록 확인
-argocd app list
+# prod Argo CD Application에 syncPolicy 제거 (방법 2: patch)
+kubectl patch application worklog-backend-prod -n argocd --type merge -p '{"spec":{"syncPolicy":null}}'
 
-## 각 환경 배포 상태 확인
+# dev/staging AUTO-SYNC 활성화 확인
+kubectl get application -n argocd
+
+# prod Application 상태 확인 (OutOfSync 대기 상태)
+kubectl get application worklog-backend-prod -n argocd
+
+# prod 수동 Sync 실행 (Argo CD CLI)
+argocd app sync worklog-backend-prod
+
+# prod 수동 Sync 실행 (Argo CD UI 방식 확인용)
+## Argo CD UI → worklog-backend-prod → SYNC 클릭
+
+# 배포 확인
 kubectl get pods -n dev
 kubectl get pods -n staging
 kubectl get pods -n prod

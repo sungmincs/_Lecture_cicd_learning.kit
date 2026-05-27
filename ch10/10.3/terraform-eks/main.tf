@@ -1,9 +1,9 @@
 terraform {
-  required_version = ">= 1.0"
+  required_version = ">= 1.5.7"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.0"
+      version = "~> 6.0"
     }
   }
 }
@@ -14,7 +14,7 @@ provider "aws" {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 5.0"
+  version = "~> 6.0"
 
   name = "${var.cluster_name}-vpc"
   cidr = "10.0.0.0/16"
@@ -40,18 +40,38 @@ module "vpc" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.0"
+  version = "~> 21.0"
 
-  cluster_name    = var.cluster_name
-  cluster_version = "1.29"
+  name               = var.cluster_name
+  kubernetes_version = "1.36"
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
-  cluster_endpoint_public_access = true
+  endpoint_public_access = true
+
+  # 클러스터 생성자에게 admin 권한 자동 부여 (v21 access_entries 기본 방식)
+  enable_cluster_creator_admin_permissions = true
+
+  # EKS Addons — 모듈이 IAM 자동 처리 (Pod Identity)
+  addons = {
+    coredns = {
+      most_recent = true
+    }
+    kube-proxy = {
+      most_recent = true
+    }
+    vpc-cni = {
+      most_recent = true
+    }
+    aws-ebs-csi-driver = {
+      most_recent = true
+    }
+  }
 
   eks_managed_node_groups = {
     default = {
+      ami_type       = "AL2023_x86_64_STANDARD"
       instance_types = ["t3.medium"]
       min_size       = 2
       max_size       = 4

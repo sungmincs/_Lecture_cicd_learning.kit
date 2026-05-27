@@ -1,66 +1,70 @@
-# GUARDRAIL: 8.5 [GitLab] Worklog App 배포해보기
+# GUARDRAIL: 9.5 [GitHub] Full CI/CD workflow (Argo CD)
 
 ## 범위 (Scope)
 ### 이 단계에서 다루는 것
-- GitLab CI/CD를 사용한 Worklog Frontend 빌드/배포 파이프라인
-- GitLab CI/CD를 사용한 Worklog Backend 빌드/테스트/배포 파이프라인
-- GitLab CI/CD Variables를 활용한 Docker Hub, kubeconfig 관리
-- `kubectl set image`를 통한 롤링 업데이트 배포
+- GitHub Actions + Argo CD를 결합한 완전한 CI/CD 워크플로우
+- 환경별 Argo CD Application 생성 (dev, staging, prod)
+- 이미지 빌드 후 manifest 자동 업데이트 → Argo CD 자동 동기화
+- PR → develop → release → tag 전체 배포 흐름 실습
 
 ### 이 단계에서 다루지 않는 것
-- GitHub Actions 기반 배포 (8.3에서 다룸)
-- Jenkins 기반 배포 (8.4에서 다룸)
-- MongoDB의 CI/CD 파이프라인 (DB는 수동 배포)
+- Jenkins / GitLab 기반 워크플로우 (9.6~9.7, 9.8~9.9에서 다룸)
+- Argo CD ApplicationSet을 이용한 동적 환경 생성
+- Argo Rollouts를 이용한 카나리/블루그린 배포 (ch7에서 다룸)
 
 ## 사전 조건 (Prerequisites)
-- ch5/5.4.x 완료 (GitLab CI/CD 파이프라인 이해)
-- ch8/8.2 완료 (MongoDB, Backend, Frontend가 K8s에 배포된 상태)
-- Docker Hub 계정 및 Access Token 준비
-- GitLab에 worklog-frontend, worklog-backend 저장소 존재
+- ch9/9.4 완료 (멀티 환경 파이프라인 기본 이해)
+- ch6 완료 (Argo CD 설치 및 설정)
+- GitHub Secrets 등록: DOCKERHUB_TOKEN, CP_K8S_CONTEXT, ARGOCD_ADMIN_PASSWORD
 
 ## 순서 (Sequence)
-### Step 1: GitLab CI/CD Variables 등록 (두 저장소 모두)
-- Settings -> CI/CD -> Variables
-- `DOCKERHUB_USERNAME`: Docker Hub 사용자명
-- `DOCKERHUB_TOKEN`: Docker Hub Access Token
-- `KUBE_CONFIG`: kubeconfig (base64 인코딩)
-- 기대 결과: 각 저장소에 Variables 등록 완료
+### Step 1: Full CI/CD 파이프라인 파일 복사
+- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch9/9.5/1.full-cicd-workflow.yaml .github/workflows/full-cicd-workflow.yaml`
+- 기대 결과: `.github/workflows/` 디렉토리에 파이프라인 파일 생성
 
-### Step 2: Frontend 파이프라인 적용
-- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch8/8.4/1.frontend-build-deploy.yml .gitlab-ci.yml`
-- 명령어: `git add . && git commit -m "cicd: add frontend GitLab pipeline" && git push origin main`
-- 기대 결과: GitLab 파이프라인 자동 트리거, Frontend 이미지 빌드 및 배포
+### Step 2: YAML 파일에서 플레이스홀더 수정
+- `<dockerhub_username>`을 본인 Docker Hub 사용자 이름으로 변경
+- 기대 결과: env.DOCKER_REPOSITORY, env.DOCKERHUB_USERNAME 값이 올바르게 설정됨
 
-### Step 3: Backend 파이프라인 적용
-- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch8/8.4/2.backend-build-deploy.yml .gitlab-ci.yml`
-- 명령어: `git add . && git commit -m "cicd: add backend GitLab pipeline" && git push origin main`
-- 기대 결과: GitLab 파이프라인 자동 트리거, Backend 이미지 빌드/테스트 및 배포
+### Step 3: 코드 커밋 및 푸시
+- 명령어: `git add . && git commit -m "cicd: full CI/CD workflow with Argo CD" && git push origin main`
+- 기대 결과: GitHub Actions 트리거
 
-### Step 4: 전체 통합 검증
-- GitLab CI/CD -> Pipelines에서 두 파이프라인 성공 확인
-- 접속: `http://worklog-frontend.myk8s.local`
-- 기대 결과: Frontend -> Backend -> MongoDB 연결 정상 동작
+### Step 4: Argo CD Application 생성
+- 명령어: `kubectl apply -f ~/_Lecture_cicd_learning.kit/ch9/9.5/2.argocd-apps-multi-env.yaml`
+- `<github_username>` 플레이스홀더를 사전에 수정
+- 기대 결과: argocd namespace에 3개 Application 생성
+
+### Step 5: 전체 흐름 테스트
+- develop push → dev 배포 확인
+- PR 생성 → dev preview 배포 확인
+- release/* push → staging 배포 확인
+- tag 생성 → prod 배포 확인
+- 기대 결과: 각 환경에 올바른 이미지가 배포됨
+
+### Step 6: Argo CD UI 및 CLI 확인
+- 명령어: `argocd app list`
+- 기대 결과: worklog-backend-dev, worklog-backend-staging, worklog-backend-prod 모두 Healthy/Synced
 
 ## 검증 (Validation)
 | 단계 | 검증 방법 | 기대 결과 |
 |------|----------|----------|
-| Variables | GitLab Settings -> CI/CD -> Variables | DOCKERHUB_USERNAME, DOCKERHUB_TOKEN, KUBE_CONFIG 존재 |
-| Frontend 파이프라인 | GitLab Pipelines | build -> deploy 성공 |
-| Backend 파이프라인 | GitLab Pipelines | test -> build -> deploy 성공 |
-| 이미지 확인 | Docker Hub | frontend, backend 이미지 새 태그 존재 |
-| K8s 배포 | `kubectl get pods` | frontend, backend Pod Running |
-| 통합 테스트 | 브라우저 접속 | worklog-frontend.myk8s.local 정상 동작 |
+| Argo CD App 생성 | `argocd app list` | 3개 Application 존재 |
+| dev 배포 | `kubectl get pods -n dev` | worklog-backend Pod Running |
+| staging 배포 | `kubectl get pods -n staging` | worklog-backend Pod Running |
+| prod 배포 | `kubectl get pods -n prod` | worklog-backend Pod Running |
+| Argo CD 상태 | Argo CD UI 확인 | 모든 App이 Healthy/Synced |
 
 ## 플레이스홀더 (Placeholders)
 | 플레이스홀더 | 설명 | AI가 임의로 채워도 되는가? |
 |-------------|------|------------------------|
-| `DOCKERHUB_USERNAME` | Docker Hub 사용자명 (GitLab Variable) | ❌ 반드시 확인 필요 |
-| `DOCKERHUB_TOKEN` | Docker Hub Access Token (GitLab Variable) | ❌ 반드시 확인 필요 |
-| `KUBE_CONFIG` | kubeconfig base64 (GitLab Variable) | ❌ 반드시 확인 필요 |
+| `<dockerhub_username>` | Docker Hub 사용자 이름 | ❌ 반드시 확인 필요 |
+| `<github_username>` | GitHub 사용자 이름 | ❌ 반드시 확인 필요 |
+| `ARGOCD_ADMIN_PASSWORD` | Argo CD 관리자 비밀번호 (GitHub Secret) | ❌ 반드시 확인 필요 |
 
 ## 주의사항 (Cautions)
-- ⛔ kubeconfig를 저장소에 커밋하지 않는다 — 반드시 GitLab CI/CD Variables 사용
-- ⛔ KUBE_CONFIG는 base64 인코딩된 값이어야 한다
-- ⛔ Docker-in-Docker(dind) 서비스가 필요하므로 GitLab Runner에 privileged 모드 설정 필요
-- ✅ Frontend와 Backend는 독립 저장소에서 독립 파이프라인으로 운영된다
-- ✅ 8.2에서 배포한 Deployment가 이미 존재해야 `kubectl set image`가 동작한다
+- ⛔ 2.argocd-apps-multi-env.yaml의 `<github_username>`을 반드시 수정한 후 apply 해야 한다.
+- ⛔ update-manifest job에서 git push가 실패하면 배포가 진행되지 않는다. GITHUB_TOKEN 권한을 확인한다.
+- ⛔ Argo CD Application의 targetRevision이 실제 브랜치 이름과 일치해야 한다.
+- ✅ Argo CD의 automated syncPolicy가 설정되어 있으므로 manifest 변경 시 자동 배포된다.
+- ✅ 배포 실패 시 Argo CD UI에서 상세 에러 로그를 확인할 수 있다.

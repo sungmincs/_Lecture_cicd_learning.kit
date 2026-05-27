@@ -1,25 +1,18 @@
-# Setup GitHub Secrets for full stack deployment
-## Repository: worklog-frontend_v1
-### Settings -> Secrets and variables -> Actions
-### DOCKERHUB_USERNAME, DOCKERHUB_TOKEN, KUBE_CONFIG
+# PR / Branch / Tag 기반 배포 패턴 이해
+## Review deployment patterns:
+### PR-based: PR 생성 시 preview 환경(dev)에 배포, PR merge 시 다음 환경으로 배포
+### Branch-based: main → dev, release/* → staging
+### Tag-based: v*.*.* → production
 
-## Repository: worklog-backend_v1
-### Same secrets
-
-# Apply frontend pipeline
-cd ~/workspace/worklog-frontend
-cp ~/_Lecture_cicd_learning.kit/ch8/8.3/1.frontend-build-deploy.yaml .github/workflows/build-deploy.yaml
-git add .
-git commit -m "cicd: add frontend build and deploy pipeline"
-git push origin main
-
-# Apply backend pipeline
+# Create example branches for demonstration
+## develop 브랜치 생성 및 push
 cd ~/workspace/worklog-backend
-cp ~/_Lecture_cicd_learning.kit/ch8/8.3/2.backend-build-deploy.yaml .github/workflows/build-deploy.yaml
-git add .
-git commit -m "cicd: add backend build and deploy pipeline"
-git push origin main
+git checkout -b develop
+git push origin develop
 
-# Verify
-## Check GitHub Actions for both repos
-## Access: http://worklog-frontend.myk8s.local
+## release/1.0 브랜치 생성 및 push
+git checkout -b release/1.0
+git push origin release/1.0
+
+## main 브랜치로 복귀
+git checkout main

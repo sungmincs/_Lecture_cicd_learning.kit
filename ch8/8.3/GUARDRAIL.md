@@ -1,65 +1,52 @@
-# GUARDRAIL: 8.3 [GitHub] Worklog App 배포해보기
+# GUARDRAIL: 9.3 PR / Branch / Tag 기반 배포 패턴
 
 ## 범위 (Scope)
 ### 이 단계에서 다루는 것
-- GitHub Actions를 사용한 Worklog Frontend 빌드/배포 파이프라인
-- GitHub Actions를 사용한 Worklog Backend 빌드/테스트/배포 파이프라인
-- 두 개의 마이크로서비스를 각각 독립적으로 CI/CD 파이프라인 운영
-- `kubectl set image`를 통한 롤링 업데이트 배포
+- PR 기반 배포 패턴: PR 생성/merge 이벤트에 따른 배포 전략
+- Branch 기반 배포 패턴: 브랜치별 배포 대상 환경 매핑 (develop → dev, release/* → staging, main → staging)
+- Tag 기반 배포 패턴: Git 태그(v*.*.*)를 이용한 프로덕션 릴리스
+- 실습을 위한 develop, release/1.0 브랜치 생성
 
 ### 이 단계에서 다루지 않는 것
-- Jenkins 기반 배포 (8.4에서 다룸)
-- GitLab 기반 배포 (8.5에서 다룸)
-- MongoDB의 CI/CD 파이프라인 (DB는 수동 배포)
+- 파이프라인 구현 (9.4~9.9에서 다룸)
+- GitFlow, Trunk-based development 등 브랜치 전략 상세 이론
+- SemVer 버전 관리 자동화 도구 (semantic-release 등)
 
 ## 사전 조건 (Prerequisites)
-- ch5/5.2.x 완료 (GitHub Actions 파이프라인 이해)
-- ch8/8.2 완료 (MongoDB, Backend, Frontend가 K8s에 배포된 상태)
-- Docker Hub 계정 및 Access Token 준비
-- GitHub에 worklog-frontend_v1, worklog-backend_v1 저장소 존재
+- ch3 완료 (worklog-backend 저장소 준비)
+- ch9/9.2 완료 (dev/staging/prod namespace 생성)
 
 ## 순서 (Sequence)
-### Step 1: GitHub Secrets 등록 (두 저장소 모두)
-- GitHub -> Settings -> Secrets and variables -> Actions
-- `DOCKERHUB_USERNAME`: Docker Hub 사용자명
-- `DOCKERHUB_TOKEN`: Docker Hub Access Token
-- `KUBE_CONFIG`: kubeconfig (base64 인코딩)
-- 기대 결과: 각 저장소에 Secrets 등록 완료
+### Step 1: 배포 패턴 개념 이해
+- PR-based: PR 이벤트(opened, synchronize) 발생 시 dev namespace에 preview 배포
+- Branch-based: develop 브랜치 push → dev, release/* push → staging
+- Tag-based: v*.*.* 태그 생성 시 prod namespace에 배포
+- 기대 결과: 각 패턴의 트리거 조건과 대상 환경을 이해
 
-### Step 2: Frontend 파이프라인 적용
-- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch8/8.2/1.frontend-build-deploy.yaml .github/workflows/build-deploy.yaml`
-- 명령어: `git add . && git commit -m "cicd: add frontend build and deploy pipeline" && git push origin main`
-- 기대 결과: GitHub Actions 자동 트리거, Frontend 이미지 빌드 및 배포
+### Step 2: develop 브랜치 생성
+- 명령어: `git checkout -b develop && git push origin develop`
+- 기대 결과: origin에 develop 브랜치 생성
 
-### Step 3: Backend 파이프라인 적용
-- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch8/8.2/2.backend-build-deploy.yaml .github/workflows/build-deploy.yaml`
-- 명령어: `git add . && git commit -m "cicd: add backend build and deploy pipeline" && git push origin main`
-- 기대 결과: GitHub Actions 자동 트리거, Backend 이미지 빌드/테스트 및 배포
+### Step 3: release/1.0 브랜치 생성
+- 명령어: `git checkout -b release/1.0 && git push origin release/1.0`
+- 기대 결과: origin에 release/1.0 브랜치 생성
 
-### Step 4: 전체 통합 검증
-- GitHub Actions 탭에서 두 파이프라인 성공 확인
-- 접속: `http://worklog-frontend.myk8s.local`
-- 기대 결과: Frontend -> Backend -> MongoDB 연결 정상 동작
+### Step 4: main 브랜치로 복귀
+- 명령어: `git checkout main`
+- 기대 결과: main 브랜치에서 다음 단계 진행 준비 완료
 
 ## 검증 (Validation)
 | 단계 | 검증 방법 | 기대 결과 |
 |------|----------|----------|
-| Secrets | GitHub Settings -> Secrets | DOCKERHUB_USERNAME, DOCKERHUB_TOKEN, KUBE_CONFIG 존재 |
-| Frontend 파이프라인 | GitHub Actions 탭 | build -> deploy 성공 |
-| Backend 파이프라인 | GitHub Actions 탭 | test -> build -> deploy 성공 |
-| 이미지 확인 | Docker Hub | frontend, backend 이미지 latest 태그 존재 |
-| K8s 배포 | `kubectl get pods` | frontend, backend Pod Running |
-| 통합 테스트 | 브라우저 접속 | worklog-frontend.myk8s.local 정상 동작 |
+| 브랜치 생성 | `git branch -a` | develop, release/1.0 브랜치가 로컬 및 원격에 존재 |
+| 현재 브랜치 | `git branch --show-current` | main |
 
 ## 플레이스홀더 (Placeholders)
 | 플레이스홀더 | 설명 | AI가 임의로 채워도 되는가? |
 |-------------|------|------------------------|
-| `DOCKERHUB_USERNAME` | Docker Hub 사용자명 (GitHub Secret) | ❌ 반드시 확인 필요 |
-| `DOCKERHUB_TOKEN` | Docker Hub Access Token (GitHub Secret) | ❌ 반드시 확인 필요 |
-| `KUBE_CONFIG` | kubeconfig base64 (GitHub Secret) | ❌ 반드시 확인 필요 |
+| 없음 | - | - |
 
 ## 주의사항 (Cautions)
-- ⛔ kubeconfig를 저장소에 커밋하지 않는다 — 반드시 GitHub Secrets 사용
-- ⛔ KUBE_CONFIG는 base64 인코딩된 값이어야 한다
-- ✅ Frontend와 Backend는 독립 저장소에서 독립 파이프라인으로 운영된다
-- ✅ 8.2에서 배포한 Deployment가 이미 존재해야 `kubectl set image`가 동작한다
+- ⛔ 이미 동일한 이름의 브랜치가 존재하면 `git checkout -b`가 실패한다. 이 경우 `git checkout develop`으로 전환한다.
+- ✅ 브랜치 이름 규칙(develop, release/*)은 이후 파이프라인에서 환경 판별 조건으로 사용되므로 정확히 일치해야 한다.
+- ✅ Tag 기반 배포는 9.4~9.9에서 직접 실습한다.

@@ -1,0 +1,75 @@
+stages:
+  - test
+  - build
+  - deploy
+
+variables:
+  DOCKER_REPOSITORY: <dockerhub_username>/worklog-backend
+  DOCKER_CONFIG: "/tmp/docker_config"
+  DOCKER_HOST: tcp://docker:2375
+
+.determine-environment: &determine-environment
+  - |
+    if [[ "$CI_COMMIT_TAG" =~ ^v ]]; then
+      export TARGET_ENV=prod
+      export ARGOCD_APP=worklog-backend-prod
+    elif [[ "$CI_COMMIT_BRANCH" =~ ^release/ ]]; then
+      export TARGET_ENV=staging
+      export ARGOCD_APP=worklog-backend-staging
+    else
+      export TARGET_ENV=dev
+      export ARGOCD_APP=worklog-backend-dev
+    fi
+
+workflow:
+  rules:
+    - if: $CI_MERGE_REQUEST_IID
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH =~ /^release\//
+    - if: $CI_COMMIT_TAG =~ /^v/
+
+test:
+  allow_failure: true  # TODO: worklog-backend fastapi[standard] + uv container 환경 호환성 이슈
+  stage: test
+  image: ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+  script:
+    - uv sync --extra dev
+    - uv run coverage run --source ./src/worklog -m pytest --disable-warnings -v
+    - uv run coverage report
+
+build:
+  stage: build
+  image: docker:24
+  services:
+    - docker:24-dind
+  needs: [test]
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+  before_script:
+    - echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+  script:
+    - SHORT_SHA=$(echo $CI_COMMIT_SHA | cut -c1-8)
+    - docker buildx rm mybuilder 2>/dev/null || true
+    - docker buildx create --name mybuilder --driver docker-container --use
+    - docker buildx build --platform linux/amd64,linux/arm64 -t $DOCKER_REPOSITORY:$SHORT_SHA --push .
+
+deploy:
+  stage: deploy
+  image: alpine:latest
+  needs: [build]
+  before_script:
+    - apk add --no-cache git
+    - *determine-environment
+  script:
+    - |
+      SHORT_SHA=$(echo $CI_COMMIT_SHA | cut -c1-8)
+      git remote set-url origin "https://oauth2:${GITLAB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
+      sed -i "s|image: .*worklog-backend:.*|image: $DOCKER_REPOSITORY:$SHORT_SHA|" deploy_manifest/worklog-backend.yaml
+      sed -i "s|value: .* # IMAGE_TAG|value: $SHORT_SHA # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml
+      git config user.name "gitlab-ci"
+      git config user.email "gitlab-ci@myk8s.local"
+      git add deploy_manifest/
+      git diff --staged --quiet || git commit -m "deploy: update image tag to $SHORT_SHA for $TARGET_ENV [skip ci]"
+      git pull --rebase origin $CI_COMMIT_BRANCH || true
+      git push origin HEAD:$CI_COMMIT_BRANCH

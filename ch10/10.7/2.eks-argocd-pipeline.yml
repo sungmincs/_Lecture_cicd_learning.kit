@@ -3,32 +3,45 @@ workflow:
     - if: $CI_COMMIT_BRANCH == "main"
 
 stages:
+  - test
   - build
   - deploy
 
 variables:
-  DOCKER_REPOSITORY: worklog-backend
+  DOCKER_REPOSITORY: <dockerhub_username>/worklog-backend
+  DOCKER_HOST: tcp://docker:2375
+
+test:
+  allow_failure: true  # TODO: worklog-backend fastapi[standard] + uv container 환경 호환성 이슈
+  stage: test
+  image: ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+  script:
+    - uv sync --extra dev
+    - uv run coverage run --source ./src/worklog -m pytest --disable-warnings -v
+    - uv run coverage report
 
 build:
   stage: build
   image: docker:24
   services:
     - docker:24-dind
+  needs: [test]
   variables:
-    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_CERTDIR: ""
   before_script:
     - echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
   script:
-    - SHORT_SHA=$(echo $CI_COMMIT_SHA | cut -c1-7)
-    - docker build -t $DOCKERHUB_USERNAME/$DOCKER_REPOSITORY:$SHORT_SHA .
-    - docker push $DOCKERHUB_USERNAME/$DOCKER_REPOSITORY:$SHORT_SHA
+    - SHORT_SHA=$(echo $CI_COMMIT_SHA | cut -c1-8)
+    - docker buildx rm eks-builder 2>/dev/null || true
+    - docker buildx create --name eks-builder --driver docker-container --use
+    - docker buildx build --platform linux/amd64,linux/arm64 -t $DOCKER_REPOSITORY:$SHORT_SHA --push .
 
 deploy:
   stage: deploy
   image: argoproj/argocd:latest
   needs: [build]
   script:
-    - SHORT_SHA=$(echo $CI_COMMIT_SHA | cut -c1-7)
+    - SHORT_SHA=$(echo $CI_COMMIT_SHA | cut -c1-8)
     - argocd login $ARGOCD_SERVER --username admin --password $ARGOCD_PASSWORD --insecure
     - argocd app set worklog-backend --parameter image.tag=$SHORT_SHA
     - argocd app sync worklog-backend

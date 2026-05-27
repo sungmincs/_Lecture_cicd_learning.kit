@@ -1,64 +1,79 @@
-# GUARDRAIL: 9.7 [Jenkins] Full CI/CD workflow (Argo CD)
+# GUARDRAIL: 9.7 CD 강화 — prod 수동 승인 게이트
 
 ## 범위 (Scope)
 ### 이 단계에서 다루는 것
-- Jenkins Multibranch Pipeline + Argo CD를 결합한 완전한 CI/CD 워크플로우
-- Branch/Tag 기반 환경 판별 후 Argo CD를 통한 배포
-- argocd CLI를 사용한 app set, sync, wait 자동화
-- Jenkins credentials를 통한 Argo CD 인증 관리
+- Argo CD Application의 syncPolicy를 제거하여 prod 자동 배포 비활성화
+- CI 파이프라인 통과 후에도 prod에는 사람이 수동으로 Argo CD Sync를 실행해야 배포
+- dev/staging은 자동, prod는 수동이라는 환경별 자동화 수준 차등 적용 체험
+- Argo CD UI 또는 CLI로 수동 Sync 실행
 
 ### 이 단계에서 다루지 않는 것
-- GitHub Actions / GitLab 기반 워크플로우 (9.4~9.5, 9.8~9.9에서 다룸)
-- Argo CD ApplicationSet을 이용한 동적 환경 생성
-- Argo Rollouts를 이용한 카나리/블루그린 배포 (ch7에서 다룸)
-- Jenkins Shared Library를 이용한 파이프라인 재사용
+- GitHub Actions의 environment approval (GitHub 방식 승인)
+- Jenkins의 input() 수동 승인 단계
+- 자동 롤백 (9.8에서 다룸)
+- 멀티 환경 Argo CD Application 초기 생성 (ch8에서 다룸)
 
 ## 사전 조건 (Prerequisites)
-- ch9/9.6 완료 (Jenkins 멀티 환경 파이프라인 기본 이해)
-- ch6 완료 (Argo CD 설치 및 설정)
-- ch9/9.5 완료 (Argo CD Application 생성 — 2.argocd-apps-multi-env.yaml 적용)
-- Jenkins credentials 등록: dockerhub-credentials (Username/Password), argocd-password (Secret text)
+- ch8 완료 (멀티환경 파이프라인 + Argo CD Application 구성)
+- dev/staging/prod namespace 존재
+- Argo CD에 worklog-backend-dev, worklog-backend-staging, worklog-backend-prod Application 존재
+- 학습자 fork 저장소에 기존 파이프라인 파일 존재
+- 9.6 완료 (Trivy 이미지 스캔 단계 추가)
 
 ## 순서 (Sequence)
-### Step 1: Full CI/CD 파이프라인 파일 복사
-- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch9/9.7/1.full-cicd-workflow.groovy Jenkinsfile`
-- 기대 결과: 프로젝트 루트에 Jenkinsfile 생성/덮어쓰기
 
-### Step 2: 코드 커밋 및 푸시
-- 명령어: `git add . && git commit -m "cicd: full CI/CD Jenkins workflow with Argo CD" && git push origin main`
-- 기대 결과: main 브랜치에 Jenkinsfile 반영
+### Step 1: prod Application 매니페스트 복사 [학습자 직접]
+- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch9/9.7/1.argocd-prod-manual.yaml 1.argocd-prod-manual.yaml`
+- 기대 결과: 현재 디렉토리에 Argo CD Application YAML 파일 생성
 
-### Step 3: Jenkins Multibranch Pipeline 스캔
-- Dashboard → worklog-backend-multi-env → Scan Multibranch Pipeline Now
-- 기대 결과: 각 브랜치별 빌드 트리거, Argo CD를 통한 배포 실행
+### Step 2: 플레이스홀더 수정 [AI 프롬프트]
+- `<github_username>` 수정
+- AI 프롬프트 예시: "1.argocd-prod-manual.yaml의 <github_username>을 내 GitHub 계정명으로 바꿔줘"
 
-### Step 4: Argo CD 배포 확인
-- 명령어: `argocd app list`
-- 기대 결과: worklog-backend-dev, worklog-backend-staging, worklog-backend-prod 모두 Healthy/Synced
+### Step 3: Argo CD prod Application에 syncPolicy 제거 적용 [학습자 직접]
+방법 1 - YAML 파일 적용:
+```
+kubectl apply -f 1.argocd-prod-manual.yaml
+```
+방법 2 - kubectl patch로 직접 수정:
+```
+kubectl patch application worklog-backend-prod -n argocd --type merge -p '{"spec":{"syncPolicy":null}}'
+```
+- 기대 결과: prod Application의 AUTO-SYNC가 비활성화됨
 
-### Step 5: 각 환경 배포 확인
-- 명령어: `kubectl get pods -n dev`, `kubectl get pods -n staging`, `kubectl get pods -n prod`
-- 기대 결과: 각 namespace에 worklog-backend Pod Running
+### Step 4: dev/staging 자동 sync 확인 [학습자 직접]
+- 명령어: `kubectl get application -n argocd`
+- 기대 결과: dev, staging은 AUTO-SYNC: Enabled, prod는 AUTO-SYNC: <disabled>
+
+### Step 5: 전체 흐름 테스트 [학습자 직접]
+- 코드 변경 후 push → CI 파이프라인 통과 → dev/staging 자동 배포
+- prod는 Argo CD UI에서 "SYNC" 버튼을 눌러야 배포됨
+- 기대 결과: prod가 OutOfSync 상태에서 대기 중임 확인
+
+### Step 6: prod 수동 승인 후 배포 확인 [학습자 직접]
+- Argo CD UI → worklog-backend-prod → SYNC 클릭 또는:
+  ```
+  argocd app sync worklog-backend-prod
+  ```
+- 명령어: `kubectl get pods -n prod`
+- 기대 결과: prod에 새 이미지로 배포 완료
 
 ## 검증 (Validation)
 | 단계 | 검증 방법 | 기대 결과 |
 |------|----------|----------|
-| 파이프라인 트리거 | Jenkins Dashboard 확인 | 브랜치별 빌드 실행됨 |
-| Argo CD 로그인 | Deploy via Argo CD stage 로그 | argocd login 성공 |
-| Argo CD 동기화 | `argocd app list` | 모든 App이 Healthy/Synced |
-| dev 배포 | `kubectl get pods -n dev` | worklog-backend Pod Running |
-| staging 배포 | `kubectl get pods -n staging` | worklog-backend Pod Running |
-| prod 배포 | `kubectl get pods -n prod` | worklog-backend Pod Running |
+| prod AUTO-SYNC 비활성화 | `kubectl get application worklog-backend-prod -n argocd` | syncPolicy 없음 |
+| dev 자동 배포 | `kubectl get pods -n dev` | 코드 변경 후 자동 반영 |
+| staging 자동 배포 | `kubectl get pods -n staging` | 코드 변경 후 자동 반영 |
+| prod 대기 상태 | Argo CD UI | OutOfSync 상태 |
+| prod 수동 승인 후 | `kubectl get pods -n prod` | 새 이미지로 배포 완료 |
 
 ## 플레이스홀더 (Placeholders)
 | 플레이스홀더 | 설명 | AI가 임의로 채워도 되는가? |
 |-------------|------|------------------------|
-| `argocd-password` | Jenkins에 등록된 Argo CD 비밀번호 credential ID | ❌ 반드시 확인 필요 |
-| `dockerhub-credentials` | Jenkins에 등록된 Docker Hub credential ID | ❌ 반드시 확인 필요 |
+| `<github_username>` | GitHub 사용자 이름 | ❌ 반드시 확인 필요 |
 
 ## 주의사항 (Cautions)
-- ⛔ Jenkins에 argocd-password credential이 Secret text 타입으로 등록되어 있어야 한다.
-- ⛔ argocd CLI가 Jenkins agent에 설치되어 있어야 한다. 설치되지 않은 경우 Deploy stage에서 실패한다.
-- ⛔ Argo CD Application이 사전에 생성되어 있어야 한다 (ch9/9.5의 2.argocd-apps-multi-env.yaml).
-- ✅ argocd app wait --health는 배포가 완료될 때까지 대기하므로, 타임아웃 설정을 고려한다.
-- ✅ 배포 실패 시 Argo CD UI에서 상세 에러 로그를 확인할 수 있다.
+- ⛔ prod에 syncPolicy를 다시 추가하면 자동 배포가 재활성화된다 — 실수하지 않도록 주의
+- ⛔ Argo CD CLI(argocd)를 사용하려면 argocd login이 먼저 되어 있어야 한다
+- ✅ "AI가 빠르게 코드를 생성하더라도, prod 배포 결정은 사람이 한다"가 이 단계의 핵심 메시지
+- ✅ Argo CD UI의 SYNC 버튼이 "사람의 승인 게이트" 역할을 한다 — 구조적으로 prod를 보호하는 방식

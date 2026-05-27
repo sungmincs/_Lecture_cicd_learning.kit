@@ -17,6 +17,7 @@ helm upgrade --install jenkins edu/jenkins \
 --set "controller.installPlugins[1]=workflow-aggregator:596.v8c21c963d92d" \
 --set "controller.installPlugins[2]=git:5.2.2" \
 --set "controller.installPlugins[3]=configuration-as-code:2077.v41f1011a_5110" \
+--set "controller.installPlugins[4]=docker-workflow:634.vedc7242b_eda_7" \
 --set controller.jenkinsOpts="$jkopt1 $jkopt2" \
 --set controller.javaOpts="$jvopt1 $jvopt2 $jvopt3" \
 --set controller.nodeSelector."kubernetes\.io/hostname"=cp-k8s \
@@ -30,3 +31,23 @@ helm upgrade --install jenkins edu/jenkins \
 
 # HTTPRoute: jenkins.myk8s.local → jenkins:8080 (NGINX Gateway Fabric)
 kubectl apply -f /root/_Lecture_cicd_learning.kit/ch4/4.5/jenkins-httproute.yaml
+
+# Jenkins Pod Running 대기
+kubectl rollout status statefulset/jenkins --timeout=300s
+
+# docker socket + binary 마운트 추가
+# Helm chart의 controller.volumes/volumeMounts는 chart 전용 형식이라 hostPath에 적용되지 않으므로 직접 patch
+kubectl patch statefulset jenkins --type='json' -p='[
+  {"op": "add", "path": "/spec/template/spec/volumes/-", "value": {"name": "docker-socket", "hostPath": {"path": "/var/run/docker.sock", "type": "Socket"}}},
+  {"op": "add", "path": "/spec/template/spec/volumes/-", "value": {"name": "docker-binary", "hostPath": {"path": "/usr/bin/docker", "type": "File"}}},
+  {"op": "add", "path": "/spec/template/spec/volumes/-", "value": {"name": "docker-buildx", "hostPath": {"path": "/usr/libexec/docker/cli-plugins/docker-buildx", "type": "File"}}},
+  {"op": "add", "path": "/spec/template/spec/containers/0/volumeMounts/-", "value": {"name": "docker-socket", "mountPath": "/var/run/docker.sock"}},
+  {"op": "add", "path": "/spec/template/spec/containers/0/volumeMounts/-", "value": {"name": "docker-binary", "mountPath": "/usr/bin/docker"}},
+  {"op": "add", "path": "/spec/template/spec/containers/0/volumeMounts/-", "value": {"name": "docker-buildx", "mountPath": "/usr/libexec/docker/cli-plugins/docker-buildx"}}
+]'
+
+# Pod 재시작 후 Running 대기
+kubectl rollout status statefulset/jenkins --timeout=300s
+
+# docker.sock 권한 변경 (Jenkins Pod UID 1000이 docker group에 속하지 않아 직접 접근 허용)
+chmod 666 /var/run/docker.sock

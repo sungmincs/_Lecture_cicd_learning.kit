@@ -23,17 +23,17 @@ pipeline {
             }
         }
         stage('Run Test') {
-            agent {
-                docker {
-                    image 'python:3.12.3-slim-bookworm'
-                }
-            }
             steps {
                 script {
                     echo "let's run a test for ${shortSHA} in ${branch}"
                     echo "running test for ${fullSHA}"
-                    sh 'pip install poetry'
-                    echo 'Test Passed!'
+                    sh '''
+                        curl -LsSf https://astral.sh/uv/install.sh | sh
+                        export PATH="$HOME/.local/bin:$PATH"
+                        uv sync --extra dev
+                        TESTING=true uv run coverage run --source ./src/worklog -m pytest --disable-warnings -v
+                        uv run coverage report
+                    '''
                 }
             }
         }
@@ -43,12 +43,6 @@ pipeline {
                 echo "The change commit message to build is '${commitMessage}'"
                 echo 'build successful and published image with the following tags:'
                 echo "Tags: ${shortSHA}, ${fullSHA}"
-            }
-        }
-        stage('Deploy Image') {
-            steps {
-                echo "Let's deploy the image"
-                echo "Deploying our image ${fullSHA} to the cluster"
             }
         }
     }

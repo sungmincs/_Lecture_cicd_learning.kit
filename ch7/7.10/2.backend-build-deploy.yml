@@ -1,0 +1,60 @@
+workflow:
+  rules:
+    - if: $CI_COMMIT_MESSAGE =~ /\[skip ci\]/
+      when: never
+    - if: $CI_COMMIT_BRANCH == "main"
+
+stages:
+  - test
+  - build
+  - deploy
+
+variables:
+  DOCKER_REPOSITORY: <dockerhub_username>/worklog-backend
+  DOCKER_CONFIG: "/tmp/docker_config"
+  DOCKER_HOST: tcp://docker:2375
+  GITLAB_REPO_PATH: <gitlab_username>/worklog-backend
+
+test:
+  stage: test
+  image: ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+  script:
+    - uv sync --extra dev
+    - export TESTING=true
+    - uv run coverage run --source ./src/worklog -m pytest --disable-warnings -v
+    - uv run coverage report
+
+build:
+  stage: build
+  image: docker:24
+  services:
+    - docker:24-dind
+  needs: [test]
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+  script:
+    - SHORT_SHA=$(echo $CI_COMMIT_SHA | cut -c1-8)
+    - mkdir -p ${DOCKER_CONFIG}
+    - printf '%s:%s' "${DOCKERHUB_USERNAME}" "${DOCKERHUB_TOKEN}" | base64 | tr -d '\n' > /tmp/auth.txt
+    - echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"auth\":\"$(cat /tmp/auth.txt)\"}}}" > ${DOCKER_CONFIG}/config.json
+    - docker buildx rm mybuilder 2>/dev/null || true
+    - docker buildx create --name mybuilder --driver docker-container --use
+    - docker buildx build --platform linux/amd64,linux/arm64 -t ${DOCKER_REPOSITORY}:${SHORT_SHA} --push .
+
+deploy:
+  stage: deploy
+  image: alpine:latest
+  needs: [build]
+  before_script:
+    - apk add --no-cache git
+  script:
+    - |
+      SHORT_SHA=$(echo $CI_COMMIT_SHA | cut -c1-8)
+      git remote set-url origin "https://oauth2:${GITLAB_TOKEN}@${CI_SERVER_HOST}/${GITLAB_REPO_PATH}.git"
+      sed -i "s|image: .*worklog-backend:.*|image: ${DOCKER_REPOSITORY}:${SHORT_SHA}|" deploy_manifest/worklog-backend.yaml
+      sed -i "s|value: .* # IMAGE_TAG|value: ${SHORT_SHA} # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml
+      git config user.name "gitlab-ci"
+      git config user.email "gitlab-ci@myk8s.local"
+      git add deploy_manifest/
+      git commit -m "deploy: update backend image tag to ${SHORT_SHA} [skip ci]"
+      git push origin HEAD:main

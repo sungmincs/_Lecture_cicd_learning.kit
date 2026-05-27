@@ -13,11 +13,11 @@ pipeline {
     agent any
     environment {
         DOCKER_REPOSITORY = '<dockerhub_username>/worklog-backend'
-        DOCKERHUB_USERNAME = '<dockerhub_username>'
-        DOCKERHUB_TOKEN = credentials('dockerhub-token')
-        ARGOCD_SERVER = 'argocd.myk8s.local'
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
+        ARGOCD_SERVER = 'argocd-server.argocd.svc.cluster.local'
         ARGOCD_APP_NAME = 'worklog-backend'
         ARGOCD_ADMIN_PASSWORD = credentials('argocd-admin-password')
+        GITHUB_CREDENTIALS = credentials('github-token')
     }
     stages {
         stage('Init Variables') {
@@ -31,61 +31,68 @@ pipeline {
             }
         }
         stage('Run Test') {
-            agent {
-                docker {
-                    image 'python:3.12.3-slim-bookworm'
-                }
-            }
             steps {
                 script {
                     echo "let's run a test for ${shortSHA} in ${branch}"
                     echo "running test for ${fullSHA}"
-                    sh 'pip install poetry'
-                    echo 'Test Passed!'
+                    sh '''
+                        curl -LsSf https://astral.sh/uv/install.sh | sh
+                        export PATH="$HOME/.local/bin:$PATH"
+                        uv sync --extra dev
+                        TESTING=true uv run coverage run --source ./src/worklog -m pytest --disable-warnings -v
+                        uv run coverage report
+                    '''
                 }
             }
         }
-        stage('Build Image') {
+        stage('Build and Push Image') {
             steps {
-                echo "Let's build the image for ${shortSHA} in ${branch}"
-                echo "The change commit message to build is '${commitMessage}'"
-                sh """
-                    echo ${DOCKERHUB_TOKEN} | docker login --username ${DOCKERHUB_USERNAME} --password-stdin
-                    docker build . \
-                        -t ${DOCKER_REPOSITORY}:${fullSHA} \
-                        -t ${DOCKER_REPOSITORY}:${shortSHA}
-                    docker push ${DOCKER_REPOSITORY}:${shortSHA}
-                    docker push ${DOCKER_REPOSITORY}:${fullSHA}
-                """
-                echo 'build successful and published image with the following tags:'
-                echo "Tags: ${shortSHA}, ${fullSHA}"
+                script {
+                    echo "Let's build the image for ${shortSHA} in ${branch}"
+
+                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') {
+                        sh """
+                            docker run --privileged --rm tonistiigi/binfmt --install all 2>/dev/null || true
+                            docker buildx create --use --name multi-platform-builder 2>/dev/null || true
+                            docker buildx build \
+                                --platform linux/amd64,linux/arm64 \
+                                -t ${DOCKER_REPOSITORY}:${shortSHA} \
+                                -t ${DOCKER_REPOSITORY}:${fullSHA} \
+                                --push .
+                        """
+                    }
+
+                    echo 'build successful and published image with the following tags:'
+                    echo "Tags: ${shortSHA}, ${fullSHA}"
+                }
             }
         }
         stage('Update Manifest') {
             steps {
-                echo "Updating deploy manifest with new image tag ${shortSHA}"
                 sh """
-                    cd deploy_manifest
-                    sed -i "s|image: .*worklog-backend:.*|image: ${DOCKER_REPOSITORY}:${shortSHA}|" worklog-backend.yaml
-                    sed -i "s|value: .*# IMAGE_TAG|value: ${shortSHA} # IMAGE_TAG|" worklog-backend.yaml
+                    sed -i "s|image: .*worklog-backend:.*|image: ${DOCKER_REPOSITORY}:${shortSHA}|" deploy_manifest/worklog-backend.yaml
+                    sed -i "s|value: .* # IMAGE_TAG|value: ${shortSHA} # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml
                     git config user.name "jenkins"
                     git config user.email "jenkins@myk8s.local"
-                    git add .
+                    git remote set-url origin https://${GITHUB_CREDENTIALS_USR}:${GITHUB_CREDENTIALS_PSW}@github.com/sysnet4admin/worklog-backend.git
+                    git add deploy_manifest/
                     git commit -m "deploy: update image tag to ${shortSHA}"
-                    git push origin main
+                    git push origin HEAD:main
                 """
             }
         }
         stage('Sync Argo CD') {
             steps {
-                echo "Syncing Argo CD application ${ARGOCD_APP_NAME}"
                 sh """
-                    argocd login ${ARGOCD_SERVER} \
+                    curl -sSL -o /tmp/argocd https://github.com/argoproj/argo-cd/releases/download/v3.4.2/argocd-linux-arm64
+                    chmod +x /tmp/argocd
+                    /tmp/argocd login ${ARGOCD_SERVER} \
                         --username admin \
-                        --password ${ARGOCD_ADMIN_PASSWORD} \
-                        --insecure
-                    argocd app sync ${ARGOCD_APP_NAME}
-                    argocd app wait ${ARGOCD_APP_NAME} --health --timeout 120
+                        --password ${ARGOCD_ADMIN_PASSWORD_PSW} \
+                        --insecure \
+                        --plaintext
+                    /tmp/argocd app sync ${ARGOCD_APP_NAME}
+                    /tmp/argocd app wait ${ARGOCD_APP_NAME} --health --timeout 120
                 """
                 echo "Argo CD sync completed successfully"
             }

@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/<github_username>/worklog-backend_v1.git
+    repoURL: https://github.com/<github_username>/worklog-backend.git
     targetRevision: main
     path: deploy_manifest
   destination:

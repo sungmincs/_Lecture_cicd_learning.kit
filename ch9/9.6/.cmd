@@ -1,39 +1,24 @@
-# Apply multi-environment Jenkins pipeline
-## Jenkins 멀티 환경 배포 파이프라인 복사
-cd ~/workspace/worklog-backend
-cp ~/_Lecture_cicd_learning.kit/ch9/9.6/1.multi-env-pipeline.groovy Jenkinsfile
+# 9.6 CD 강화 — 이미지 취약점 스캔 (Trivy)
+
+# Trivy 로컬 설치 및 이미지 스캔 (이미지가 Docker Hub에 있어야 함)
+# macOS: brew install trivy
+# Linux: curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+
+trivy image --severity CRITICAL,HIGH <dockerhub_username>/worklog-backend:latest
+
+# 파이프라인 파일 복사 (사용하는 CI 도구 선택)
+## GitHub Actions
+cp ~/_Lecture_cicd_learning.kit/ch9/9.6/1.trivy-github.yaml .github/workflows/trivy.yaml
+## Jenkins
+cp ~/_Lecture_cicd_learning.kit/ch9/9.6/2.trivy-jenkins.groovy Jenkinsfile
+## GitLab CI
+cp ~/_Lecture_cicd_learning.kit/ch9/9.6/3.trivy-gitlab.yml .gitlab-ci.yml
+
+# 커밋 및 푸시
 git add .
-git commit -m "cicd: add multi-environment Jenkins pipeline"
+git commit -m "cd: add trivy image vulnerability scan"
 git push origin main
 
-# Configure Jenkins Multibranch Pipeline
-## Jenkins Dashboard -> New Item -> Multibranch Pipeline
-### Item name: worklog-backend-multi-env
-## Branch Sources -> Add source -> Git
-### Repository URL: https://github.com/<github_username>/worklog-backend.git
-### Credentials: github-credentials
-## Behaviours -> Add -> Discover branches (strategy: All branches)
-## Behaviours -> Add -> Discover tags
-## Save
-
-# Trigger pipeline in Jenkins
-### Dashboard -> worklog-backend-multi-env -> Scan Multibranch Pipeline Now
-
-# Test branch-based deployment
-## develop 브랜치 push 확인
-git checkout develop
-echo "# dev test" >> README.md
-git add .
-git commit -m "test: develop branch deployment"
-git push origin develop
-git checkout main
-
-# Test tag-based deployment
-## 프로덕션 배포용 태그 생성
-git tag v1.0.0
-git push origin v1.0.0
-
-# Verify
-kubectl get pods -n dev
-kubectl get pods -n staging
-kubectl get pods -n prod
+# 파이프라인 실행 확인
+## GitHub: Actions 탭에서 scan job 로그 확인
+## GitLab: CI/CD > Pipelines > trivy job 확인

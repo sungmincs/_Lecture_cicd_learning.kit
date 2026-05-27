@@ -1,68 +1,60 @@
-# GUARDRAIL: 8.2 Worklog App의 백엔드와 DB
+# GUARDRAIL: 9.2 배포 환경의 중요성 (namespace 분리)
 
 ## 범위 (Scope)
 ### 이 단계에서 다루는 것
-- Worklog App 마이크로서비스 아키텍처 이해 (Frontend + Backend + MongoDB)
-- MongoDB 배포 (Secret, Deployment, Service)
-- Backend 배포 및 MongoDB 연결 설정
-- Frontend 배포 및 Backend 연결 설정
-- 전체 스택 통합 검증
+- Kubernetes namespace를 이용한 배포 환경 분리 (dev/staging/prod) 개념
+- 각 namespace 생성 및 environment 레이블 설정
+- 멀티 환경 운영의 필요성과 실무 패턴 이해
 
 ### 이 단계에서 다루지 않는 것
-- CI/CD 파이프라인을 통한 자동 배포 (8.3~8.5에서 다룸)
-- PersistentVolume을 활용한 MongoDB 데이터 영속성
-- MongoDB ReplicaSet 구성
+- 실제 CI/CD 파이프라인 구현 (9.4~9.9에서 다룸)
+- PR/Branch/Tag 기반 배포 전략 이론 (9.3에서 다룸)
+- NetworkPolicy, ResourceQuota 등 namespace 수준 보안/자원 제한
+- Helm values 파일을 이용한 환경별 설정 분리
 
 ## 사전 조건 (Prerequisites)
-- ch5 완료 (CI/CD 파이프라인 기본 구성)
-- ch6 완료 (Argo CD 설치 및 구성)
-- Docker Hub에 worklog-backend, worklog-frontend 이미지가 push된 상태
-- Kubernetes 클러스터에 Ingress Controller(nginx) 설치 완료
+- ch2 완료 (Kubernetes 클러스터 구성 및 kubectl 접속 가능)
 
 ## 순서 (Sequence)
-### Step 1: MongoDB 배포
-- 명령어: `kubectl apply -f 1.mongodb-manifest.yaml`
-- 기대 결과: mongodb Pod Running, mongodb Service 생성
+### Step 1: dev namespace 생성
+- 명령어: `kubectl create namespace dev`
+- 기대 결과: namespace/dev created
 
-### Step 2: MongoDB 동작 확인
-- 명령어: `kubectl get pods -l app=mongodb`
-- 명령어: `kubectl get svc mongodb`
-- 기대 결과: Pod Running, Service port 27017
+### Step 2: staging namespace 생성
+- 명령어: `kubectl create namespace staging`
+- 기대 결과: namespace/staging created
 
-### Step 3: Backend 배포
-- 명령어: `kubectl apply -f 2.worklog-backend-with-db.yaml`
-- 기대 결과: worklog-backend Pod Running, MongoDB 연결 성공
+### Step 3: prod namespace 생성
+- 명령어: `kubectl create namespace prod`
+- 기대 결과: namespace/prod created
 
-### Step 4: Backend 로그 확인
-- 명령어: `kubectl logs -l app=worklog-backend --tail=20`
-- 기대 결과: "Connected to MongoDB" 메시지 확인
+### Step 4: namespace 목록 확인
+- 명령어: `kubectl get namespaces`
+- 기대 결과: dev, staging, prod namespace가 Active 상태로 표시
 
-### Step 5: Frontend 배포
-- 명령어: `kubectl apply -f 3.worklog-frontend-manifest.yaml`
-- 기대 결과: worklog-frontend Pod Running
+### Step 5: environment 레이블 추가
+- 명령어: `kubectl label namespace dev environment=development`
+- 명령어: `kubectl label namespace staging environment=staging`
+- 명령어: `kubectl label namespace prod environment=production`
+- 기대 결과: 각 namespace에 environment 레이블 추가됨
 
-### Step 6: 전체 스택 검증
-- 명령어: `kubectl get pods`
-- 접속: `http://worklog-frontend.myk8s.local`
-- 기대 결과: Frontend에서 Backend API 호출 성공, 데이터 저장/조회 가능
+### Step 6: 레이블 확인
+- 명령어: `kubectl get namespaces --show-labels`
+- 기대 결과: 각 namespace에 environment 레이블이 표시됨
 
 ## 검증 (Validation)
 | 단계 | 검증 방법 | 기대 결과 |
 |------|----------|----------|
-| MongoDB | `kubectl get pods -l app=mongodb` | mongodb Pod Running |
-| Backend | `kubectl get pods -l app=worklog-backend` | worklog-backend Pod Running |
-| DB 연결 | `kubectl logs -l app=worklog-backend` | "Connected to MongoDB" 로그 |
-| Frontend | `kubectl get pods -l app=worklog-frontend` | worklog-frontend Pod Running |
-| Ingress | `kubectl get ingress` | backend, frontend Ingress 존재 |
-| 통합 테스트 | 브라우저에서 worklog-frontend.myk8s.local 접속 | 화면 정상 표시, 데이터 CRUD 동작 |
+| namespace 생성 | `kubectl get namespaces` | dev, staging, prod 모두 Active |
+| 레이블 확인 | `kubectl get namespaces --show-labels` | environment=development/staging/production 표시 |
 
 ## 플레이스홀더 (Placeholders)
 | 플레이스홀더 | 설명 | AI가 임의로 채워도 되는가? |
 |-------------|------|------------------------|
-| `<dockerhub_username>` | Docker Hub 사용자명 | ❌ 반드시 확인 필요 |
+| 없음 | - | - |
 
 ## 주의사항 (Cautions)
-- ⛔ `<dockerhub_username>`을 임의로 채우지 말 것 — 수강생의 실제 Docker Hub 계정 사용
-- ⛔ MongoDB Secret의 비밀번호는 학습용 — 실무에서는 강력한 비밀번호 사용 필요
-- ✅ Backend는 MONGODB_URI Secret을 통해 MongoDB에 연결
-- ✅ Frontend는 Ingress를 통해 외부 접속 가능
+- ⛔ 이미 존재하는 namespace에 대해 `kubectl create namespace`를 실행하면 에러가 발생한다. 이 경우 무시하거나 `kubectl create namespace dev --dry-run=client -o yaml | kubectl apply -f -` 를 사용한다.
+- ⛔ prod namespace에 실수로 테스트 워크로드를 배포하지 않도록 주의한다.
+- ✅ namespace 분리는 논리적 격리이며, 완전한 보안 격리가 필요하면 별도 클러스터를 사용한다.
+- ✅ 이 단계에서 생성한 namespace는 이후 9.4~9.9에서 계속 사용된다.

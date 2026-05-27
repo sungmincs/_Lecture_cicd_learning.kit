@@ -1,32 +1,25 @@
-# Apply multi-environment GitLab pipeline
-## GitLab CI 멀티 환경 배포 파이프라인 복사
-cd ~/workspace/worklog-backend-gitlab
-cp ~/_Lecture_cicd_learning.kit/ch9/9.8/1.multi-env-pipeline.yml .gitlab-ci.yml
-git add .
-git commit -m "cicd: add multi-environment GitLab pipeline"
-git push origin main
+# 9.8 CD 강화 — 자동 롤백 (Argo Rollouts AnalysisTemplate)
 
-# Test MR-based deployment
-## feature 브랜치 생성 후 MR을 통한 배포 테스트
-git checkout -b feature/test-mr-deploy
-echo "# test" >> README.md
-git add .
-git commit -m "test: MR deployment"
-git push origin feature/test-mr-deploy
-### GitLab UI에서 Merge Request 생성
+# AnalysisTemplate 적용
+kubectl apply -f ~/_Lecture_cicd_learning.kit/ch9/9.8/1.analysis-template.yaml
+kubectl get analysistemplate
 
-# Test tag-based deployment
-## 태그 생성으로 프로덕션 배포 테스트
-git checkout main
-git tag v1.0.0
-git push origin v1.0.0
+# Rollout 적용
+kubectl apply -f ~/_Lecture_cicd_learning.kit/ch9/9.8/2.rollout-with-analysis.yaml
+kubectl argo rollouts get rollout worklog-backend
 
-# Verify each deployment in the corresponding namespace
-## dev namespace 확인
-kubectl get pods -n dev
+# 새 이미지 배포로 롤아웃 트리거
+kubectl argo rollouts set image worklog-backend worklog-backend=<dockerhub_username>/worklog-backend:<new_tag>
 
-## staging namespace 확인
-kubectl get pods -n staging
+# 롤아웃 진행 상황 실시간 확인
+kubectl argo rollouts get rollout worklog-backend --watch
 
-## prod namespace 확인
-kubectl get pods -n prod
+# Argo Rollouts 대시보드 실행 (브라우저에서 확인)
+kubectl argo rollouts dashboard
+
+# AnalysisRun 상태 확인
+kubectl get analysisrun
+
+# 롤백 수동 실행 (자동 롤백이 안 된 경우)
+kubectl argo rollouts abort worklog-backend
+kubectl argo rollouts undo worklog-backend

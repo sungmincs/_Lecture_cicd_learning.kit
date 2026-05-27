@@ -1,24 +1,25 @@
-# Review Worklog App architecture
-## Frontend: React app (worklog-frontend_v1)
-## Backend: Python FastAPI (worklog-backend_v1)
-## Database: MongoDB
+# Create namespaces for multi-environment
+## dev 환경 namespace 생성
+kubectl create namespace dev
 
-# Deploy MongoDB
-kubectl apply -f 1.mongodb-manifest.yaml
+## staging 환경 namespace 생성
+kubectl create namespace staging
 
-# Verify MongoDB
-kubectl get pods -l app=mongodb
-kubectl get svc mongodb
+## prod 환경 namespace 생성
+kubectl create namespace prod
 
-# Deploy Backend with DB connection
-kubectl apply -f 2.worklog-backend-with-db.yaml
+# Verify namespaces
+kubectl get namespaces
 
-# Verify Backend connects to DB
-kubectl logs -l app=worklog-backend --tail=20
+# Label namespaces for environment identification
+## dev namespace에 environment 레이블 추가
+kubectl label namespace dev environment=development
 
-# Deploy Frontend
-kubectl apply -f 3.worklog-frontend-manifest.yaml
+## staging namespace에 environment 레이블 추가
+kubectl label namespace staging environment=staging
 
-# Verify full stack
-kubectl get pods
-## Access: http://worklog-frontend.myk8s.local
+## prod namespace에 environment 레이블 추가
+kubectl label namespace prod environment=production
+
+# Verify labels
+kubectl get namespaces --show-labels

@@ -10,7 +10,7 @@
 cd ~/workspace/worklog-backend
 cp ~/_Lecture_cicd_learning.kit/ch5/5.4/1.build-and-push-docker-image.groovy Jenkinsfile
 git add .
-git commit -m "cicd: add build and deploy Jenkins pipeline"
+git commit -m "cicd: add build and push Jenkins pipeline"
 git push origin main
 
 ## Trigger the pipeline in Jenkins

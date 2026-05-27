@@ -4,13 +4,13 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'deploy_manifest/**'
 
 env:
   DOCKER_REPOSITORY: <dockerhub_username>/worklog-backend
   DOCKERHUB_USERNAME: <dockerhub_username>
   DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-  ARGOCD_SERVER: argocd.myk8s.local
-  ARGOCD_APP_NAME: worklog-backend
 
 jobs:
   init-and-test:
@@ -22,7 +22,7 @@ jobs:
       commit_message: ${{ steps.vars.outputs.commit_message }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v5
         with:
           python-version: '3.12'
       - id: vars
@@ -42,30 +42,28 @@ jobs:
           echo "Sending a 'start' notification to Slack for build ${{ steps.vars.outputs.short_sha }}"
       - name: Run test
         run: |
-          echo "let's run a test for ${{ steps.vars.outputs.short_sha }} in ${{ steps.vars.outputs.branch }}"
           echo "running test for ${{ steps.vars.outputs.full_sha }}"
-          pip install poetry
-          poetry install --no-root
+          uv sync --extra dev
           export TESTING=true
-          poetry run coverage run --source ./src/worklog -m pytest --disable-warnings -v
-          poetry run coverage report
+          uv run coverage run --source ./src/worklog -m pytest --disable-warnings -v
+          uv run coverage report
 
   build:
     runs-on: ubuntu-latest
     needs: [init-and-test]
     steps:
       - uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
       - name: Build image
         run: |
           echo "Let's build the image for ${{ needs.init-and-test.outputs.full_sha }}"
-          echo "The change commit message to build is '${{ needs.init-and-test.outputs.commit_message }}'"
           echo ${{ env.DOCKERHUB_TOKEN }} | docker login --username ${{ env.DOCKERHUB_USERNAME }} --password-stdin
-          docker build . \
+          docker buildx build . \
+            --platform linux/amd64,linux/arm64 \
             -t ${{ env.DOCKER_REPOSITORY }}:${{ needs.init-and-test.outputs.full_sha }} \
-            -t ${{ env.DOCKER_REPOSITORY }}:${{ needs.init-and-test.outputs.short_sha }}
-          docker push ${{ env.DOCKER_REPOSITORY }}:${{ needs.init-and-test.outputs.short_sha }}
-          docker push ${{ env.DOCKER_REPOSITORY }}:${{ needs.init-and-test.outputs.full_sha }}
-          echo "build successful and published image with the following tags:"
+            -t ${{ env.DOCKER_REPOSITORY }}:${{ needs.init-and-test.outputs.short_sha }} \
+            --push
           echo "Tags: ${{ needs.init-and-test.outputs.short_sha }}, ${{ needs.init-and-test.outputs.full_sha }}"
 
   deploy:
@@ -73,29 +71,18 @@ jobs:
     needs: [init-and-test, build]
     steps:
       - uses: actions/checkout@v4
-      - name: Install Argo CD CLI
-        run: |
-          curl -sSL -o argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
-          chmod +x argocd
-          sudo mv argocd /usr/local/bin/argocd
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Update manifest and push
         run: |
           cd deploy_manifest
           sed -i "s|image: .*worklog-backend:.*|image: ${{ env.DOCKER_REPOSITORY }}:${{ needs.init-and-test.outputs.short_sha }}|" worklog-backend.yaml
-          sed -i "s|value: .*# IMAGE_TAG|value: ${{ needs.init-and-test.outputs.short_sha }} # IMAGE_TAG|" worklog-backend.yaml
+          sed -i "s|value: .* # IMAGE_TAG|value: ${{ needs.init-and-test.outputs.short_sha }} # IMAGE_TAG|" worklog-backend.yaml
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add .
           git commit -m "deploy: update image tag to ${{ needs.init-and-test.outputs.short_sha }}"
           git push origin main
-      - name: Sync Argo CD Application
-        run: |
-          argocd login ${{ env.ARGOCD_SERVER }} \
-            --username admin \
-            --password ${{ secrets.ARGOCD_ADMIN_PASSWORD }} \
-            --insecure
-          argocd app sync ${{ env.ARGOCD_APP_NAME }}
-          argocd app wait ${{ env.ARGOCD_APP_NAME }} --health --timeout 120
 
   notify-success-result:
     if: ${{ success() }}
