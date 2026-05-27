@@ -19,24 +19,24 @@
 - GitHub에 worklog-frontend_v1, worklog-backend_v1 저장소 존재
 
 ## 순서 (Sequence)
-### Step 1: GitHub Secrets 등록 (두 저장소 모두)
+### Step 1: GitHub Secrets 등록 (두 저장소 모두) [학습자 직접]
 - GitHub -> Settings -> Secrets and variables -> Actions
 - `DOCKERHUB_USERNAME`: Docker Hub 사용자명
 - `DOCKERHUB_TOKEN`: Docker Hub Access Token
 - `KUBE_CONFIG`: kubeconfig (base64 인코딩)
 - 기대 결과: 각 저장소에 Secrets 등록 완료
 
-### Step 2: Frontend 파이프라인 적용
+### Step 2: Frontend 파이프라인 적용 [학습자 직접]
 - 명령어: `cp ~/_Lecture_cicd_learning.kit/ch7/7.8/1.frontend-build-deploy.yaml .github/workflows/build-deploy.yaml`
 - 명령어: `git add . && git commit -m "cicd: add frontend build and deploy pipeline" && git push origin main`
 - 기대 결과: GitHub Actions 자동 트리거, Frontend 이미지 빌드 및 배포
 
-### Step 3: Backend 파이프라인 적용
+### Step 3: Backend 파이프라인 적용 [학습자 직접]
 - 명령어: `cp ~/_Lecture_cicd_learning.kit/ch7/7.8/2.backend-build-deploy.yaml .github/workflows/build-deploy.yaml`
 - 명령어: `git add . && git commit -m "cicd: add backend build and deploy pipeline" && git push origin main`
 - 기대 결과: GitHub Actions 자동 트리거, Backend 이미지 빌드/테스트 및 배포
 
-### Step 4: 전체 통합 검증
+### Step 4: 전체 통합 검증 [학습자 직접]
 - GitHub Actions 탭에서 두 파이프라인 성공 확인
 - 접속: `http://worklog-frontend.myk8s.local`
 - 기대 결과: Frontend -> Backend -> MongoDB 연결 정상 동작

@@ -17,21 +17,21 @@
 - ch8/8.2 완료 (dev/staging/prod namespace 생성)
 
 ## 순서 (Sequence)
-### Step 1: 배포 패턴 개념 이해
+### Step 1: 배포 패턴 개념 이해 [AI 프롬프트]
 - PR-based: PR 이벤트(opened, synchronize) 발생 시 dev namespace에 preview 배포
 - Branch-based: develop 브랜치 push → dev, release/* push → staging
 - Tag-based: v*.*.* 태그 생성 시 prod namespace에 배포
 - 기대 결과: 각 패턴의 트리거 조건과 대상 환경을 이해
 
-### Step 2: develop 브랜치 생성
+### Step 2: develop 브랜치 생성 [학습자 직접]
 - 명령어: `git checkout -b develop && git push origin develop`
 - 기대 결과: origin에 develop 브랜치 생성
 
-### Step 3: release/1.0 브랜치 생성
+### Step 3: release/1.0 브랜치 생성 [학습자 직접]
 - 명령어: `git checkout -b release/1.0 && git push origin release/1.0`
 - 기대 결과: origin에 release/1.0 브랜치 생성
 
-### Step 4: main 브랜치로 복귀
+### Step 4: main 브랜치로 복귀 [학습자 직접]
 - 명령어: `git checkout main`
 - 기대 결과: main 브랜치에서 다음 단계 진행 준비 완료
 

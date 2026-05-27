@@ -17,19 +17,19 @@
 - GitHub Secrets 설정: `DOCKERHUB_TOKEN`, `ARGOCD_ADMIN_PASSWORD`
 
 ## 순서 (Sequence)
-### Step 1: 파이프라인 파일 복사
+### Step 1: 파이프라인 파일 복사 [학습자 직접]
 - 명령어: `cp ~/_Lecture_cicd_learning.kit/ch6/6.6/1.build-and-argocd-sync.yaml ~/workspace/worklog-backend/.github/workflows/build-and-argocd-sync.yaml`
 - 기대 결과: workflow 파일 복사 완료
 
-### Step 2: Git push
+### Step 2: Git push [학습자 직접]
 - 명령어: `git add . && git commit -m "cicd: integrate Argo CD sync in pipeline" && git push origin main`
 - 기대 결과: GitHub Actions 파이프라인 자동 트리거
 
-### Step 3: 파이프라인 실행 확인
+### Step 3: 파이프라인 실행 확인 [학습자 직접]
 - GitHub Actions UI에서 워크플로우 실행 확인
 - 기대 결과: init-and-test > build > deploy 순서로 성공
 
-### Step 4: Argo CD 동기화 확인
+### Step 4: Argo CD 동기화 확인 [학습자 직접]
 - Argo CD UI에서 Application 상태 확인
 - 기대 결과: Synced/Healthy 상태
 

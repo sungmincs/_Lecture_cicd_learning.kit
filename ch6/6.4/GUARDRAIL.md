@@ -17,20 +17,20 @@
 - GitHub에 worklog-backend_v1 저장소 존재 (deploy_manifest 디렉토리 포함)
 
 ## 순서 (Sequence)
-### Step 1: Git 저장소 등록
+### Step 1: Git 저장소 등록 [학습자 직접]
 - 명령어: `argocd repo add https://github.com/<github_username>/worklog-backend_v1.git`
 - 기대 결과: 저장소 연결 성공
 
-### Step 2: Argo CD Application 생성
+### Step 2: Argo CD Application 생성 [학습자 직접]
 - 명령어: `argocd app create worklog-backend --repo ... --path deploy_manifest --dest-server https://kubernetes.default.svc --dest-namespace default --sync-policy automated`
 - 또는: `kubectl apply -f 1.worklog-backend-app.yaml`
 - 기대 결과: Application 생성 및 자동 동기화 시작
 
-### Step 3: 동기화 확인
+### Step 3: 동기화 확인 [학습자 직접]
 - 명령어: `argocd app sync worklog-backend`
 - 기대 결과: Application Synced 상태
 
-### Step 4: 배포 결과 확인
+### Step 4: 배포 결과 확인 [학습자 직접]
 - 명령어: `kubectl get pods`, `kubectl get svc`
 - 기대 결과: worklog-backend pod Running, service 존재
 

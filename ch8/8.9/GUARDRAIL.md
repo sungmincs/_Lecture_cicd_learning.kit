@@ -20,19 +20,19 @@
 - GitLab CI/CD Variables 등록: DOCKERHUB_USERNAME, DOCKERHUB_TOKEN, ARGOCD_PASSWORD
 
 ## 순서 (Sequence)
-### Step 1: Full CI/CD 파이프라인 파일 복사
+### Step 1: Full CI/CD 파이프라인 파일 복사 [학습자 직접]
 - 명령어: `cp ~/_Lecture_cicd_learning.kit/ch8/8.9/1.full-cicd-workflow.yml .gitlab-ci.yml`
 - 기대 결과: 프로젝트 루트에 .gitlab-ci.yml 생성/덮어쓰기
 
-### Step 2: 코드 커밋 및 푸시
+### Step 2: 코드 커밋 및 푸시 [학습자 직접]
 - 명령어: `git add . && git commit -m "cicd: full CI/CD workflow with Argo CD" && git push origin main`
 - 기대 결과: GitLab CI/CD가 main push 이벤트로 자동 트리거
 
-### Step 3: Argo CD 배포 확인
+### Step 3: Argo CD 배포 확인 [학습자 직접]
 - 명령어: `argocd app list`
 - 기대 결과: worklog-backend-dev, worklog-backend-staging, worklog-backend-prod 모두 Healthy/Synced
 
-### Step 4: 각 환경 배포 확인
+### Step 4: 각 환경 배포 확인 [학습자 직접]
 - 명령어: `kubectl get pods -n dev`, `kubectl get pods -n staging`, `kubectl get pods -n prod`
 - 기대 결과: 각 namespace에 worklog-backend Pod Running
 

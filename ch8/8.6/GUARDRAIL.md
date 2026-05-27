@@ -20,28 +20,28 @@
 - Jenkins credentials 등록: dockerhub-credentials (Username/Password), kube-config (Secret file)
 
 ## 순서 (Sequence)
-### Step 1: Jenkins 멀티 환경 파이프라인 파일 복사
+### Step 1: Jenkins 멀티 환경 파이프라인 파일 복사 [학습자 직접]
 - 명령어: `cp ~/_Lecture_cicd_learning.kit/ch8/8.6/1.multi-env-pipeline.groovy Jenkinsfile`
 - 기대 결과: 프로젝트 루트에 Jenkinsfile 생성/덮어쓰기
 
-### Step 2: Groovy 파일에서 플레이스홀더 수정
+### Step 2: Groovy 파일에서 플레이스홀더 수정 [AI 프롬프트]
 - `<dockerhub_username>`을 본인 Docker Hub 사용자 이름으로 변경
 - 기대 결과: DOCKER_REPOSITORY 값이 올바르게 설정됨
 
-### Step 3: 코드 커밋 및 푸시
+### Step 3: 코드 커밋 및 푸시 [학습자 직접]
 - 명령어: `git add . && git commit -m "cicd: add multi-environment Jenkins pipeline" && git push origin main`
 - 기대 결과: main 브랜치에 Jenkinsfile 반영
 
-### Step 4: Jenkins Multibranch Pipeline 생성
+### Step 4: Jenkins Multibranch Pipeline 생성 [학습자 직접]
 - Jenkins Dashboard → New Item → Multibranch Pipeline
 - Branch Sources에 Git 저장소 추가, 브랜치/태그 탐색 활성화
 - 기대 결과: develop, release/1.0, main 브랜치 각각에 파이프라인 생성
 
-### Step 5: Scan Multibranch Pipeline
+### Step 5: Scan Multibranch Pipeline [학습자 직접]
 - Dashboard → worklog-backend-multi-env → Scan Multibranch Pipeline Now
 - 기대 결과: 각 브랜치별 빌드 트리거
 
-### Step 6: 각 환경 배포 확인
+### Step 6: 각 환경 배포 확인 [학습자 직접]
 - 명령어: `kubectl get pods -n dev`, `kubectl get pods -n staging`, `kubectl get pods -n prod`
 - 기대 결과: 각 namespace에 worklog-backend Pod Running
 

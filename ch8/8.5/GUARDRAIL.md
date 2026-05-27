@@ -18,31 +18,31 @@
 - GitHub Secrets 등록: DOCKERHUB_TOKEN, CP_K8S_CONTEXT, ARGOCD_ADMIN_PASSWORD
 
 ## 순서 (Sequence)
-### Step 1: Full CI/CD 파이프라인 파일 복사
+### Step 1: Full CI/CD 파이프라인 파일 복사 [학습자 직접]
 - 명령어: `cp ~/_Lecture_cicd_learning.kit/ch8/8.5/1.full-cicd-workflow.yaml .github/workflows/full-cicd-workflow.yaml`
 - 기대 결과: `.github/workflows/` 디렉토리에 파이프라인 파일 생성
 
-### Step 2: YAML 파일에서 플레이스홀더 수정
+### Step 2: YAML 파일에서 플레이스홀더 수정 [AI 프롬프트]
 - `<dockerhub_username>`을 본인 Docker Hub 사용자 이름으로 변경
 - 기대 결과: env.DOCKER_REPOSITORY, env.DOCKERHUB_USERNAME 값이 올바르게 설정됨
 
-### Step 3: 코드 커밋 및 푸시
+### Step 3: 코드 커밋 및 푸시 [학습자 직접]
 - 명령어: `git add . && git commit -m "cicd: full CI/CD workflow with Argo CD" && git push origin main`
 - 기대 결과: GitHub Actions 트리거
 
-### Step 4: Argo CD Application 생성
+### Step 4: Argo CD Application 생성 [AI 프롬프트]
 - 명령어: `kubectl apply -f ~/_Lecture_cicd_learning.kit/ch8/8.5/2.argocd-apps-multi-env.yaml`
 - `<github_username>` 플레이스홀더를 사전에 수정
 - 기대 결과: argocd namespace에 3개 Application 생성
 
-### Step 5: 전체 흐름 테스트
+### Step 5: 전체 흐름 테스트 [학습자 직접]
 - develop push → dev 배포 확인
 - PR 생성 → dev preview 배포 확인
 - release/* push → staging 배포 확인
 - tag 생성 → prod 배포 확인
 - 기대 결과: 각 환경에 올바른 이미지가 배포됨
 
-### Step 6: Argo CD UI 및 CLI 확인
+### Step 6: Argo CD UI 및 CLI 확인 [학습자 직접]
 - 명령어: `argocd app list`
 - 기대 결과: worklog-backend-dev, worklog-backend-staging, worklog-backend-prod 모두 Healthy/Synced
 

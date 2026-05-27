@@ -18,24 +18,24 @@
 - 기존 worklog-backend Deployment가 있다면 먼저 삭제 필요
 
 ## 순서 (Sequence)
-### Step 1: Blue-Green Rollout 리소스 배포
+### Step 1: Blue-Green Rollout 리소스 배포 [학습자 직접]
 - 명령어: `kubectl apply -f 1.worklog-backend-rollout-bluegreen.yaml`
 - 명령어: `kubectl apply -f 2.worklog-backend-services-bluegreen.yaml`
 - 기대 결과: Rollout과 Active/Preview 서비스 생성
 
-### Step 2: 초기 배포 상태 확인
+### Step 2: 초기 배포 상태 확인 [학습자 직접]
 - 명령어: `kubectl argo rollouts get rollout worklog-backend --watch`
 - 기대 결과: 3개의 Pod가 Running, Active 서비스에 연결
 
-### Step 3: 이미지 업데이트로 Blue-Green 배포 트리거
+### Step 3: 이미지 업데이트로 Blue-Green 배포 트리거 [AI 프롬프트]
 - 명령어: `kubectl argo rollouts set image worklog-backend worklog-backend=<dockerhub_username>/worklog-backend:<new_tag>`
 - 기대 결과: 새 ReplicaSet 생성, Preview 서비스에 연결
 
-### Step 4: Preview 환경 확인 후 Promote
+### Step 4: Preview 환경 확인 후 Promote [학습자 직접]
 - 명령어: `kubectl argo rollouts promote worklog-backend`
 - 기대 결과: Active 서비스가 새 버전으로 전환, 이전 버전 Pod 제거
 
-### Step 5: 최종 검증
+### Step 5: 최종 검증 [학습자 직접]
 - 명령어: `kubectl get pods`, `kubectl get svc`
 - 기대 결과: 새 버전 Pod만 Running, Active 서비스 정상
 

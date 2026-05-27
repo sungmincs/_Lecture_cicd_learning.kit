@@ -17,20 +17,20 @@
 - 클러스터에 admin 권한 보유
 
 ## 순서 (Sequence)
-### Step 1: argo-rollouts 네임스페이스 생성
+### Step 1: argo-rollouts 네임스페이스 생성 [학습자 직접]
 - 명령어: `kubectl create namespace argo-rollouts`
 - 기대 결과: namespace/argo-rollouts created
 
-### Step 2: Argo Rollouts 컨트롤러 설치
+### Step 2: Argo Rollouts 컨트롤러 설치 [학습자 직접]
 - 명령어: `kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml`
 - 기대 결과: CRD, ServiceAccount, Role, Deployment 등 리소스 생성
 
-### Step 3: kubectl 플러그인 설치
+### Step 3: kubectl 플러그인 설치 [학습자 직접]
 - 명령어: `curl -LO https://github.com/argoproj/argo-rollouts/releases/latest/download/kubectl-argo-rollouts-linux-amd64`
 - 명령어: `chmod +x ./kubectl-argo-rollouts-linux-amd64 && mv ./kubectl-argo-rollouts-linux-amd64 /usr/local/bin/kubectl-argo-rollouts`
 - 기대 결과: kubectl-argo-rollouts 바이너리가 PATH에 설치됨
 
-### Step 4: 설치 검증
+### Step 4: 설치 검증 [학습자 직접]
 - 명령어: `kubectl argo rollouts version`
 - 명령어: `kubectl get pods -n argo-rollouts`
 - 기대 결과: 버전 출력, argo-rollouts Pod Running 상태

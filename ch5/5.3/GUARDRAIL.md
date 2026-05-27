@@ -19,22 +19,25 @@
 - GitHub Secrets에 DOCKERHUB_TOKEN, CP_K8S_CONTEXT가 이미 등록된 상태
 
 ## 순서 (Sequence)
-### Step 1: Marketplace Action 파이프라인 YAML 복사
-- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch5/5.3/1.build-deploy-pipeline-marketplace.yaml ~/workspace/worklog-backend/.github/workflows/build-deploy-pipeline.yaml`
+### Step 1: Marketplace Action 파이프라인 YAML 복사 [학습자 직접]
+- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch5/5.3/1.build-pipeline-marketplace.yaml ~/workspace/worklog-backend/.github/workflows/1.build-pipeline.yaml`
 - 기대 결과: 기존 파이프라인 파일이 Marketplace Action 버전으로 대체됨
 
-### Step 2: 5.2 버전과 비교
+### Step 2: 5.2 버전과 비교 [AI 프롬프트]
 - `build` job의 docker login/build/push 명령이 Action으로 대체된 것 확인
-- `deploy` job의 kubeconfig 설정이 `azure/k8s-set-context`로 대체된 것 확인
 - 기대 결과: shell 명령 대신 선언적 with 블록으로 간소화된 것을 이해
 
-### Step 3: 코드 커밋 및 푸시
+### Step 3: 플레이스홀더 수정 [AI 프롬프트]
+- `1.build-pipeline.yaml`의 `<dockerhub_username>` 플레이스홀더를 실제 값으로 교체
+- 기대 결과: 플레이스홀더 없이 실제 값이 채워진 상태
+
+### Step 4: 코드 커밋 및 푸시 [학습자 직접]
 - 명령어: `cd ~/workspace/worklog-backend && git add . && git commit -m "cicd: simplify pipeline with marketplace actions" && git push origin main`
 - 기대 결과: GitHub Actions가 자동으로 트리거됨
 
-### Step 4: 파이프라인 실행 결과 확인
+### Step 5: 파이프라인 실행 결과 확인 [학습자 직접]
 - GitHub → Actions 탭에서 파이프라인 실행 상태 확인
-- 기대 결과: 5.2와 동일한 결과 (init-and-test → build → deploy → notify) 이지만 코드가 간결해짐
+- 기대 결과: 5.2와 동일한 결과 (init-and-test → build → notify) 이지만 코드가 간결해짐
 
 ## 검증 (Validation)
 | 단계 | 검증 방법 | 기대 결과 |

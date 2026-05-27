@@ -18,25 +18,25 @@
 - Docker Hub에 worklog-backend 이미지가 2개 이상의 태그로 존재
 
 ## 순서 (Sequence)
-### Step 1: Blue-Green 리소스 정리
+### Step 1: Blue-Green 리소스 정리 [학습자 직접]
 - 명령어: `kubectl delete rollout worklog-backend`
 - 명령어: `kubectl delete svc worklog-backend-active worklog-backend-preview`
 - 기대 결과: 이전 Blue-Green 리소스 삭제 완료
 
-### Step 2: Canary Rollout 배포
+### Step 2: Canary Rollout 배포 [학습자 직접]
 - 명령어: `kubectl apply -f 1.worklog-backend-rollout-canary.yaml`
 - 명령어: `kubectl apply -f 2.worklog-backend-service-canary.yaml`
 - 기대 결과: Canary 전략의 Rollout과 서비스 생성
 
-### Step 3: 이미지 업데이트로 Canary 배포 트리거
+### Step 3: 이미지 업데이트로 Canary 배포 트리거 [AI 프롬프트]
 - 명령어: `kubectl argo rollouts set image worklog-backend worklog-backend=<dockerhub_username>/worklog-backend:<new_tag>`
 - 기대 결과: Canary Pod 생성, 첫 번째 단계(20%)에서 일시 중지
 
-### Step 4: Canary 단계 진행
+### Step 4: Canary 단계 진행 [학습자 직접]
 - 명령어: `kubectl argo rollouts promote worklog-backend`
 - 기대 결과: 다음 가중치 단계로 이동, 30초마다 자동 진행
 
-### Step 5: 최종 검증
+### Step 5: 최종 검증 [학습자 직접]
 - 명령어: `kubectl get pods`
 - 기대 결과: 모든 Pod가 새 버전으로 전환 완료
 

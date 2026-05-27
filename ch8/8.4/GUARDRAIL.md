@@ -21,27 +21,27 @@
 - GitHub Secrets 등록: DOCKERHUB_TOKEN, CP_K8S_CONTEXT
 
 ## 순서 (Sequence)
-### Step 1: 멀티 환경 파이프라인 파일 복사
+### Step 1: 멀티 환경 파이프라인 파일 복사 [학습자 직접]
 - 명령어: `cp ~/_Lecture_cicd_learning.kit/ch8/8.4/1.multi-env-pipeline.yaml .github/workflows/multi-env-pipeline.yaml`
 - 기대 결과: `.github/workflows/` 디렉토리에 멀티 환경 파이프라인 파일 생성
 
-### Step 2: YAML 파일에서 플레이스홀더 수정
+### Step 2: YAML 파일에서 플레이스홀더 수정 [AI 프롬프트]
 - `<dockerhub_username>`을 본인 Docker Hub 사용자 이름으로 변경
 - 기대 결과: env.DOCKER_REPOSITORY, env.DOCKERHUB_USERNAME 값이 올바르게 설정됨
 
-### Step 3: 코드 커밋 및 푸시
+### Step 3: 코드 커밋 및 푸시 [학습자 직접]
 - 명령어: `git add . && git commit -m "cicd: add multi-environment pipeline" && git push origin main`
 - 기대 결과: GitHub Actions가 main push 이벤트로 자동 트리거
 
-### Step 4: PR 기반 배포 테스트
+### Step 4: PR 기반 배포 테스트 [학습자 직접]
 - feature 브랜치 생성 후 GitHub UI에서 PR 생성
 - 기대 결과: PR 이벤트로 dev namespace에 배포
 
-### Step 5: Tag 기반 배포 테스트
+### Step 5: Tag 기반 배포 테스트 [학습자 직접]
 - 명령어: `git tag v1.0.0 && git push origin v1.0.0`
 - 기대 결과: prod namespace에 v1.0.0 태그로 배포
 
-### Step 6: 배포 확인
+### Step 6: 배포 확인 [학습자 직접]
 - 명령어: `kubectl get pods -n dev`, `kubectl get pods -n staging`, `kubectl get pods -n prod`
 - 기대 결과: 각 namespace에서 worklog-backend Pod가 Running 상태
 

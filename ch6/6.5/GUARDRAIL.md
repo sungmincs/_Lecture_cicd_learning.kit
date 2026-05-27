@@ -16,19 +16,19 @@
 - Slack 워크스페이스 접근 권한 (웹훅 URL 생성 가능)
 
 ## 순서 (Sequence)
-### Step 1: Slack App 생성 및 웹훅 URL 획득
+### Step 1: Slack App 생성 및 웹훅 URL 획득 [학습자 직접]
 - URL: https://api.slack.com/apps
 - 기대 결과: Incoming Webhook URL 획득 (xoxb-... 또는 https://hooks.slack.com/...)
 
-### Step 2: Argo CD notification secret 생성
+### Step 2: Argo CD notification secret 생성 [학습자 직접]
 - 명령어: `kubectl create secret generic argocd-notifications-secret -n argocd --from-literal=slack-token=<slack_webhook_url> --dry-run=client -o yaml | kubectl apply -f -`
 - 기대 결과: argocd-notifications-secret 시크릿 생성/업데이트
 
-### Step 3: Application에 알림 annotation 추가
+### Step 3: Application에 알림 annotation 추가 [학습자 직접]
 - 명령어: `kubectl patch app worklog-backend -n argocd -p '{"metadata": {"annotations": {"notifications.argoproj.io/subscribe.on-deployed.slack":"dev_bots", ...}}}' --type merge`
 - 기대 결과: annotation 3개 추가 (on-deployed, on-health-degraded, on-sync-failed)
 
-### Step 4: 알림 테스트
+### Step 4: 알림 테스트 [학습자 직접]
 - 코드 변경 후 push하여 동기화 트리거
 - 기대 결과: Slack dev_bots 채널에 배포 알림 수신
 

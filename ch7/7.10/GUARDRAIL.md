@@ -19,24 +19,24 @@
 - GitLab에 worklog-frontend, worklog-backend 저장소 존재
 
 ## 순서 (Sequence)
-### Step 1: GitLab CI/CD Variables 등록 (두 저장소 모두)
+### Step 1: GitLab CI/CD Variables 등록 (두 저장소 모두) [학습자 직접]
 - Settings -> CI/CD -> Variables
 - `DOCKERHUB_USERNAME`: Docker Hub 사용자명
 - `DOCKERHUB_TOKEN`: Docker Hub Access Token
 - `KUBE_CONFIG`: kubeconfig (base64 인코딩)
 - 기대 결과: 각 저장소에 Variables 등록 완료
 
-### Step 2: Frontend 파이프라인 적용
+### Step 2: Frontend 파이프라인 적용 [학습자 직접]
 - 명령어: `cp ~/_Lecture_cicd_learning.kit/ch7/7.10/1.frontend-build-deploy.yml .gitlab-ci.yml`
 - 명령어: `git add . && git commit -m "cicd: add frontend GitLab pipeline" && git push origin main`
 - 기대 결과: GitLab 파이프라인 자동 트리거, Frontend 이미지 빌드 및 배포
 
-### Step 3: Backend 파이프라인 적용
+### Step 3: Backend 파이프라인 적용 [학습자 직접]
 - 명령어: `cp ~/_Lecture_cicd_learning.kit/ch7/7.10/2.backend-build-deploy.yml .gitlab-ci.yml`
 - 명령어: `git add . && git commit -m "cicd: add backend GitLab pipeline" && git push origin main`
 - 기대 결과: GitLab 파이프라인 자동 트리거, Backend 이미지 빌드/테스트 및 배포
 
-### Step 4: 전체 통합 검증
+### Step 4: 전체 통합 검증 [학습자 직접]
 - GitLab CI/CD -> Pipelines에서 두 파이프라인 성공 확인
 - 접속: `http://worklog-frontend.myk8s.local`
 - 기대 결과: Frontend -> Backend -> MongoDB 연결 정상 동작

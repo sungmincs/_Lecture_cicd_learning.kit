@@ -19,23 +19,23 @@
 - Jenkins에 kubeconfig Secret file 등록 (kube-config)
 
 ## 순서 (Sequence)
-### Step 1: Jenkins Credentials 등록
+### Step 1: Jenkins Credentials 등록 [학습자 직접]
 - Dashboard -> Jenkins 관리 -> Credentials
 - `dockerhub-credentials`: Username with password (Docker Hub)
 - `kube-config`: Secret file (kubeconfig 파일)
 - 기대 결과: Credentials 등록 완료
 
-### Step 2: Frontend 파이프라인 적용
+### Step 2: Frontend 파이프라인 적용 [학습자 직접]
 - 명령어: `cp ~/_Lecture_cicd_learning.kit/ch7/7.9/1.frontend-build-deploy.groovy Jenkinsfile`
 - 명령어: `git add . && git commit -m "cicd: add frontend Jenkins pipeline" && git push origin main`
 - 기대 결과: Jenkins에서 파이프라인 자동 감지 및 실행
 
-### Step 3: Backend 파이프라인 적용
+### Step 3: Backend 파이프라인 적용 [학습자 직접]
 - 명령어: `cp ~/_Lecture_cicd_learning.kit/ch7/7.9/2.backend-build-deploy.groovy Jenkinsfile`
 - 명령어: `git add . && git commit -m "cicd: add backend Jenkins pipeline" && git push origin main`
 - 기대 결과: Jenkins에서 파이프라인 자동 감지 및 실행
 
-### Step 4: 파이프라인 트리거
+### Step 4: 파이프라인 트리거 [학습자 직접]
 - Dashboard -> Scan Multibranch Pipeline Now
 - 기대 결과: Frontend, Backend 파이프라인 모두 성공
 

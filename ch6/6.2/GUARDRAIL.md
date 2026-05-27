@@ -18,19 +18,19 @@
 - ch4 완료 (CI/CD 도구 3종 구성 — GitHub Actions, Jenkins, GitLab)
 
 ## 순서 (Sequence)
-### Step 1: argocd namespace 생성
+### Step 1: argocd namespace 생성 [학습자 직접]
 - 명령어: `kubectl create namespace argocd`
 - 기대 결과: argocd 네임스페이스 생성 (이미 존재하면 무시)
 
-### Step 2: Argo CD manifest 적용
+### Step 2: Argo CD manifest 적용 [학습자 직접]
 - 명령어: `kubectl apply -n argocd -f ./argocd-manifest.yaml`
 - 기대 결과: Argo CD 핵심 컴포넌트(server, repo-server, application-controller 등) 배포
 
-### Step 3: Notification catalog 적용
+### Step 3: Notification catalog 적용 [학습자 직접]
 - 명령어: `kubectl apply -n argocd -f ./argocd-notification-catalog.yaml`
 - 기대 결과: 알림 템플릿 및 트리거 ConfigMap 생성
 
-### Step 4: Argo CD 서버 접속 확인
+### Step 4: Argo CD 서버 접속 확인 [학습자 직접]
 - 명령어: `kubectl get pods -n argocd`
 - 기대 결과: 모든 pod가 Running 상태
 

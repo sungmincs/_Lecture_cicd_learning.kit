@@ -17,19 +17,19 @@
 - GitLab CI/CD Variables 설정: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`, `ARGOCD_ADMIN_PASSWORD`
 
 ## 순서 (Sequence)
-### Step 1: .gitlab-ci.yml 복사
+### Step 1: .gitlab-ci.yml 복사 [학습자 직접]
 - 명령어: `cp ~/_Lecture_cicd_learning.kit/ch6/6.8/1.build-and-argocd-sync.yml .gitlab-ci.yml`
 - 기대 결과: .gitlab-ci.yml 업데이트
 
-### Step 2: Git push
+### Step 2: Git push [학습자 직접]
 - 명령어: `git add . && git commit -m "cicd: integrate Argo CD sync in pipeline" && git push origin main`
 - 기대 결과: GitLab CI/CD 파이프라인 자동 트리거
 
-### Step 3: 파이프라인 실행 확인
+### Step 3: 파이프라인 실행 확인 [학습자 직접]
 - GitLab CI/CD > Pipelines에서 실행 확인
 - 기대 결과: init > test > build > deploy > notify 순서로 성공
 
-### Step 4: Argo CD 동기화 확인
+### Step 4: Argo CD 동기화 확인 [학습자 직접]
 - Argo CD UI에서 Application 상태 확인
 - 기대 결과: Synced/Healthy 상태
 

@@ -22,7 +22,7 @@
 - worklog-backend 저장소가 GitHub에 push된 상태
 
 ## 순서 (Sequence)
-### Step 1: Jenkins Credentials에 Docker Hub 인증 정보 등록
+### Step 1: Jenkins Credentials에 Docker Hub 인증 정보 등록 [AI 프롬프트]
 - Dashboard → Jenkins 관리 → Credentials → System → Global Credentials → Add Credentials
 - Kind: Username with password
 - ID: `dockerhub-credentials`
@@ -30,16 +30,23 @@
 - Password: `<dockerhub_token>`
 - 기대 결과: Global Credentials 목록에 dockerhub-credentials 항목 확인
 
-### Step 2: Jenkinsfile 복사 및 커밋
+### Step 2: Jenkinsfile 복사 [학습자 직접]
 - 명령어: `cp ~/_Lecture_cicd_learning.kit/ch5/5.4/1.build-and-push-docker-image.groovy Jenkinsfile`
+- 기대 결과: 저장소 루트에 Jenkinsfile 파일 생성
+
+### Step 2-1: 플레이스홀더 수정 [AI 프롬프트]
+- `Jenkinsfile`의 `<dockerhub_username>` 플레이스홀더를 실제 Docker Hub 사용자 이름으로 교체
+- 기대 결과: 플레이스홀더 없이 실제 값이 채워진 상태
+
+### Step 3: 코드 커밋 및 푸시 [학습자 직접]
 - 명령어: `git add . && git commit -m "cicd: add build and deploy Jenkins pipeline" && git push origin main`
 - 기대 결과: 저장소에 Jenkinsfile이 추가됨
 
-### Step 3: Jenkins에서 파이프라인 트리거
+### Step 4: Jenkins에서 파이프라인 트리거 [학습자 직접]
 - Dashboard → worklog-backend-pipeline → Scan Multibranch Pipeline Now
 - 기대 결과: 파이프라인이 자동으로 감지되어 빌드 시작
 
-### Step 4: 파이프라인 실행 결과 확인
+### Step 5: 파이프라인 실행 결과 확인 [학습자 직접]
 - Dashboard → worklog-backend-pipeline → main → 빌드 번호 클릭 → Console Output
 - 기대 결과: Init Variables → Run Test → Build Image → Deploy Image 순서로 실행 완료
 

@@ -2,6 +2,16 @@
 
 ## [2026-05]
 
+### GUARDRAIL.md 레이블 추가 [2026-05-27]
+
+**7.3~7.10 — [학습자 직접] / [AI 프롬프트] 레이블 추가**
+- kubectl apply, cp, git push, UI 확인 → [학습자 직접]
+- `<dockerhub_username>/<new_tag>` 플레이스홀더 교체 (7.3, 7.5, 7.6 Step 3) → [AI 프롬프트]
+- YAML 내 `<dockerhub_username>` 수정 (7.7 Step 3/5) → [AI 프롬프트]
+- 7.2: 이론 섹션 — Step 없음, 패스
+
+---
+
 ### GUARDRAIL.md 섹션 번호 정정 [2026-05-27]
 
 **7.7~7.10/GUARDRAIL.md — 헤더 및 본문 참조 수정**

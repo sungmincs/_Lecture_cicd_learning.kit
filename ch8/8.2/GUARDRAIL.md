@@ -16,29 +16,29 @@
 - ch2 완료 (Kubernetes 클러스터 구성 및 kubectl 접속 가능)
 
 ## 순서 (Sequence)
-### Step 1: dev namespace 생성
+### Step 1: dev namespace 생성 [학습자 직접]
 - 명령어: `kubectl create namespace dev`
 - 기대 결과: namespace/dev created
 
-### Step 2: staging namespace 생성
+### Step 2: staging namespace 생성 [학습자 직접]
 - 명령어: `kubectl create namespace staging`
 - 기대 결과: namespace/staging created
 
-### Step 3: prod namespace 생성
+### Step 3: prod namespace 생성 [학습자 직접]
 - 명령어: `kubectl create namespace prod`
 - 기대 결과: namespace/prod created
 
-### Step 4: namespace 목록 확인
+### Step 4: namespace 목록 확인 [학습자 직접]
 - 명령어: `kubectl get namespaces`
 - 기대 결과: dev, staging, prod namespace가 Active 상태로 표시
 
-### Step 5: environment 레이블 추가
+### Step 5: environment 레이블 추가 [학습자 직접]
 - 명령어: `kubectl label namespace dev environment=development`
 - 명령어: `kubectl label namespace staging environment=staging`
 - 명령어: `kubectl label namespace prod environment=production`
 - 기대 결과: 각 namespace에 environment 레이블 추가됨
 
-### Step 6: 레이블 확인
+### Step 6: 레이블 확인 [학습자 직접]
 - 명령어: `kubectl get namespaces --show-labels`
 - 기대 결과: 각 namespace에 environment 레이블이 표시됨
 

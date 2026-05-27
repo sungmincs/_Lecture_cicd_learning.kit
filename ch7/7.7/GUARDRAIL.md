@@ -20,28 +20,28 @@
 - Kubernetes 클러스터에 Ingress Controller(nginx) 설치 완료
 
 ## 순서 (Sequence)
-### Step 1: MongoDB 배포
+### Step 1: MongoDB 배포 [학습자 직접]
 - 명령어: `kubectl apply -f 1.mongodb-manifest.yaml`
 - 기대 결과: mongodb Pod Running, mongodb Service 생성
 
-### Step 2: MongoDB 동작 확인
+### Step 2: MongoDB 동작 확인 [학습자 직접]
 - 명령어: `kubectl get pods -l app=mongodb`
 - 명령어: `kubectl get svc mongodb`
 - 기대 결과: Pod Running, Service port 27017
 
-### Step 3: Backend 배포
+### Step 3: Backend 배포 [AI 프롬프트]
 - 명령어: `kubectl apply -f 2.worklog-backend-with-db.yaml`
 - 기대 결과: worklog-backend Pod Running, MongoDB 연결 성공
 
-### Step 4: Backend 로그 확인
+### Step 4: Backend 로그 확인 [학습자 직접]
 - 명령어: `kubectl logs -l app=worklog-backend --tail=20`
 - 기대 결과: "Connected to MongoDB" 메시지 확인
 
-### Step 5: Frontend 배포
+### Step 5: Frontend 배포 [AI 프롬프트]
 - 명령어: `kubectl apply -f 3.worklog-frontend-manifest.yaml`
 - 기대 결과: worklog-frontend Pod Running
 
-### Step 6: 전체 스택 검증
+### Step 6: 전체 스택 검증 [학습자 직접]
 - 명령어: `kubectl get pods`
 - 접속: `http://worklog-frontend.myk8s.local`
 - 기대 결과: Frontend에서 Backend API 호출 성공, 데이터 저장/조회 가능

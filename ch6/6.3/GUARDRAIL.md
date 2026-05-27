@@ -14,23 +14,23 @@
 - ch6/6.2 완료 (Argo CD 설치 완료, 모든 pod Running)
 
 ## 순서 (Sequence)
-### Step 1: 초기 admin 비밀번호 확인
+### Step 1: 초기 admin 비밀번호 확인 [학습자 직접]
 - 명령어: `kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`
 - 기대 결과: 초기 비밀번호 문자열 출력
 
-### Step 2: hosts 파일 업데이트
+### Step 2: hosts 파일 업데이트 [AI 프롬프트]
 - 명령어: hosts 파일에 `192.168.1.99 argocd.myk8s.local` 추가
 - 기대 결과: argocd.myk8s.local 도메인 해석 가능
 
-### Step 3: Argo CD UI 접속
+### Step 3: Argo CD UI 접속 [학습자 직접]
 - URL: `https://argocd.myk8s.local`
 - 기대 결과: 로그인 페이지 표시, admin/<initial_password>로 로그인 성공
 
-### Step 4: Argo CD CLI 설치
+### Step 4: Argo CD CLI 설치 [학습자 직접]
 - 명령어: curl로 바이너리 다운로드 후 /usr/local/bin에 설치
 - 기대 결과: `argocd version` 명령어 정상 동작
 
-### Step 5: CLI로 로그인
+### Step 5: CLI로 로그인 [학습자 직접]
 - 명령어: `argocd login argocd.myk8s.local --username admin --password <initial_password> --insecure`
 - 기대 결과: 로그인 성공 메시지
 

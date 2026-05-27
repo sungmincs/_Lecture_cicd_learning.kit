@@ -19,24 +19,24 @@
 - Docker Pipeline 플러그인 설치 필요
 
 ## 순서 (Sequence)
-### Step 1: Docker Pipeline 플러그인 설치
+### Step 1: Docker Pipeline 플러그인 설치 [학습자 직접]
 - Dashboard → Jenkins 관리 → Plugins → Available plugins → "Docker Pipeline" 검색 및 설치
 - 기대 결과: Docker Pipeline 플러그인이 Installed 목록에 표시됨
 
-### Step 2: 간소화된 Jenkinsfile 복사
+### Step 2: 간소화된 Jenkinsfile 복사 [학습자 직접]
 - 명령어: `cp ~/_Lecture_cicd_learning.kit/ch5/5.5/1.build-and-push-docker-image-plugin.groovy Jenkinsfile`
 - 기대 결과: 기존 Jenkinsfile이 플러그인 기반 버전으로 대체됨
 
-### Step 3: 5.4 버전과 비교
+### Step 3: 5.4 버전과 비교 [AI 프롬프트]
 - `Build and Push Image` 스테이지에서 shell 명령 대신 `docker.build()`, `docker.withRegistry()` 사용 확인
 - Credentials ID를 `docker.withRegistry()`에 전달하여 인증 처리
 - 기대 결과: docker login/build/push shell 명령이 Groovy DSL로 대체된 것을 이해
 
-### Step 4: 코드 커밋 및 푸시
+### Step 4: 코드 커밋 및 푸시 [학습자 직접]
 - 명령어: `git add . && git commit -m "cicd: simplify pipeline with Jenkins plugins" && git push origin main`
 - 기대 결과: Jenkins Multibranch Pipeline이 변경을 감지
 
-### Step 5: 파이프라인 트리거 및 확인
+### Step 5: 파이프라인 트리거 및 확인 [학습자 직접]
 - Dashboard → worklog-backend-pipeline → Scan Multibranch Pipeline Now
 - 기대 결과: 5.4와 동일한 결과이지만 Build and Push Image 스테이지의 코드가 간결해짐
 

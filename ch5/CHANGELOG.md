@@ -2,6 +2,19 @@
 
 ## [2026-05]
 
+### GUARDRAIL.md 파일명 수정 + 레이블 추가 [2026-05-27]
+
+**5.2, 5.3, 5.6, 5.7 — 파일명 불일치 수정**
+- Before: `1.build-deploy-pipeline.*` (CD 제거 전 구버전 명)
+- After: `1.build-pipeline.*` (현행 파일명 — CD는 ch6 Argo CD로 분리됨)
+- 5.2, 5.6: `deploy_manifest/worklog-backend.yaml` 관련 내용 제거 (파일 삭제됨)
+
+**5.2~5.7 전체 — [학습자 직접] / [AI 프롬프트] 레이블 추가**
+- cp 명령, git push, 파이프라인 결과 확인 → [학습자 직접]
+- 플레이스홀더 수정, Secrets/Variables 등록 안내, 파일 비교 → [AI 프롬프트]
+
+---
+
 ### 플레이스홀더 적용 + poetry → uv 전환
 
 - **Before**: `sungminl/worklog-backend` (하드코딩), `pip install poetry` + `poetry run`

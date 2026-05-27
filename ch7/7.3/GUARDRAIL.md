@@ -18,25 +18,25 @@
 - Kubernetes 클러스터 접속 가능
 
 ## 순서 (Sequence)
-### Step 1: Deployment 배포
+### Step 1: Deployment 배포 [학습자 직접]
 - 명령어: `kubectl apply -f 1.worklog-backend-deployment-rolling.yaml`
 - 기대 결과: worklog-backend Deployment 생성, Pod 3개 Running
 
-### Step 2: Rolling Update 설정 확인
+### Step 2: Rolling Update 설정 확인 [학습자 직접]
 - 명령어: `kubectl describe deployment worklog-backend | grep -A5 Strategy`
 - 기대 결과: RollingUpdate strategy, maxSurge=1, maxUnavailable=0 확인
 
-### Step 3: 이미지 업데이트로 Rolling Update 트리거
+### Step 3: 이미지 업데이트로 Rolling Update 트리거 [AI 프롬프트]
 - 명령어: `kubectl set image deployment/worklog-backend worklog-backend=<dockerhub_username>/worklog-backend:<new_tag>`
 - 명령어: `kubectl rollout status deployment/worklog-backend`
 - 기대 결과: Pod가 하나씩 교체되는 과정 확인
 
-### Step 4: 롤백 실습
+### Step 4: 롤백 실습 [학습자 직접]
 - 명령어: `kubectl rollout undo deployment/worklog-backend`
 - 명령어: `kubectl rollout status deployment/worklog-backend`
 - 기대 결과: 이전 버전으로 롤백 완료
 
-### Step 5: 리소스 정리
+### Step 5: 리소스 정리 [학습자 직접]
 - 명령어: `kubectl delete deployment worklog-backend`
 - 기대 결과: 다음 실습(7.4~7.6)을 위해 정리 완료
 

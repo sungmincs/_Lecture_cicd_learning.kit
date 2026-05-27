@@ -18,19 +18,19 @@
 - Jenkins 노드에 argocd CLI 설치 완료 (ch6/6.3)
 
 ## 순서 (Sequence)
-### Step 1: Jenkinsfile 복사
+### Step 1: Jenkinsfile 복사 [학습자 직접]
 - 명령어: `cp ~/_Lecture_cicd_learning.kit/ch6/6.7/1.build-and-argocd-sync.groovy Jenkinsfile`
 - 기대 결과: Jenkinsfile 업데이트
 
-### Step 2: Git push
+### Step 2: Git push [학습자 직접]
 - 명령어: `git add . && git commit -m "cicd: integrate Argo CD sync in Jenkins pipeline" && git push origin main`
 - 기대 결과: Jenkins 파이프라인 자동 트리거
 
-### Step 3: 파이프라인 실행 확인
+### Step 3: 파이프라인 실행 확인 [학습자 직접]
 - Jenkins UI에서 빌드 실행 확인
 - 기대 결과: Init > Test > Build > Update Manifest > Sync Argo CD 순서로 성공
 
-### Step 4: Argo CD 동기화 확인
+### Step 4: Argo CD 동기화 확인 [학습자 직접]
 - Argo CD UI에서 Application 상태 확인
 - 기대 결과: Synced/Healthy 상태
 

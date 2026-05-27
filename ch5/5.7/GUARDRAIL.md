@@ -17,23 +17,23 @@
 - GitLab CI/CD Variables에 DOCKERHUB_USERNAME, DOCKERHUB_TOKEN, CP_K8S_CONTEXT가 이미 등록된 상태
 
 ## 순서 (Sequence)
-### Step 1: 간소화된 파이프라인 YAML 복사
-- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch5/5.7/1.build-deploy-pipeline-extension.yml .gitlab-ci.yml`
+### Step 1: 간소화된 파이프라인 YAML 복사 [학습자 직접]
+- 명령어: `cp ~/_Lecture_cicd_learning.kit/ch5/5.7/1.build-pipeline-extension.yml .gitlab-ci.yml`
 - 기대 결과: 기존 `.gitlab-ci.yml`이 extends 기반 버전으로 대체됨
 
-### Step 2: 5.6 버전과 비교
+### Step 2: 5.6 버전과 비교 [AI 프롬프트]
 - `.docker-job` 템플릿: Docker-in-Docker 설정 및 docker login을 `before_script`로 공통화
 - `.notify-template` 템플릿: notify job들의 공통 설정(stage, image, needs) 추출
 - `build` job이 `extends: .docker-job`으로 Docker 설정을 상속받는 것 확인
 - 기대 결과: 중복 설정이 제거되고 코드가 간결해진 것을 이해
 
-### Step 3: 코드 커밋 및 푸시
+### Step 3: 코드 커밋 및 푸시 [학습자 직접]
 - 명령어: `cd ~/workspace/worklog-backend-gitlab && git add . && git commit -m "cicd: simplify pipeline with GitLab extensions" && git push origin main`
 - 기대 결과: GitLab CI/CD 파이프라인이 자동으로 트리거됨
 
-### Step 4: 파이프라인 실행 결과 확인
+### Step 4: 파이프라인 실행 결과 확인 [학습자 직접]
 - GitLab → CI/CD → Pipelines에서 파이프라인 실행 상태 확인
-- 기대 결과: 5.6과 동일한 결과(init → test → build → deploy → notify)이지만 코드가 간결해짐
+- 기대 결과: 5.6과 동일한 결과(init → test → build → notify)이지만 코드가 간결해짐
 
 ## 검증 (Validation)
 | 단계 | 검증 방법 | 기대 결과 |

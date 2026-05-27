@@ -21,23 +21,23 @@
 - GitLab CI/CD Variables 등록: DOCKERHUB_USERNAME, DOCKERHUB_TOKEN, KUBE_CONFIG
 
 ## 순서 (Sequence)
-### Step 1: 멀티 환경 파이프라인 파일 복사
+### Step 1: 멀티 환경 파이프라인 파일 복사 [학습자 직접]
 - 명령어: `cp ~/_Lecture_cicd_learning.kit/ch8/8.8/1.multi-env-pipeline.yml .gitlab-ci.yml`
 - 기대 결과: 프로젝트 루트에 .gitlab-ci.yml 생성/덮어쓰기
 
-### Step 2: 코드 커밋 및 푸시
+### Step 2: 코드 커밋 및 푸시 [학습자 직접]
 - 명령어: `git add . && git commit -m "cicd: add multi-environment GitLab pipeline" && git push origin main`
 - 기대 결과: GitLab CI/CD가 main push 이벤트로 자동 트리거
 
-### Step 3: MR 기반 배포 테스트
+### Step 3: MR 기반 배포 테스트 [학습자 직접]
 - feature 브랜치 생성 후 GitLab UI에서 Merge Request 생성
 - 기대 결과: MR 이벤트로 dev namespace에 배포
 
-### Step 4: Tag 기반 배포 테스트
+### Step 4: Tag 기반 배포 테스트 [학습자 직접]
 - 명령어: `git tag v1.0.0 && git push origin v1.0.0`
 - 기대 결과: prod namespace에 v1.0.0 태그로 배포
 
-### Step 5: 배포 확인
+### Step 5: 배포 확인 [학습자 직접]
 - 명령어: `kubectl get pods -n dev`, `kubectl get pods -n staging`, `kubectl get pods -n prod`
 - 기대 결과: 각 namespace에서 worklog-backend Pod가 Running 상태
 
