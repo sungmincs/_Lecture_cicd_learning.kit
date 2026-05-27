@@ -7,9 +7,13 @@
 - 카나리 배포 중 성공률이 95% 미만이면 자동 롤백 동작 체험
 - Argo Rollouts의 자동화된 배포 안전망 구성
 
+### 적용 환경
+- **dev / staging 전용** — prod에는 적용하지 않는다
+- prod는 9.7에서 수동 승인 방식으로 확정됨. prod에 Rollout을 적용하면 9.7의 수동 승인 구조와 충돌함
+
 ### 이 단계에서 다루지 않는 것
 - Argo Rollouts 기본 설치 및 Blue/Green 전략 (ch7에서 다룸)
-- prod 수동 승인 게이트 (9.7에서 다룸)
+- prod 수동 승인 게이트 (9.7에서 다룸) — **prod는 이 단계 범위 밖**
 - Prometheus 메트릭 기반 AnalysisTemplate (심화 내용)
 - Argo Rollouts와 Argo CD 연동 심화
 

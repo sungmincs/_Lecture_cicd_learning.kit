@@ -2,6 +2,21 @@
 
 ## [2026-05] 챕터 구조 변경
 
+### GUARDRAIL.md 설계 이슈 보완 [2026-05-27]
+
+**9.7 vs 9.8 환경 혼동 방지**
+- 9.7 GUARDRAIL에 환경별 자동화 수준 표 추가 (dev/staging=자동, prod=수동 승인, 9.8 AnalysisTemplate 미적용)
+- 9.8 GUARDRAIL 범위에 "적용 환경: dev/staging 전용. prod는 9.7 수동 승인 방식 유지" 명시
+- 이유: 9.7에서 prod syncPolicy 제거 후 9.8에서 같은 prod에 Rollout 적용하면 논리 모순 발생
+
+**9.3~9.6 누적 파이프라인 관계 명시**
+- 9.3, 9.4: "이 파일은 개념 학습용 독립 파이프라인. 9.5에서 통합 파이프라인으로 교체됨" 안내 추가
+- 9.5: "lint + security + coverage 통합 파이프라인. 기존 lint.yaml, security.yaml 삭제 명령 추가"
+- 9.6: "최종 누적 파이프라인(lint→security→test→build→trivy→deploy). coverage.yaml 삭제 명령 추가"
+- 이유: 각 섹션이 독립 파일로 보여 학습자가 파이프라인을 어떻게 통합하는지 불명확했음
+
+---
+
 ### GUARDRAIL.md 섹션 번호 정정 [2026-05-27]
 
 **9.2/GUARDRAIL.md — 헤더 수정**

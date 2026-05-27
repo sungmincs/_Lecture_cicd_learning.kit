@@ -1,5 +1,13 @@
 # GUARDRAIL: 7.7 Worklog App의 백엔드와 DB
 
+## 전환 배경
+
+7.3~7.6은 배포 전략(Rolling Update, Blue-Green, Canary)을 worklog-backend 단일 서비스로 학습했습니다.
+
+7.7부터는 **실제 서비스와 유사한 3-tier 구조(Frontend + Backend + MongoDB)** 전체를 배포하여, ch8(멀티 환경)과 ch9(CI 강화)의 실습 기반을 구성합니다.
+
+> ch7.7에서 구성한 전체 스택이 ch8, ch9의 파이프라인 배포 대상이 됩니다.
+
 ## 범위 (Scope)
 ### 이 단계에서 다루는 것
 - Worklog App 마이크로서비스 아키텍처 이해 (Frontend + Backend + MongoDB)

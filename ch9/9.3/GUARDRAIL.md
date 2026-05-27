@@ -38,6 +38,9 @@
 - Jenkins: `cp ~/_Lecture_cicd_learning.kit/ch9/9.3/2.lint-jenkins.groovy Jenkinsfile` (기존 파일에 stage 추가 방식 권장)
 - GitLab CI: `cp ~/_Lecture_cicd_learning.kit/ch9/9.3/3.lint-gitlab.yml .gitlab-ci.yml`
 
+> **누적 구조 안내**: 9.3의 lint 파이프라인은 개념 학습용 독립 파일입니다.
+> 9.5에서 lint + security + coverage를 하나로 합친 통합 파이프라인으로 교체됩니다.
+
 ### Step 4: 플레이스홀더 수정 [AI 프롬프트]
 - Jenkins 파일의 `<github_username>` 수정
 - AI 프롬프트 예시: "Jenkinsfile의 <github_username>을 내 GitHub 계정명으로 바꿔줘"

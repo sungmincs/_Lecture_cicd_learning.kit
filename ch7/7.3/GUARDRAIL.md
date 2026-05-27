@@ -56,6 +56,6 @@
 
 ## 주의사항 (Cautions)
 - ⛔ `<dockerhub_username>`을 임의로 채우지 말 것
+- ⛔ **[필수] Step 5 리소스 정리를 반드시 수행할 것** — 7.5(Blue-Green)/7.6(Canary)는 Argo Rollouts의 `kind: Rollout`을 사용하며, 기존 `kind: Deployment`와 같은 이름으로 공존할 수 없음. 정리하지 않으면 Rollout 생성 시 충돌 발생
 - ✅ Rolling Update는 K8s 기본 기능 — Argo Rollouts 없이 동작
 - ✅ 7.5(Blue-Green), 7.6(Canary)와 비교하기 위한 베이스라인 실습
-- ✅ 실습 완료 후 반드시 리소스 정리 (7.4 Argo Rollouts 설치 전)

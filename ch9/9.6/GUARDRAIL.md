@@ -28,6 +28,13 @@
 - Jenkins: `cp ~/_Lecture_cicd_learning.kit/ch9/9.6/2.trivy-jenkins.groovy Jenkinsfile`
 - GitLab CI: `cp ~/_Lecture_cicd_learning.kit/ch9/9.6/3.trivy-gitlab.yml .gitlab-ci.yml`
 
+> **최종 누적 파이프라인**: 이 파일에는 lint → security → test → build → trivy scan → deploy 전체 흐름이 하나로 통합되어 있습니다.
+> 9.5에서 만든 `coverage.yaml`을 삭제하고 이 파일로 대체하세요.
+> ```bash
+> # GitHub Actions 기준
+> rm .github/workflows/coverage.yaml
+> ```
+
 ### Step 2: 플레이스홀더 수정 [AI 프롬프트]
 - `<dockerhub_username>` 수정
 - Jenkins 파일의 `<github_username>` 수정

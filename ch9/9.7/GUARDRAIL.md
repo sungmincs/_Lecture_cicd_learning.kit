@@ -72,8 +72,20 @@ kubectl patch application worklog-backend-prod -n argocd --type merge -p '{"spec
 |-------------|------|------------------------|
 | `<github_username>` | GitHub 사용자 이름 | ❌ 반드시 확인 필요 |
 
+## 환경별 자동화 수준 (9.7~9.8 전체 기준)
+
+| 환경 | syncPolicy | 배포 방식 | Rollout/AnalysisTemplate |
+|------|------------|----------|--------------------------|
+| dev | 자동 | Argo CD 자동 Sync | 미사용 |
+| staging | 자동 | Argo CD 자동 Sync | 미사용 |
+| prod | **없음 (9.7에서 제거)** | **수동 Sync만 가능** | **미사용 — 9.8 해당 없음** |
+
+> **9.8의 AnalysisTemplate은 prod에 적용하지 않는다.**
+> prod는 이 단계(9.7)에서 수동 승인 방식으로 확정됨. Rollout 자동 롤백은 dev/staging 전용.
+
 ## 주의사항 (Cautions)
 - ⛔ prod에 syncPolicy를 다시 추가하면 자동 배포가 재활성화된다 — 실수하지 않도록 주의
 - ⛔ Argo CD CLI(argocd)를 사용하려면 argocd login이 먼저 되어 있어야 한다
+- ⛔ 9.8에서 AnalysisTemplate을 구성할 때 prod namespace에는 적용하지 말 것 — prod는 이 단계에서 수동 승인으로 확정됨
 - ✅ "AI가 빠르게 코드를 생성하더라도, prod 배포 결정은 사람이 한다"가 이 단계의 핵심 메시지
 - ✅ Argo CD UI의 SYNC 버튼이 "사람의 승인 게이트" 역할을 한다 — 구조적으로 prod를 보호하는 방식

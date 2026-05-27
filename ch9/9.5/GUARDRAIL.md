@@ -37,6 +37,13 @@
 - Jenkins: `cp ~/_Lecture_cicd_learning.kit/ch9/9.5/2.coverage-jenkins.groovy Jenkinsfile`
 - GitLab CI: `cp ~/_Lecture_cicd_learning.kit/ch9/9.5/3.coverage-gitlab.yml .gitlab-ci.yml`
 
+> **통합 파이프라인 교체**: 이 파일에는 lint + security-scan + test(coverage)가 하나로 통합되어 있습니다.
+> 9.3에서 만든 `lint.yaml`과 9.4에서 만든 `security.yaml`을 삭제하고 이 파일로 대체하세요.
+> ```bash
+> # GitHub Actions 기준
+> rm .github/workflows/lint.yaml .github/workflows/security.yaml
+> ```
+
 ### Step 3: 플레이스홀더 수정 [AI 프롬프트]
 - Jenkins 파일의 `<github_username>` 수정
 - AI 프롬프트 예시: "Jenkinsfile의 <github_username>을 내 GitHub 계정명으로 바꿔줘"
