@@ -36,6 +36,7 @@ pipeline {
                     git remote set-url origin https://${GITHUB_CREDENTIALS_USR}:${GITHUB_CREDENTIALS_PSW}@github.com/<github_username>/worklog-frontend-mock.git
                     git add deploy_manifest/
                     git commit -m "deploy: update frontend image tag to ${SHORT_SHA}"
+                    git pull --rebase origin main
                     git push origin HEAD:main
                 """
             }
