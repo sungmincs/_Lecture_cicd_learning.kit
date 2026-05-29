@@ -12,4 +12,4 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: prod
-  syncPolicy: {}  # 자동 sync 비활성화 — prod는 수동 승인 필요
+  syncPolicy: {}

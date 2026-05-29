@@ -1,6 +1,6 @@
 workflow:
   rules:
-    - if: $CI_COMMIT_MESSAGE =~ /\[skip ci\]/
+    - if: '$CI_COMMIT_MESSAGE =~ /\[skip ci\]/'
       when: never
     - if: $CI_COMMIT_BRANCH == "main"
 
@@ -9,40 +9,33 @@ stages:
   - deploy
 
 variables:
-  DOCKER_REPOSITORY: <dockerhub_username>/worklog-frontend-mock
-  DOCKER_CONFIG: "/tmp/docker_config"
-  DOCKER_HOST: tcp://docker:2375
-  GITLAB_REPO_PATH: <gitlab_username>/worklog-frontend-mock
+  DOCKER_REPOSITORY: worklog-frontend-mock
 
 build:
   stage: build
   image: docker:24
   services:
     - docker:24-dind
-  variables:
-    DOCKER_TLS_CERTDIR: ""
+  before_script:
+    - echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
   script:
     - SHORT_SHA=$(echo $CI_COMMIT_SHA | cut -c1-8)
-    - mkdir -p ${DOCKER_CONFIG}
-    - printf '%s:%s' "${DOCKERHUB_USERNAME}" "${DOCKERHUB_TOKEN}" | base64 | tr -d '\n' > /tmp/auth.txt
-    - echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"auth\":\"$(cat /tmp/auth.txt)\"}}}" > ${DOCKER_CONFIG}/config.json
-    - docker buildx rm mybuilder 2>/dev/null || true
-    - docker buildx create --name mybuilder --driver docker-container --use
-    - docker buildx build --platform linux/amd64,linux/arm64 -t ${DOCKER_REPOSITORY}:${SHORT_SHA} --push .
+    - docker buildx create --use --name builder
+    - docker buildx build --platform linux/amd64,linux/arm64
+        -t $DOCKERHUB_USERNAME/$DOCKER_REPOSITORY:$SHORT_SHA
+        --push .
 
 deploy:
   stage: deploy
   image: alpine:latest
-  needs: [build]
   before_script:
     - apk add --no-cache git
   script:
-    - |
-      SHORT_SHA=$(echo $CI_COMMIT_SHA | cut -c1-8)
-      git remote set-url origin "https://oauth2:${GITLAB_TOKEN}@${CI_SERVER_HOST}/${GITLAB_REPO_PATH}.git"
-      sed -i "s|image: .*worklog-frontend-mock:.*|image: ${DOCKER_REPOSITORY}:${SHORT_SHA}|" deploy_manifest/worklog-frontend.yaml
-      git config user.name "gitlab-ci"
-      git config user.email "gitlab-ci@myk8s.local"
-      git add deploy_manifest/
-      git commit -m "deploy: update frontend image tag to ${SHORT_SHA} [skip ci]"
-      git push origin HEAD:main
+    - SHORT_SHA=$(echo $CI_COMMIT_SHA | cut -c1-8)
+    - git config user.name "gitlab-ci"
+    - git config user.email "ci@gitlab.com"
+    - git remote set-url origin "https://oauth2:${GITLAB_TOKEN}@gitlab.com/<gitlab_username>/worklog-frontend-mock.git"
+    - sed -i "s|image: .*/worklog-frontend-mock:.*|image: $DOCKERHUB_USERNAME/$DOCKER_REPOSITORY:$SHORT_SHA|" deploy_manifest/worklog-frontend.yaml
+    - git add deploy_manifest/
+    - git diff --staged --quiet || git commit -m "deploy: update frontend image to $SHORT_SHA [skip ci]"
+    - git push origin HEAD:main

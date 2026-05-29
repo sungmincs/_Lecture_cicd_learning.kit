@@ -14,27 +14,25 @@ spec:
         app: worklog-backend
     spec:
       imagePullSecrets:
-      - name: dockerhub-creds
+        - name: dockerhub-creds
       containers:
         - name: worklog-backend
           image: <dockerhub_username>/worklog-backend:<image_tag>
           ports:
             - containerPort: 80
           env:
-          - name: MONGO_HOST
-            value: worklog-mongodb.default.svc.cluster.local
-          - name: IMAGE_TAG
-            value: <image_tag>
-          - name: MONGO_INITDB_ROOT_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: worklog-mongodb-creds
-                key: username
-          - name: MONGO_INITDB_ROOT_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: worklog-mongodb-creds
-                key: password
+            - name: MONGO_HOST
+              value: worklog-mongodb.default.svc.cluster.local
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: worklog-mongodb-creds
+                  key: username
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: worklog-mongodb-creds
+                  key: password
           livenessProbe:
             httpGet:
               path: /health

@@ -2,8 +2,10 @@ name: worklog backend EKS deploy pipeline
 
 on:
   push:
-    branches:
-      - main
+    branches: [main, develop, 'release/*']
+    tags: ['v*']
+    paths-ignore:
+      - 'deploy_manifest/**'
 
 env:
   DOCKER_REPOSITORY: <dockerhub_username>/worklog-backend
@@ -18,7 +20,6 @@ jobs:
     outputs:
       full_sha: ${{ steps.vars.outputs.full_sha }}
       short_sha: ${{ steps.vars.outputs.short_sha }}
-      branch: ${{ steps.vars.outputs.branch }}
       commit_message: ${{ steps.vars.outputs.commit_message }}
     steps:
       - uses: actions/checkout@v4
@@ -26,23 +27,16 @@ jobs:
         with:
           python-version: '3.12'
       - id: vars
-        name: init variables
+        name: Init variables
         run: |
           full_sha=${{ github.sha }}
           short_sha=$(echo ${full_sha} | cut -c1-8)
-          branch=$(echo ${GITHUB_REF#refs/heads/} | tr '/' '-')
           commit_message=$(git log -1 --format="*%s* by _%an_")
-
           echo "full_sha=${full_sha}" >> $GITHUB_OUTPUT
           echo "short_sha=${short_sha}" >> $GITHUB_OUTPUT
-          echo "branch=${branch}" >> $GITHUB_OUTPUT
           echo "commit_message=${commit_message}" >> $GITHUB_OUTPUT
-      - name: Notify starting
-        run: |
-          echo "Sending a 'start' notification for build ${{ steps.vars.outputs.short_sha }}"
       - name: Run test
         run: |
-          echo "let's run a test for ${{ steps.vars.outputs.short_sha }} in ${{ steps.vars.outputs.branch }}"
           uv sync --extra dev
           export TESTING=true
           uv run coverage run --source ./src/worklog -m pytest --disable-warnings -v
@@ -54,19 +48,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3
-      - name: Docker login
+      - name: Build and push
         run: |
           echo ${{ env.DOCKERHUB_TOKEN }} | docker login --username ${{ env.DOCKERHUB_USERNAME }} --password-stdin
-      - name: Build and push image
-        run: |
-          echo "Let's build the image for ${{ needs.init-and-test.outputs.full_sha }}"
-          echo "The change commit message to build is '${{ needs.init-and-test.outputs.commit_message }}'"
-          docker buildx build --platform linux/amd64,linux/arm64 --push \
-            -t ${{ env.DOCKER_REPOSITORY }}:${{ needs.init-and-test.outputs.full_sha }} \
+          docker buildx build --platform linux/amd64 --push \
             -t ${{ env.DOCKER_REPOSITORY }}:${{ needs.init-and-test.outputs.short_sha }} \
+            -t ${{ env.DOCKER_REPOSITORY }}:${{ needs.init-and-test.outputs.full_sha }} \
             .
-          echo "build successful and published image with the following tags:"
-          echo "Tags: ${{ needs.init-and-test.outputs.short_sha }}, ${{ needs.init-and-test.outputs.full_sha }}"
+          echo "build successful: ${{ needs.init-and-test.outputs.short_sha }}"
 
   deploy:
     runs-on: ubuntu-latest
@@ -84,31 +73,31 @@ jobs:
           aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name ${{ env.EKS_CLUSTER_NAME }}
       - name: Deploy to EKS
         run: |
-          cd deploy_manifest
-          sed -i "s|image: .*worklog-backend:.*|image: ${{ env.DOCKER_REPOSITORY }}:${{ needs.init-and-test.outputs.short_sha }}|" worklog-backend.yaml
-          sed -i "s|value: .*# IMAGE_TAG|value: ${{ needs.init-and-test.outputs.short_sha }} # IMAGE_TAG|" worklog-backend.yaml
-          kubectl apply -f worklog-backend.yaml
+          SHORT_SHA=${{ needs.init-and-test.outputs.short_sha }}
+          sed -i "s|image: .*worklog-backend:.*|image: ${{ env.DOCKER_REPOSITORY }}:${SHORT_SHA}|" deploy_manifest/worklog-backend.yaml
+          sed -i "s|value: .*# IMAGE_TAG|value: ${SHORT_SHA} # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml
+          kubectl apply -f deploy_manifest/worklog-backend.yaml
           kubectl rollout status deployment/worklog-backend --timeout=120s
-          echo "Deploy to EKS completed for tag ${{ needs.init-and-test.outputs.short_sha }}"
+          echo "Deploy to EKS completed for tag ${SHORT_SHA}"
 
   notify-success-result:
     if: ${{ success() }}
     runs-on: ubuntu-latest
     needs: [init-and-test, build, deploy]
     steps:
-      - name: Slack Notification Success
+      - name: Notification Success
         run: |
-          echo "Your pipeline has been completed"
-          echo "Commit Message: ${{ needs.init-and-test.outputs.commit_message }}"
-          echo "Tags: ${{ needs.init-and-test.outputs.short_sha }}, ${{ needs.init-and-test.outputs.full_sha }}"
+          echo "EKS deploy completed successfully"
+          echo "Commit: ${{ needs.init-and-test.outputs.commit_message }}"
+          echo "Tags: ${{ needs.init-and-test.outputs.short_sha }}"
 
   notify-failure-result:
     if: ${{ failure() }}
     runs-on: ubuntu-latest
     needs: [init-and-test, build, deploy]
     steps:
-      - name: Slack Notification Failure
+      - name: Notification Failure
         run: |
-          echo "Your pipeline has been failed"
-          echo "Commit Message: ${{ needs.init-and-test.outputs.commit_message }}"
-          echo "Tags: ${{ needs.init-and-test.outputs.short_sha }}, ${{ needs.init-and-test.outputs.full_sha }}"
+          echo "EKS deploy failed"
+          echo "Commit: ${{ needs.init-and-test.outputs.commit_message }}"
+          echo "Tags: ${{ needs.init-and-test.outputs.short_sha }}"

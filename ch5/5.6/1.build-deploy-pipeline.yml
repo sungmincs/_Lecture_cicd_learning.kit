@@ -10,6 +10,7 @@ stages:
   - init
   - test
   - build
+  - deploy
   - notify
 
 init:
@@ -32,10 +33,8 @@ test:
     - init
   script:
     - echo "let's run a test for ${SHORT_SHA} in ${BRANCH}"
-    - echo "running test for ${FULL_SHA}"
     - uv sync --extra dev
-    - export TESTING=true
-    - uv run coverage run --source ./src/worklog -m pytest --disable-warnings -v
+    - TESTING=true uv run coverage run --source ./src/worklog -m pytest --disable-warnings -v
     - uv run coverage report
 
 build:
@@ -47,28 +46,41 @@ build:
     - init
     - test
   variables:
-    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_HOST: tcp://docker:2375
     DOCKER_CONFIG: "/tmp/docker_config"
   script:
-    - mkdir -p ${DOCKER_CONFIG}
-    - printf '%s:%s' "${DOCKERHUB_USERNAME}" "${DOCKERHUB_TOKEN}" | base64 | tr -d '\n' > /tmp/auth.txt
-    - echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"auth\":\"$(cat /tmp/auth.txt)\"}}}" > ${DOCKER_CONFIG}/config.json
     - echo "Let's build the image for ${FULL_SHA}"
     - echo "The change commit message to build is '${COMMIT_MESSAGE}'"
-    - docker buildx create --use --driver docker-container 2>/dev/null || true
-    - docker buildx build .
-        --platform linux/amd64,linux/arm64
+    - echo ${DOCKERHUB_TOKEN} | docker login --username ${DOCKERHUB_USERNAME} --password-stdin
+    - docker buildx rm mybuilder 2>/dev/null || true
+    - docker buildx create --name mybuilder --driver docker-container --use
+    - docker buildx build --platform linux/amd64,linux/arm64
         -t ${DOCKER_REPOSITORY}:${FULL_SHA}
         -t ${DOCKER_REPOSITORY}:${SHORT_SHA}
-        --push
+        --push .
     - echo "build successful and published image with the following tags:"
     - echo "Tags:${SHORT_SHA}, ${FULL_SHA}"
+
+deploy:
+  stage: deploy
+  image: bitnami/kubectl:latest
+  needs:
+    - init
+    - build
+  script:
+    - echo "Let's deploy the image"
+    - echo "Deploying our image ${FULL_SHA} to the cluster"
+    - mkdir -p ~/.kube
+    - echo "${CP_K8S_CONTEXT}" > ~/.kube/config
+    - kubectl apply -f deploy_manifest/worklog-backend.yaml
 
 notify-success:
   stage: notify
   needs:
     - init
     - build
+    - deploy
   script:
     - echo "Your pipeline has been completed"
     - echo "Commit Message:${COMMIT_MESSAGE}"
@@ -81,6 +93,7 @@ notify-failure:
   needs:
     - init
     - build
+    - deploy
   script:
     - echo "Your pipeline has been failed"
     - echo "Commit Message:${COMMIT_MESSAGE}"

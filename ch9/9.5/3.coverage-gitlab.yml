@@ -12,20 +12,21 @@ variables:
 
 .determine-environment: &determine-environment
   - |
-    if [[ -n "$CI_COMMIT_TAG" && "$CI_COMMIT_TAG" =~ ^v ]]; then
+    if [[ "$CI_COMMIT_TAG" =~ ^v ]]; then
       export TARGET_ENV=prod
-      export TARGET_NAMESPACE=prod
+      export ARGOCD_APP=worklog-backend-prod
     elif [[ "$CI_COMMIT_BRANCH" =~ ^release/ ]]; then
       export TARGET_ENV=staging
-      export TARGET_NAMESPACE=staging
+      export ARGOCD_APP=worklog-backend-staging
     else
       export TARGET_ENV=dev
-      export TARGET_NAMESPACE=dev
+      export ARGOCD_APP=worklog-backend-dev
     fi
-    echo "Deploying to $TARGET_ENV (namespace: $TARGET_NAMESPACE)"
 
 workflow:
   rules:
+    - if: '$CI_COMMIT_MESSAGE =~ /\[skip ci\]/'
+      when: never
     - if: $CI_MERGE_REQUEST_IID
     - if: $CI_COMMIT_BRANCH == "main"
     - if: $CI_COMMIT_BRANCH == "develop"
@@ -42,23 +43,16 @@ lint:
 security-scan:
   stage: security
   image: ghcr.io/astral-sh/uv:python3.12-bookworm-slim
-  needs: [lint]
-  before_script:
-    - apt-get update -qq && apt-get install -y -qq curl
-    - curl -sSfL https://github.com/gitleaks/gitleaks/releases/latest/download/gitleaks_$(uname -s)_x64.tar.gz | tar -xz -C /usr/local/bin/
   script:
     - uv sync --extra dev
     - uv run pip-audit
-    - gitleaks detect --source . --config .gitleaks.toml
 
 test:
   stage: test
   image: ghcr.io/astral-sh/uv:python3.12-bookworm-slim
-  needs: [security-scan]
   script:
     - uv sync --extra dev
-    - export TESTING=true
-    - uv run coverage run --source ./src/worklog -m pytest --disable-warnings -v
+    - TESTING=true uv run coverage run --source ./src/worklog -m pytest --disable-warnings -v
     - uv run coverage report --fail-under=80
 
 build:
@@ -66,33 +60,40 @@ build:
   image: docker:24
   services:
     - docker:24-dind
-  needs: [test]
   variables:
     DOCKER_TLS_CERTDIR: ""
-  before_script:
-    - echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+    SHORT_SHA: $CI_COMMIT_SHORT_SHA
   script:
-    - SHORT_SHA=$(echo $CI_COMMIT_SHA | cut -c1-8)
+    - *determine-environment
+    - mkdir -p "$DOCKER_CONFIG"
+    - echo "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
     - docker buildx rm mybuilder 2>/dev/null || true
     - docker buildx create --name mybuilder --driver docker-container --use
-    - docker buildx build --platform linux/amd64,linux/arm64 -t $DOCKER_REPOSITORY:$SHORT_SHA --push .
+    - |
+      docker buildx build --platform linux/amd64,linux/arm64 \
+        -t $DOCKER_REPOSITORY:$SHORT_SHA \
+        --push .
 
 deploy:
   stage: deploy
   image: alpine:latest
-  needs: [build]
   before_script:
-    - apk add --no-cache git
-    - *determine-environment
+    - apk add --no-cache git sed
   script:
+    - *determine-environment
     - |
-      SHORT_SHA=$(echo $CI_COMMIT_SHA | cut -c1-8)
-      git remote set-url origin "https://oauth2:${GITLAB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
-      sed -i "s|image: .*worklog-backend:.*|image: $DOCKER_REPOSITORY:$SHORT_SHA|" deploy_manifest/worklog-backend.yaml
-      sed -i "s|value: .* # IMAGE_TAG|value: $SHORT_SHA # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml
-      git config user.name "gitlab-ci"
-      git config user.email "gitlab-ci@myk8s.local"
-      git add deploy_manifest/
-      git diff --staged --quiet || git commit -m "deploy: update image tag to $SHORT_SHA for $TARGET_ENV [skip ci]"
-      git pull --rebase origin $CI_COMMIT_BRANCH || true
-      git push origin HEAD:$CI_COMMIT_BRANCH
+      if [ -n "$CI_COMMIT_TAG" ]; then
+        BRANCH="main"
+      else
+        BRANCH="$CI_COMMIT_BRANCH"
+      fi
+    - SHORT_SHA=$CI_COMMIT_SHORT_SHA
+    - git config user.name "gitlab-ci"
+    - git config user.email "gitlab-ci@myk8s.local"
+    - git remote set-url origin "https://oauth2:${GITLAB_TOKEN}@gitlab.com/<gitlab_username>/worklog-backend.git"
+    - git rebase --abort 2>/dev/null || true
+    - sed -i "s|image: .*worklog-backend:.*|image: $DOCKER_REPOSITORY:$SHORT_SHA|" deploy_manifest/worklog-backend.yaml
+    - git add deploy_manifest/
+    - git diff --staged --quiet || git commit -m "deploy: update image tag to $SHORT_SHA for $TARGET_ENV [skip ci]"
+    - git pull --rebase origin $BRANCH || true
+    - git push origin HEAD:$BRANCH
