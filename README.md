@@ -1,5 +1,7 @@
 # CI/CD Learning Kit
 
+> ⚠️ **구조 개편 진행 중입니다.** 최신 목차·서브챕터 번호는 비공개 작업 저장소(Internal)가 정본이며, 이 공개 저장소는 강의 자료(장표) 완성 후 일괄 동기화됩니다. 현재 일부 챕터의 절 번호가 최종본과 다를 수 있습니다.
+
 CI/CD 실습 키트 — GitHub Actions, Jenkins, GitLab CI/CD, Argo CD를 활용한 쿠버네티스 기반 CI/CD 파이프라인 구축 강의 자료
 
 ## 사용하는 CI/CD 도구
