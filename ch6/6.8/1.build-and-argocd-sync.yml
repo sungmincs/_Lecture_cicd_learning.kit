@@ -52,7 +52,7 @@ deploy:
     - git config user.email "gitlab-ci@myk8s.local"
     - git remote set-url origin "https://oauth2:${GITLAB_TOKEN}@gitlab.com/<gitlab_username>/worklog-backend.git"
     - sed -i "s|image: .*worklog-backend:.*|image: $DOCKER_REPOSITORY:$SHORT_SHA|" deploy_manifest/worklog-backend.yaml
-    - sed -i "s|value: .* # IMAGE_TAG|value: \"$SHORT_SHA\" # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml
+    - 'sed -i "s|value: .* # IMAGE_TAG|value: \"$SHORT_SHA\" # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml'
     - git add deploy_manifest/
     - git diff --staged --quiet || git commit -m "deploy: update image tag to $SHORT_SHA [skip ci]"
     - git pull --rebase origin main || true
