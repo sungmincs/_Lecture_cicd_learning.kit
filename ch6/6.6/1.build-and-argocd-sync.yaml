@@ -80,7 +80,7 @@ jobs:
         run: |
           cd deploy_manifest
           sed -i "s|image: .*worklog-backend:.*|image: ${{ env.DOCKER_REPOSITORY }}:${{ needs.init-and-test.outputs.short_sha }}|" worklog-backend.yaml
-          sed -i "s|value: .* # IMAGE_TAG|value: ${{ needs.init-and-test.outputs.short_sha }} # IMAGE_TAG|" worklog-backend.yaml
+          sed -i "s|value: .* # IMAGE_TAG|value: \"${{ needs.init-and-test.outputs.short_sha }}\" # IMAGE_TAG|" worklog-backend.yaml
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add .

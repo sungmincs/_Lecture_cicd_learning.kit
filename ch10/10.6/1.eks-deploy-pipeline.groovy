@@ -54,7 +54,7 @@ pipeline {
             steps {
                 sh """
                     sed -i "s|image: .*worklog-backend:.*|image: ${DOCKER_REPOSITORY}:${SHORT_SHA}|" deploy_manifest/worklog-backend.yaml
-                    sed -i "s|value: .*# IMAGE_TAG|value: ${SHORT_SHA} # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml
+                    sed -i "s|value: .*# IMAGE_TAG|value: \"${SHORT_SHA}\" # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml
                     kubectl apply -f deploy_manifest/worklog-backend.yaml
                     kubectl rollout status deployment/worklog-backend --timeout=120s
                     echo "Deploy to EKS completed for tag ${SHORT_SHA}"

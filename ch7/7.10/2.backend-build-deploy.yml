@@ -47,7 +47,7 @@ deploy:
     - git config user.email "ci@gitlab.com"
     - git remote set-url origin "https://oauth2:${GITLAB_TOKEN}@gitlab.com/<gitlab_username>/worklog-backend.git"
     - sed -i "s|image: .*/worklog-backend:.*|image: $DOCKERHUB_USERNAME/$DOCKER_REPOSITORY:$SHORT_SHA|" deploy_manifest/worklog-backend.yaml
-    - sed -i "s|value: .* # IMAGE_TAG|value: $SHORT_SHA # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml
+    - sed -i "s|value: .* # IMAGE_TAG|value: \"$SHORT_SHA\" # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml
     - git add deploy_manifest/
     - git diff --staged --quiet || git commit -m "deploy: update backend image to $SHORT_SHA [skip ci]"
     - git push origin HEAD:main

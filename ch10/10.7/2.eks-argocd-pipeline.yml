@@ -63,7 +63,7 @@ update-manifest:
     - git remote set-url origin "https://oauth2:${GITHUB_TOKEN}@github.com/<github_username>/worklog-backend.git"
     - git rebase --abort 2>/dev/null || true
     - sed -i "s|image: .*worklog-backend:.*|image: $DOCKER_REPOSITORY:$CI_COMMIT_SHORT_SHA|" deploy_manifest/worklog-backend.yaml
-    - sed -i "s|value: .*# IMAGE_TAG|value: $CI_COMMIT_SHORT_SHA # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml
+    - sed -i "s|value: .*# IMAGE_TAG|value: \"$CI_COMMIT_SHORT_SHA\" # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml
     - git add deploy_manifest/
     - git diff --staged --quiet || git commit -m "deploy: update image tag to $CI_COMMIT_SHORT_SHA"
     - git pull --rebase origin $BRANCH || true

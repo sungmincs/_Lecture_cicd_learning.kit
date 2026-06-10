@@ -78,7 +78,7 @@ jobs:
         run: |
           SHORT_SHA=${{ needs.init-and-test.outputs.short_sha }}
           sed -i "s|image: .*worklog-backend:.*|image: ${{ env.DOCKER_REPOSITORY }}:${SHORT_SHA}|" deploy_manifest/worklog-backend.yaml
-          sed -i "s|value: .*# IMAGE_TAG|value: ${SHORT_SHA} # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml
+          sed -i "s|value: .*# IMAGE_TAG|value: \"${SHORT_SHA}\" # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add deploy_manifest/

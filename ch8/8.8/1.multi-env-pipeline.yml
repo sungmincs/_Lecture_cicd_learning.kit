@@ -88,7 +88,7 @@ deploy:
     - git remote set-url origin "https://oauth2:${GITLAB_TOKEN}@gitlab.com/<gitlab_username>/worklog-backend.git"
     - git rebase --abort 2>/dev/null || true
     - sed -i "s|image: .*worklog-backend:.*|image: $DOCKER_REPOSITORY:$IMAGE_TAG|" deploy_manifest/worklog-backend.yaml
-    - sed -i "s|value: .* # IMAGE_TAG|value: $IMAGE_TAG # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml
+    - sed -i "s|value: .* # IMAGE_TAG|value: \"$IMAGE_TAG\" # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml
     - git add deploy_manifest/
     - git diff --staged --quiet || git commit -m "deploy: update image tag to $IMAGE_TAG for $TARGET_ENV [skip ci]"
     - git pull --rebase origin $BRANCH || true

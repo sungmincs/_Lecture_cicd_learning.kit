@@ -147,7 +147,7 @@ jobs:
           IMAGE_TAG=${{ needs.determine-environment.outputs.image_tag }}
           NAMESPACE=${{ needs.determine-environment.outputs.namespace }}
           sed -i "s|image: .*worklog-backend:.*|image: ${{ env.DOCKER_REPOSITORY }}:${IMAGE_TAG}|" deploy_manifest/worklog-backend.yaml
-          sed -i "s|value: .* # IMAGE_TAG|value: ${IMAGE_TAG} # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml
+          sed -i "s|value: .* # IMAGE_TAG|value: \"${IMAGE_TAG}\" # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add deploy_manifest/

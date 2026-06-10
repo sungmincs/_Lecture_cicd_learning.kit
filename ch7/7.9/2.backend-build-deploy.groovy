@@ -48,7 +48,7 @@ pipeline {
             steps {
                 sh """
                     sed -i "s|image: .*/worklog-backend:.*|image: ${DOCKERHUB_CREDENTIALS_USR}/${DOCKER_REPOSITORY}:${env.SHORT_SHA}|" deploy_manifest/worklog-backend.yaml
-                    sed -i "s|value: .* # IMAGE_TAG|value: ${env.SHORT_SHA} # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml
+                    sed -i "s|value: .* # IMAGE_TAG|value: \"${env.SHORT_SHA}\" # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml
                     git config user.name "jenkins"
                     git config user.email "jenkins@myk8s.local"
                     git remote set-url origin https://${GITHUB_CREDENTIALS_USR}:${GITHUB_CREDENTIALS_PSW}@github.com/<github_username>/worklog-backend.git
