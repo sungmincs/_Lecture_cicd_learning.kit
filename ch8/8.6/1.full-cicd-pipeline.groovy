@@ -75,7 +75,7 @@ pipeline {
                         git remote set-url origin "https://\$GITHUB_CREDENTIALS_USR:\$GITHUB_CREDENTIALS_PSW@github.com/${GITHUB_CREDENTIALS_USR}/worklog-backend.git"
                         git add deploy_manifest/
                         git diff --staged --quiet || git commit -m "deploy: update image tag to ${imageTag} for ${targetEnv}"
-                        git pull --rebase origin ${branch} || git rebase --abort
+                        git pull --rebase -X theirs origin ${branch}
                         git push origin HEAD:${branch}
                     """
                 }

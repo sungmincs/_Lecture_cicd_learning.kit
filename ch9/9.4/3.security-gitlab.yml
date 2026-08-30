@@ -42,9 +42,24 @@ lint:
 security-scan:
   stage: security
   image: ghcr.io/astral-sh/uv:python3.14-bookworm-slim
+  variables:
+    GITLEAKS_VERSION: "8.30.1"
+  before_script:
+    # gitleaks detect는 커밋 이력을 스캔하므로 git이 필요하다 (uv 이미지엔 없음)
+    - apt-get update -qq && apt-get install -y -qq curl git
+    # gitleaks: 러너 아키텍처에 맞는 바이너리를 받는다
+    - |
+      case "$(uname -m)" in
+        x86_64)        GL_ARCH=x64 ;;
+        aarch64|arm64) GL_ARCH=arm64 ;;
+        *)             GL_ARCH=x64 ;;
+      esac
+      curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_${GL_ARCH}.tar.gz" \
+        | tar -xz -C /usr/local/bin/ gitleaks
   script:
     - uv sync --extra dev
     - uv run pip-audit
+    - gitleaks detect --source . --config .gitleaks.toml --no-banner
 
 build:
   stage: build

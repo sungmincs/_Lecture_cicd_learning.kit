@@ -193,3 +193,21 @@ parent/
 ├── worklog-frontend/                      ← frontend
 └── worklog-backend-gitlab/               ← GitLab CI용 backend
 ```
+
+## ⛔ Public 저장소는 digest.py로만 갱신한다
+
+Public(`_Lecture_cicd_learning.kit`)에 **직접 커밋하지 않는다.** Internal을 고치고
+`python3 scripts/digest.py`로 넘긴다.
+
+```bash
+python3 scripts/digest.py --dry-run   # 무엇이 바뀌는지 먼저
+python3 scripts/digest.py             # 실행 (커밋은 하지 않는다)
+cd ../_Lecture_cicd_learning.kit && git add -A && git commit
+```
+
+**이 원칙이 지켜지지 않아 Public이 3개월 뒤처졌다.** `digest.py`가 책 저장소에서
+차용한 PLACEHOLDER 상태였고, 그동안 Public에 직접 커밋해 왔다. 그 결과
+renumber(2026-06-03)가 반영되지 않아 절 번호가 1씩 밀렸고 `prompt-guardrails`가
+한 번도 나가지 않았다. 2026-08-30에 digest를 강의용으로 다시 쓰고 일괄 동기화했다.
+
+`CLAUDE.md`는 Internal 전용 절을 걷어내고 나간다(441 → 195줄).

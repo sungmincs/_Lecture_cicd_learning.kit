@@ -66,10 +66,10 @@ Jenkins helm 차트도 같은 방식이다: `k8s-edu/Lkv1_main`의 `helm-charts/
 | 구성요소 | 고정 방식 | 비고 |
 |---------|----------|------|
 | ruff | `uv.lock` (현재 0.15.13) | `pyproject.toml`의 `>=0.4.4`는 하한일 뿐. `uv run`이 락을 쓴다 |
-| pip-audit | `uv.lock` (dev 의존성 `>=2.7.0`) | `uvx pip-audit`은 락을 무시해 항상 최신을 받았다 → `uv run pip-audit`으로 교체(2026-08-30) |
+| pip-audit | `uv.lock` (dev 의존성 `>=2.7.0`) | ⛔ **`uvx pip-audit`을 쓰지 않는다.** 격리 환경에서 돌아 프로젝트 의존성을 못 본다 → 항상 "취약점 없음". `uv run`으로 교체(2026-08-30) |
 | coverage | `uv.lock` (`>=7.5.1`) | |
 | **Trivy** | **:latest (의도적)** | CVE DB가 최신이어야 데모가 성립. 갱신 트리거: bookworm LTS 종료(2028-06-30) |
-| gitleaks | GitHub만 `gitleaks-action@v2` | ⚠️ Jenkins·GitLab 참조 파일에 gitleaks 구현이 없다([[../../_prepublish_updates/ci-tools.md]]) |
+| gitleaks | **8.30.1** (Jenkins·GitLab) / `gitleaks-action@v2` (GitHub) | 2026-08-30에 Jenkins·GitLab 정답 파일에 추가. 자산 이름이 `gitleaks_<버전>_linux_<x64\|arm64>.tar.gz`라 `uname -m`으로 분기한다 |
 
 ## 인프라 고정값 (검증 완료, 현재 최신)
 
