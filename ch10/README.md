@@ -1,9 +1,10 @@
 # 챕터 10. 테라폼을 활용해 기존 환경을 클라우드 환경으로 전환하기
 
 ### 다루는 내용
-- 10.2: AWS 환경 설정하기
-- 10.3: Terraform을 이용한 EKS 배포와 삭제
-- 10.4: [공통] EKS에 Worklog App과 Argo CD 배포하기
-- 10.5: [GitHub] 기존 파이프라인을 EKS로 전환하기
-- 10.6: [Jenkins] 기존 파이프라인을 EKS로 전환하기
-- 10.7: [GitLab] 기존 파이프라인을 EKS로 전환하기
+- 10.2: 클라우드 전환 개요 (로컬 K8s → AWS EKS)
+- 10.3: AWS 환경 설정하기
+- 10.4: Terraform을 이용한 EKS 배포와 삭제
+- 10.5: [공통] EKS에 Worklog App과 Argo CD 배포하기
+- 10.6: [GitHub] 기존 파이프라인을 EKS로 전환하기
+- 10.7: [Jenkins] 기존 파이프라인을 EKS로 전환하기
+- 10.8: [GitLab] 기존 파이프라인을 EKS로 전환하기

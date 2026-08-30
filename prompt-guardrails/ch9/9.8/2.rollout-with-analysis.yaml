@@ -1,0 +1,59 @@
+# ch9.8 Rollout — canary 단계마다 success-rate AnalysisTemplate로 health 검증, 실패 시 자동 롤백
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: worklog-backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: worklog-backend
+  template:
+    metadata:
+      labels:
+        app: worklog-backend
+    spec:
+      # 이미지가 public이면 imagePullSecrets 생략 가능. private면 dockerhub-creds 추가.
+      # imagePullSecrets:
+      #   - name: dockerhub-creds
+      containers:
+        - name: worklog-backend
+          image: <dockerhub_username>/worklog-backend:<image_tag>
+          ports:
+            - containerPort: 80
+          env:
+            - name: MONGO_HOST
+              value: worklog-mongodb.default.svc.cluster.local
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: worklog-mongodb-creds
+                  key: username
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: worklog-mongodb-creds
+                  key: password
+          livenessProbe:
+            httpGet: { path: /health, port: 80 }
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet: { path: /health, port: 80 }
+            initialDelaySeconds: 5
+            periodSeconds: 5
+  strategy:
+    canary:
+      analysis:                       # canary 진행 중 백그라운드 분석
+        templates:
+          - templateName: success-rate
+        args:
+          - name: service-name
+            value: worklog-backend
+      steps:
+        - setWeight: 20
+        - pause: { duration: 30 }
+        - setWeight: 40
+        - pause: { duration: 30 }
+        - setWeight: 80
+        - pause: { duration: 30 }

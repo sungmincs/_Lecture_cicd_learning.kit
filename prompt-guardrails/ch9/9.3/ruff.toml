@@ -1,0 +1,10 @@
+# ruff lint 설정 — ch9.3 CI 강화
+# E: pycodestyle errors, F: pyflakes, W: pycodestyle warnings, I: isort(import 정렬)
+line-length = 100
+
+[lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]  # 줄 길이는 무시(line-length는 포맷 참고용)
+
+[lint.isort]
+known-first-party = ["worklog"]

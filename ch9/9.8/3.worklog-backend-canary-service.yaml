@@ -1,0 +1,15 @@
+# canary 전용 Service.
+# stable Service(worklog-backend)는 ch7.7에서 이미 생성됨 → 본 파일은 canary용만 추가.
+# selector는 app만 지정하지만, Rollout이 canaryService로 참조하면 Argo Rollouts가
+# rollouts-pod-template-hash 라벨을 자동 주입해 canary ReplicaSet의 pod만 선택하게 만든다.
+# (trafficRouting 없이도 분석 대상을 canary로 격리하기 위한 표준 패턴)
+apiVersion: v1
+kind: Service
+metadata:
+  name: worklog-backend-canary
+spec:
+  selector:
+    app: worklog-backend
+  ports:
+    - port: 80
+      targetPort: 80

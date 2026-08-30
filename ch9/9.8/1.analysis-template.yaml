@@ -8,7 +8,10 @@ spec:
   metrics:
   - name: success-rate
     interval: 30s
-    failureLimit: 3
+    # failureLimit 0: canary 전용 Service를 폴링하므로 1회라도 /health 실패 시 즉시 롤백.
+    # (공유 Service면 정상 stable pod 응답에 가려 broken canary가 승격되는 문제 → 9.8 본문 참고)
+    # 실무에서는 일시적 네트워크 blip 흡수를 위해 1~2로 튜닝하기도 함.
+    failureLimit: 0
     provider:
       web:
         url: "http://{{args.service-name}}.default.svc.cluster.local/health"

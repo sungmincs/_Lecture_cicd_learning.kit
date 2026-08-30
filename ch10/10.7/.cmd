@@ -1,40 +1,49 @@
-# Part A: EKS 직접 배포 파이프라인
+# ============================================================
+# Part A: Jenkins EKS 직접 배포
+# ============================================================
 
-# Configure GitLab CI/CD Variables for AWS
-## Settings -> CI/CD -> Variables
-### AWS_ACCESS_KEY_ID (Masked)
-### AWS_SECRET_ACCESS_KEY (Masked)
-### AWS_REGION: ap-northeast-2
-### EKS_CLUSTER_NAME: cicd-learning-eks
+# Configure Jenkins credentials for AWS
+## Dashboard -> Jenkins 관리 -> Credentials -> System -> Global credentials
+### Add: aws-access-key-id (Secret text) - AWS Access Key ID
+### Add: aws-secret-access-key (Secret text) - AWS Secret Access Key
+### Add: eks-cluster-name (Secret text) - cicd-learning-eks
+
+# Install AWS CLI and kubectl on Jenkins agent (if not already installed)
+## Manage Jenkins -> Manage Plugins -> Install "AWS Steps" plugin
 
 # Apply EKS deployment pipeline
-cp ~/_Lecture_cicd_learning.kit/ch10/10.7/1.eks-deploy-pipeline.yml ~/workspace/worklog-backend-gitlab/.gitlab-ci.yml
-cd ~/workspace/worklog-backend-gitlab
+cp ~/_Lecture_cicd_learning.kit/ch10/10.6/1.eks-deploy-pipeline.groovy ~/workspace/worklog-backend/Jenkinsfile
+cd ~/workspace/worklog-backend
 git add .
-git commit -m "cicd: deploy to EKS via GitLab"
+git commit -m "cicd: deploy to EKS via Jenkins"
 git push origin main
 
+# Trigger build in Jenkins
+## Dashboard -> worklog-backend -> Build Now
+
 # Verify deployment
-## Check GitLab CI/CD -> Pipelines
 kubectl get pods
 kubectl get svc
 
-# Part B: Argo CD 연동 파이프라인
+# ============================================================
+# Part B: Jenkins + Argo CD 연동 배포
+# ============================================================
 
-# Configure GitLab CI/CD Variables for Argo CD
-## Settings -> CI/CD -> Variables
-### ARGOCD_SERVER (Masked)
-### ARGOCD_PASSWORD (Masked)
+# Add Argo CD credentials to Jenkins
+## Dashboard -> Jenkins 관리 -> Credentials -> System -> Global credentials
+### Add: argocd-admin-password (Secret text) - Argo CD admin password
 
-# Apply Argo CD pipeline for GitLab on EKS
-cd ~/workspace/worklog-backend-gitlab
-cp ~/_Lecture_cicd_learning.kit/ch10/10.7/2.eks-argocd-pipeline.yml .gitlab-ci.yml
+# Apply Argo CD pipeline for Jenkins
+cp ~/_Lecture_cicd_learning.kit/ch10/10.6/2.eks-argocd-pipeline.groovy ~/workspace/worklog-backend/Jenkinsfile
+cd ~/workspace/worklog-backend
 git add .
-git commit -m "cicd: EKS + Argo CD GitLab pipeline"
+git commit -m "cicd: EKS + Argo CD Jenkins pipeline"
 git push origin main
 
+# Trigger build in Jenkins
+## Dashboard -> worklog-backend -> Build Now
+
 # Verify
-## Check GitLab Pipelines
-## Check Argo CD UI
-argocd app list
+## Check Jenkins build console
+## Check Argo CD UI for sync status
 kubectl get pods

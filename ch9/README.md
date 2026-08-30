@@ -1,7 +1,9 @@
-# 챕터 9. CI/CD 강화: 품질과 보안 게이트 구축하기
+# 챕터 9. CI/CD 강화 — 품질과 보안 게이트 구축하기
+
+ch8에서 구축한 멀티환경 파이프라인에 품질·보안 게이트를 더해 강화합니다.
 
 ### 다루는 내용
-- 9.2: AI 시대에 변화하는 CI/CD (개요 및 게이트 설계 원칙)
+- 9.2: AI 시대에 변화하는 CI/CD (개요)
 - 9.3: CI 강화 - Lint (ruff)
 - 9.4: CI 강화 - Security Scan (pip-audit, gitleaks)
 - 9.5: CI 강화 - Test Coverage 임계값

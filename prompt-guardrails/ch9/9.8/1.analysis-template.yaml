@@ -1,0 +1,20 @@
+# ch9.8 AnalysisTemplate — canary 중 /health 체크, 실패 누적 시 자동 롤백 트리거
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: success-rate
+spec:
+  args:
+    - name: service-name
+  metrics:
+    - name: health-check
+      interval: 30s
+      failureLimit: 3       # 3회까지 실패 허용, 초과 시 AnalysisRun Failed → Rollout 자동 롤백
+      provider:
+        web:
+          # ⚠️ 반드시 FQDN — 단축형(http://{{args.service-name}}/health)은 AnalysisRun Pod DNS 해석 실패
+          url: "http://{{args.service-name}}.default.svc.cluster.local/health"
+          jsonPath: "{$.health}"
+      # /health 응답 {"health":"OK",...} → result는 string. result == "OK" 로 비교
+      # ⛔ result[0] == "OK" 금지(string[int] undefined 오류). 숫자 조건(>=0.95)도 불가.
+      successCondition: 'result == "OK"'

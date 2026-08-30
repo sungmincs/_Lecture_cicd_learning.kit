@@ -1,0 +1,79 @@
+stages:
+  - test
+  - build
+  - update-manifest
+  - sync
+
+variables:
+  DOCKER_REPOSITORY: <dockerhub_username>/worklog-backend
+  DOCKER_CONFIG: "/tmp/docker_config"
+  DOCKER_HOST: tcp://docker:2375
+  ARGOCD_APP_NAME: worklog-backend
+
+workflow:
+  rules:
+    - if: '$CI_COMMIT_MESSAGE =~ /\[skip ci\]/'
+      when: never
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH =~ /^release\//
+    - if: $CI_COMMIT_TAG =~ /^v/
+
+test:
+  stage: test
+  image: ghcr.io/astral-sh/uv:python3.14-bookworm-slim
+  allow_failure: true
+  script:
+    - uv sync --extra dev
+    - TESTING=true uv run coverage run --source ./src/worklog -m pytest --disable-warnings -v
+    - uv run coverage report
+
+build:
+  stage: build
+  image: docker:24
+  services:
+    - docker:24-dind
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+  script:
+    - mkdir -p "$DOCKER_CONFIG"
+    - echo "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
+    - docker buildx rm mybuilder 2>/dev/null || true
+    - docker buildx create --name mybuilder --driver docker-container --use
+    - |
+      docker buildx build --platform linux/amd64 \
+        -t $DOCKER_REPOSITORY:$CI_COMMIT_SHORT_SHA \
+        --push .
+    - 'echo "build successful: $CI_COMMIT_SHORT_SHA"'
+
+update-manifest:
+  stage: update-manifest
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache git sed
+  script:
+    - |
+      if [ -n "$CI_COMMIT_TAG" ]; then
+        BRANCH="main"
+      else
+        BRANCH="$CI_COMMIT_BRANCH"
+      fi
+    - git config user.name "gitlab-ci"
+    - git config user.email "gitlab-ci@myk8s.local"
+    - git remote set-url origin "https://oauth2:${GITHUB_TOKEN}@github.com/<github_username>/worklog-backend.git"
+    - git rebase --abort 2>/dev/null || true
+    - 'sed -i "s|image: .*worklog-backend:.*|image: $DOCKER_REPOSITORY:$CI_COMMIT_SHORT_SHA|" deploy_manifest/worklog-backend.yaml'
+    - 'sed -i "s|value: .*# IMAGE_TAG|value: \"$CI_COMMIT_SHORT_SHA\" # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml'
+    - git add deploy_manifest/
+    - 'git diff --staged --quiet || git commit -m "deploy: update image tag to $CI_COMMIT_SHORT_SHA"'
+    - git pull --rebase origin $BRANCH || true
+    - git push origin HEAD:$BRANCH
+
+sync-argocd:
+  stage: sync
+  image: argoproj/argocd:latest
+  script:
+    - argocd login $ARGOCD_SERVER --username admin --password $ARGOCD_PASSWORD --insecure
+    - argocd app sync $ARGOCD_APP_NAME
+    - argocd app wait $ARGOCD_APP_NAME --health
+    - echo "Argo CD sync completed for $ARGOCD_APP_NAME"

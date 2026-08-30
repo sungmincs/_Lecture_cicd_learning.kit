@@ -1,0 +1,13 @@
+# ch9.3 GitLab CI — lint stage (stages 맨 앞 + lint job 추가)
+stages:
+  - lint
+  - test
+  - build
+  - deploy
+
+lint:
+  stage: lint
+  image: ghcr.io/astral-sh/uv:python3.14-bookworm-slim
+  script:
+    - uv sync --extra dev
+    - uv run ruff check src/

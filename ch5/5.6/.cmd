@@ -1,13 +1,17 @@
-# Setup GitLab CI/CD variables
-## Settings -> CI/CD -> Variables
-### DOCKERHUB_USERNAME: <dockerhub_username>
-### DOCKERHUB_TOKEN: <dockerhub_token>
+# Simplify Jenkins pipeline using Plugins
+## Ensure Docker Pipeline plugin is installed
+### Dashboard -> Jenkins 관리 -> Plugins -> Available plugins -> Docker Pipeline
 
-# Apply build and deploy pipeline
-cd ~/workspace/worklog-backend-gitlab
-cp ~/_Lecture_cicd_learning.kit/ch5/5.6/1.build-pipeline.yml .gitlab-ci.yml
+## Apply simplified pipeline using Docker Pipeline plugin
+### Create new Jenkinsfile with plugin-based approach
+cd ~/workspace/worklog-backend
+cp ~/_Lecture_cicd_learning.kit/ch5/5.6/1.build-and-push-docker-image-plugin.groovy Jenkinsfile
 git add .
-git commit -m "cicd: add build and push pipeline"
+git commit -m "cicd: simplify pipeline with Jenkins plugins"
 git push origin main
 
-## Check the result in GitLab CI/CD -> Pipelines
+## Trigger the pipeline in Jenkins
+### Dashboard -> worklog-backend-pipeline -> Scan Multibranch Pipeline Now
+
+## Check the result in Jenkins
+### Compare the pipeline code with 5.5 version

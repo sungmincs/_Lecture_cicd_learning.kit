@@ -8,14 +8,14 @@
 
 # Apply frontend pipeline
 cd ~/workspace/worklog-frontend
-cp ~/_Lecture_cicd_learning.kit/ch8/8.3/1.frontend-build-deploy.yaml .github/workflows/build-deploy.yaml
+cp ~/_Lecture_cicd_learning.kit/ch7/7.8/1.frontend-build-deploy.yaml .github/workflows/build-deploy.yaml
 git add .
 git commit -m "cicd: add frontend build and deploy pipeline"
 git push origin main
 
 # Apply backend pipeline
 cd ~/workspace/worklog-backend
-cp ~/_Lecture_cicd_learning.kit/ch8/8.3/2.backend-build-deploy.yaml .github/workflows/build-deploy.yaml
+cp ~/_Lecture_cicd_learning.kit/ch7/7.8/2.backend-build-deploy.yaml .github/workflows/build-deploy.yaml
 git add .
 git commit -m "cicd: add backend build and deploy pipeline"
 git push origin main

@@ -1,26 +1,76 @@
-# Deploy Worklog App to EKS (manual)
-## Apply MongoDB, Backend, Frontend from ch8
-kubectl apply -f ~/_Lecture_cicd_learning.kit/ch8/8.2/1.mongodb-manifest.yaml
-kubectl apply -f ~/_Lecture_cicd_learning.kit/ch8/8.2/2.worklog-backend-with-db.yaml
-kubectl apply -f ~/_Lecture_cicd_learning.kit/ch8/8.2/3.worklog-frontend-manifest.yaml
+# Install Terraform
+## Linux
+wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
+apt update && apt install terraform -y
 
-# Verify deployment
-kubectl get pods
-kubectl get svc
-kubectl get ingress
+## Verify
+terraform version
 
-# Install Argo CD on EKS
-kubectl create namespace argocd
-kubectl apply -n argocd -f ~/_Lecture_cicd_learning.kit/ch6/6.2/argocd-manifest.yaml
+# Initialize a simple Terraform project
+mkdir -p ~/terraform-test
+cd ~/terraform-test
 
-# Expose Argo CD via LoadBalancer
-kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+# Create a simple main.tf to test AWS connection
+cat << 'EOF' > main.tf
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
 
-# Get Argo CD URL
-kubectl get svc argocd-server -n argocd
+provider "aws" {
+  region = "ap-northeast-2"
+}
 
-# Get initial password
-kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+data "aws_caller_identity" "current" {}
 
-# Access Argo CD UI
-### Open LoadBalancer URL in browser, login with admin/<password>
+output "account_id" {
+  value = data.aws_caller_identity.current.account_id
+}
+EOF
+
+# Terraform workflow
+terraform init
+terraform plan
+terraform apply
+
+# Cleanup test
+rm -rf ~/terraform-test
+
+# Navigate to EKS Terraform directory
+cd ~/_Lecture_cicd_learning.kit/ch10/10.3/terraform-eks
+
+# Review Terraform files
+ls -la
+
+# Initialize Terraform
+terraform init
+
+# Plan EKS cluster
+terraform plan
+
+# Apply (create EKS cluster)
+### This will take 15-20 minutes
+terraform apply -auto-approve
+
+# Configure kubectl for EKS
+aws eks update-kubeconfig --region ap-northeast-2 --name cicd-learning-eks
+
+# Verify EKS cluster
+kubectl get nodes
+kubectl cluster-info
+
+# Install ingress controller on EKS
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.0/deploy/static/provider/aws/deploy.yaml
+
+# Verify ingress
+kubectl get svc -n ingress-nginx
+
+# When done with all exercises, destroy EKS cluster
+### WARNING: This will delete ALL resources and incur no further charges
+cd ~/_Lecture_cicd_learning.kit/ch10/10.3/terraform-eks
+terraform destroy -auto-approve

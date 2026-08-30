@@ -1,6 +1,7 @@
 # 챕터 4. 현업에서 가장 많이 사용되는 CI/CD 도구를 찍먹하기
 
 ### 다루는 내용
+- 4.2: CI/CD 도구 3종 개요와 선택 (GitHub Actions / Jenkins / GitLab CI)
 - 4.3: [GitHub] 파이프라인 Hello World
 - 4.4: [GitHub] 빌드 파이프라인 구조 만들기
 - 4.5: [Jenkins] 파이프라인 Hello World

@@ -1,0 +1,20 @@
+# ch9.4 GitLab CI — security stage + security-scan job (lint 다음)
+stages:
+  - lint
+  - security
+  - test
+  - build
+  - deploy
+
+security-scan:
+  stage: security
+  image: ghcr.io/astral-sh/uv:python3.14-bookworm-slim
+  before_script:
+    - apt-get update && apt-get install -y curl tar
+    # gitleaks: 최신 릴리스 태그 조회 후 정확한 자산명(gitleaks_<ver>_linux_x64.tar.gz)으로 설치
+    - GL_VER=$(curl -s https://api.github.com/repos/gitleaks/gitleaks/releases/latest | grep '"tag_name"' | cut -d'"' -f4 | sed 's/^v//')
+    - curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GL_VER}/gitleaks_${GL_VER}_linux_x64.tar.gz" | tar -xz -C /usr/local/bin gitleaks
+  script:
+    - uv sync --extra dev
+    - uv run pip-audit
+    - gitleaks detect --source . --config .gitleaks.toml --no-git --verbose

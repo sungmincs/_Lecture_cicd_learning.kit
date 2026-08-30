@@ -42,6 +42,11 @@ spec:
             port: 80
   strategy:
     canary:
+      # stable/canary 전용 Service 분리: Argo Rollouts가 각 Service selector에
+      # rollouts-pod-template-hash를 주입해 stableService=구버전 pod만, canaryService=새버전 pod만 가리키게 함.
+      # 이로써 AnalysisRun이 canary(새버전)만 평가 가능 → broken 버전을 결정적으로 차단.
+      stableService: worklog-backend
+      canaryService: worklog-backend-canary
       steps:
       - setWeight: 20
       - pause: {duration: 30s}
@@ -53,5 +58,6 @@ spec:
         templates:
         - templateName: success-rate
         args:
+        # 공유 worklog-backend가 아니라 canary 전용 Service를 폴링해야 새버전만 평가됨
         - name: service-name
-          value: worklog-backend
+          value: worklog-backend-canary

@@ -5,14 +5,14 @@
 
 # Apply frontend pipeline
 cd ~/workspace/worklog-frontend-gitlab
-cp ~/_Lecture_cicd_learning.kit/ch8/8.5/1.frontend-build-deploy.yml .gitlab-ci.yml
+cp ~/_Lecture_cicd_learning.kit/ch7/7.10/1.frontend-build-deploy.yml .gitlab-ci.yml
 git add .
 git commit -m "cicd: add frontend GitLab pipeline"
 git push origin main
 
 # Apply backend pipeline
 cd ~/workspace/worklog-backend-gitlab
-cp ~/_Lecture_cicd_learning.kit/ch8/8.5/2.backend-build-deploy.yml .gitlab-ci.yml
+cp ~/_Lecture_cicd_learning.kit/ch7/7.10/2.backend-build-deploy.yml .gitlab-ci.yml
 git add .
 git commit -m "cicd: add backend GitLab pipeline"
 git push origin main

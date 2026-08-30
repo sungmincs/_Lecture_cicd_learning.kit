@@ -1,0 +1,14 @@
+# gitleaks v8 설정 — ch9.4 시크릿 스캔
+title = "worklog-backend gitleaks config"
+
+[extend]
+useDefault = true   # gitleaks 기본 룰셋(AWS키/GitHub토큰/일반 시크릿 등) 활성화
+
+# allowlist는 map 형태([allowlist]) — slice([[rules.allowlist]]) 혼용 금지(v8 비호환)
+[allowlist]
+description = "스캔 제외 경로"
+paths = [
+  '''.*\.md$''',
+  '''tests/.*''',
+  '''deploy_manifest/.*''',
+]

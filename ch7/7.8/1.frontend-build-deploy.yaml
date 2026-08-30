@@ -1,4 +1,7 @@
 name: Frontend Build and Deploy
+concurrency:
+  group: worklog-deploy-${{ github.ref }}
+  cancel-in-progress: false
 
 on:
   push:
@@ -44,5 +47,5 @@ jobs:
           git config user.email "actions@github.com"
           git add deploy_manifest/
           git diff --staged --quiet || git commit -m "deploy: update frontend image to ${{ needs.build.outputs.image_tag }}"
-          git pull --rebase origin main
+          git pull --rebase -X theirs origin main
           git push origin main

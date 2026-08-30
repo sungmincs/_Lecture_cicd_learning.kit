@@ -1,0 +1,16 @@
+# ch9.5 GitHub Actions — test job에 커버리지 임계값 80% 적용
+jobs:
+  init-and-test:
+    runs-on: ubuntu-latest
+    needs: [lint]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: '3.14'
+      - name: Run test
+        run: |
+          uv sync --extra dev
+          export TESTING=true
+          uv run coverage run --source ./src/worklog -m pytest --disable-warnings -v
+          uv run coverage report --fail-under=80   # 80% 미만이면 exit 2 → 파이프라인 실패

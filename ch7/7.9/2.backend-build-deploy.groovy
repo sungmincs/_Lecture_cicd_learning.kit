@@ -51,7 +51,7 @@ pipeline {
                     sed -i "s|value: .* # IMAGE_TAG|value: \"${env.SHORT_SHA}\" # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml
                     git config user.name "jenkins"
                     git config user.email "jenkins@myk8s.local"
-                    git remote set-url origin https://${GITHUB_CREDENTIALS_USR}:${GITHUB_CREDENTIALS_PSW}@github.com/<github_username>/worklog-backend.git
+                    git remote set-url origin https://${GITHUB_CREDENTIALS_USR}:${GITHUB_CREDENTIALS_PSW}@github.com/${GITHUB_CREDENTIALS_USR}/worklog-backend.git
                     git add deploy_manifest/
                     git diff --staged --quiet || git commit -m "deploy: update backend image to ${env.SHORT_SHA}"
                     git pull --rebase origin main || true

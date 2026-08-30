@@ -1,49 +1,42 @@
-# ============================================================
-# Part A: Jenkins EKS 직접 배포
-# ============================================================
+# ============================================
+# Part A: EKS 직접 배포 파이프라인
+# ============================================
 
-# Configure Jenkins credentials for AWS
-## Dashboard -> Jenkins 관리 -> Credentials -> System -> Global credentials
-### Add: aws-access-key-id (Secret text) - AWS Access Key ID
-### Add: aws-secret-access-key (Secret text) - AWS Secret Access Key
-### Add: eks-cluster-name (Secret text) - cicd-learning-eks
-
-# Install AWS CLI and kubectl on Jenkins agent (if not already installed)
-## Manage Jenkins -> Manage Plugins -> Install "AWS Steps" plugin
+# Update GitHub Secrets for EKS
+## Settings -> Secrets and variables -> Actions
+### AWS_ACCESS_KEY_ID: AWS 액세스 키
+### AWS_SECRET_ACCESS_KEY: AWS 시크릿 키
+### AWS_REGION: ap-northeast-2
+### EKS_CLUSTER_NAME: cicd-learning-eks
 
 # Apply EKS deployment pipeline
-cp ~/_Lecture_cicd_learning.kit/ch10/10.6/1.eks-deploy-pipeline.groovy ~/workspace/worklog-backend/Jenkinsfile
+cp ~/_Lecture_cicd_learning.kit/ch10/10.5/1.eks-deploy-pipeline.yaml ~/workspace/worklog-backend/.github/workflows/eks-deploy.yaml
 cd ~/workspace/worklog-backend
 git add .
-git commit -m "cicd: deploy to EKS via Jenkins"
+git commit -m "cicd: deploy to EKS via GitHub Actions"
 git push origin main
 
-# Trigger build in Jenkins
-## Dashboard -> worklog-backend -> Build Now
-
 # Verify deployment
+## Check GitHub Actions tab for workflow run
 kubectl get pods
 kubectl get svc
 
-# ============================================================
-# Part B: Jenkins + Argo CD 연동 배포
-# ============================================================
+# ============================================
+# Part B: Argo CD 연동 파이프라인
+# ============================================
 
-# Add Argo CD credentials to Jenkins
-## Dashboard -> Jenkins 관리 -> Credentials -> System -> Global credentials
-### Add: argocd-admin-password (Secret text) - Argo CD admin password
+# Update GitHub Secrets for Argo CD
+## Settings -> Secrets and variables -> Actions
+### ARGOCD_ADMIN_PASSWORD: Argo CD 초기 비밀번호
 
-# Apply Argo CD pipeline for Jenkins
-cp ~/_Lecture_cicd_learning.kit/ch10/10.6/2.eks-argocd-pipeline.groovy ~/workspace/worklog-backend/Jenkinsfile
+# Apply Argo CD pipeline
+cp ~/_Lecture_cicd_learning.kit/ch10/10.5/2.eks-argocd-pipeline.yaml ~/workspace/worklog-backend/.github/workflows/eks-argocd.yaml
 cd ~/workspace/worklog-backend
 git add .
-git commit -m "cicd: EKS + Argo CD Jenkins pipeline"
+git commit -m "cicd: EKS + Argo CD pipeline via GitHub Actions"
 git push origin main
 
-# Trigger build in Jenkins
-## Dashboard -> worklog-backend -> Build Now
-
 # Verify
-## Check Jenkins build console
-## Check Argo CD UI for sync status
+## Check GitHub Actions tab for workflow run
+## Check Argo CD UI (LoadBalancer URL) for sync status
 kubectl get pods

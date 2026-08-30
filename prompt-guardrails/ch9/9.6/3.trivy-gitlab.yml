@@ -1,0 +1,17 @@
+# ch9.6 GitLab CI — scan stage + trivy job (build 다음, deploy 전)
+stages:
+  - lint
+  - security
+  - test
+  - build
+  - scan
+  - deploy
+
+trivy:
+  stage: scan
+  image:
+    name: aquasec/trivy:latest
+    entrypoint: [""]   # ⚠️ trivy 이미지 ENTRYPOINT가 trivy → GitLab sh 래핑과 충돌("unknown command sh"). 반드시 비움.
+  script:
+    - *determine-environment
+    - trivy image --exit-code 1 --severity CRITICAL,HIGH --ignore-unfixed --format table $DOCKER_REPOSITORY:$IMAGE_TAG

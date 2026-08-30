@@ -26,7 +26,7 @@ pipeline {
         stage('Lint') {
             steps {
                 sh '''
-                    curl -LsSf https://astral.sh/uv/install.sh | sh
+                    curl -LsSf https://astral.sh/uv/0.11.18/install.sh | sh
                     export PATH="$HOME/.local/bin:$PATH"
                     uv sync --extra dev
                     uv run ruff check src/
@@ -74,7 +74,7 @@ pipeline {
                         sed -i "s|image: .*worklog-backend:.*|image: ${DOCKER_REPOSITORY}:${sha}|" deploy_manifest/worklog-backend.yaml
                         git config user.name "jenkins"
                         git config user.email "jenkins@myk8s.local"
-                        git remote set-url origin "https://\$GITHUB_CREDENTIALS_USR:\$GITHUB_CREDENTIALS_PSW@github.com/<github_username>/worklog-backend.git"
+                        git remote set-url origin "https://\$GITHUB_CREDENTIALS_USR:\$GITHUB_CREDENTIALS_PSW@github.com/${GITHUB_CREDENTIALS_USR}/worklog-backend.git"
                         git add deploy_manifest/
                         git diff --staged --quiet || git commit -m "deploy: update image tag to ${sha} for ${targetEnv}"
                         git pull --rebase origin ${branch} || git rebase --abort

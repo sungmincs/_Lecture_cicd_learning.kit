@@ -1,27 +1,46 @@
-# Kubernetes에 Worklog 앱 배포하기
+# Check Load balancer IP
+## The external IP of the following output should be 192.168.1.99
+kubectl get svc -n ingress-nginx ingress-nginx-controller
 
-## NGINX Gateway의 외부 IP 확인 (NGINX Gateway Fabric 사용)
-kubectl get gateway nginx-gateway -o wide
-## ADDRESS 컬럼의 IP를 다음 단계 hosts 파일에 사용
+## Open this file using `Notepad` via administrator mode
+C:\Windows\System32\drivers\etc\hosts
+## add following lines
+```
+192.168.1.99 worklog-frontend.myk8s.local
+192.168.1.99 worklog-backend.myk8s.local
+```
 
-## hosts 파일 등록 (맥: /etc/hosts, 윈도우: C:\Windows\System32\drivers\etc\hosts)
-## 아래 두 줄 추가 (192.168.x.x는 위 명령에서 확인한 EXTERNAL-IP)
-# 192.168.1.99 worklog-frontend.myk8s.local
-# 192.168.1.99 worklog-backend.myk8s.local
+# Update `hosts` file in the host computer
 
-## Worklog 앱 배포
-cd ~/_Lecture_cicd_learning.kit/ch3/3.6
+# Deploy worklog stacks to the Kubernetes cluster
+## Deployment
 kubectl apply -f ./worklog_manifests
+## Verify Deployments are running
+kubectl get pods
+## Access from host network via
+```
+http://worklog-frontend.myk8s.local
+```
+## Try to add a few items from UI and show the swagger
+```
+http://worklog-backend.myk8s.local
+```
 
-## Pod 상태 확인
-kubectl get pods -w
+# Update the build and push
+cd ~/workspace/worklog-frontend/
+vim src/widgets/lsb/index.tsx
+## change line 46 "Summary" to "Dates"
+docker build . -t <dockerhub_username>/worklog-frontend:buildtest2
+docker push <dockerhub_username>/worklog-frontend:buildtest2
 
-## 서비스 확인
-kubectl get svc
+# Update the manifest and redeploy
+cd ~/_Lecture_cicd_learning.kit/ch3/3.4
+## Modify the image tag for frontend
+vim worklog_manifests/worklog-frontend.yaml
+kubectl edit deployment worklog-frontend
+### update the image tag to <dockerhub_username>/worklog-frontend:buildtest2
+### and verify the text gets updated
+http://worklog-frontend.myk8s.local
 
-## 앱 접속 확인 (브라우저)
-## http://worklog-frontend.myk8s.local
-## http://worklog-backend.myk8s.local/docs
-
-## 데이터 입력 후 조회 테스트
-## (UI에서 worklog 항목 추가 후 새로고침으로 확인)
+# Cleanup
+kubectl delete -f ./worklog_manifests

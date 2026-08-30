@@ -1,0 +1,10 @@
+# ch9.5 GitLab CI — test job에 커버리지 임계값 80% 적용
+# ⚠️ 기존 test job의 allow_failure: true 를 반드시 제거해야 게이트가 실제로 차단함.
+test:
+  stage: test
+  image: ghcr.io/astral-sh/uv:python3.14-bookworm-slim
+  script:
+    - uv sync --extra dev
+    - export TESTING=true
+    - uv run coverage run --source ./src/worklog -m pytest --disable-warnings -v
+    - uv run coverage report --fail-under=80

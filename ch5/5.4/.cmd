@@ -1,17 +1,11 @@
-# Setup Docker Hub Credentials in Jenkins
-## Dashboard -> Jenkins 관리 -> Credentials -> System -> Global Credentials
-### Kind: Username with password
-### ID: dockerhub-credentials
-### Username: <dockerhub_username>
-### Password: <dockerhub_token>
-
-# Apply build and deploy pipeline
-## Copy Jenkinsfile to the project
+# Simplify pipeline using Marketplace Actions
+## Replace manual docker build/push with marketplace actions
+### Use docker/login-action, docker/build-push-action
+cp ~/_Lecture_cicd_learning.kit/ch5/5.4/1.build-pipeline-marketplace.yaml ~/workspace/worklog-backend/.github/workflows/build-pipeline.yaml
 cd ~/workspace/worklog-backend
-cp ~/_Lecture_cicd_learning.kit/ch5/5.4/1.build-and-push-docker-image.groovy Jenkinsfile
 git add .
-git commit -m "cicd: add build and push Jenkins pipeline"
+git commit -m "cicd: simplify pipeline with marketplace actions"
 git push origin main
 
-## Trigger the pipeline in Jenkins
-### Dashboard -> worklog-backend-pipeline -> Scan Multibranch Pipeline Now
+## Check the result in Github Actions
+### Compare the pipeline code with 5.3 version

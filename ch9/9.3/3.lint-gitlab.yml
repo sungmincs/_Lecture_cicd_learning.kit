@@ -33,7 +33,7 @@ workflow:
 
 lint:
   stage: lint
-  image: ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+  image: ghcr.io/astral-sh/uv:python3.14-bookworm-slim
   script:
     - uv sync --extra dev
     - uv run ruff check src/
@@ -73,10 +73,10 @@ deploy:
     - SHORT_SHA=$CI_COMMIT_SHORT_SHA
     - git config user.name "gitlab-ci"
     - git config user.email "gitlab-ci@myk8s.local"
-    - git remote set-url origin "https://oauth2:${GITLAB_TOKEN}@gitlab.com/<gitlab_username>/worklog-backend.git"
+    - git remote set-url origin "https://oauth2:${GITLAB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
     - git rebase --abort 2>/dev/null || true
-    - sed -i "s|image: .*worklog-backend:.*|image: $DOCKER_REPOSITORY:$SHORT_SHA|" deploy_manifest/worklog-backend.yaml
+    - 'sed -i "s|image: .*worklog-backend:.*|image: $DOCKER_REPOSITORY:$SHORT_SHA|" deploy_manifest/worklog-backend.yaml'
     - git add deploy_manifest/
-    - git diff --staged --quiet || git commit -m "deploy: update image tag to $SHORT_SHA for $TARGET_ENV [skip ci]"
+    - 'git diff --staged --quiet || git commit -m "deploy: update image tag to $SHORT_SHA for $TARGET_ENV [skip ci]"'
     - git pull --rebase origin $BRANCH || true
     - git push origin HEAD:$BRANCH

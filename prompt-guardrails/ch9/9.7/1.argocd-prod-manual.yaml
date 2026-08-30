@@ -1,0 +1,30 @@
+# ch9.7 prod Argo CD Application — 수동 승인(자동 sync 비활성화)
+# 핵심: syncPolicy에서 automated 제거 → OutOfSync 상태로 대기, 사람이 SYNC 눌러야 배포.
+# (dev/staging은 automated 유지, prod만 수동)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: worklog-backend-prod
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/<github_username>/worklog-backend.git
+    targetRevision: main
+    path: deploy_manifest
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: prod
+  syncPolicy:
+    # automated: 제거됨 → 수동 승인 게이트
+    syncOptions:
+      - CreateNamespace=false
+
+# 자동 sync(ch8) vs 수동 승인(ch9) 차이:
+#   automated: { prune: true, selfHeal: true }   # ch8: git push = 즉시 배포
+#   (automated 없음)                              # ch9: OutOfSync 대기 → argocd app sync 로 승인
+#
+# 기존 앱에 적용(in-place):
+#   kubectl -n argocd patch app worklog-backend-prod --type merge -p '{"spec":{"syncPolicy":{"automated":null}}}'
+# 수동 승인:
+#   argocd app sync worklog-backend-prod    # 또는 Argo CD UI의 SYNC 버튼

@@ -13,10 +13,11 @@ helm upgrade --install jenkins edu/jenkins \
 --set controller.image.tag="2.541.3-lts-jdk17" \
 --set controller.initContainerEnv[0].name="JENKINS_UC" \
 --set controller.initContainerEnv[0].value="https://raw.githubusercontent.com/sungmincs/_Lecture_cicd_learning.kit/main/ch4/4.5/update-center.json" \
---set "controller.installPlugins[0]=kubernetes:4214.vf10083a_42e70" \
---set "controller.installPlugins[1]=workflow-aggregator:596.v8c21c963d92d" \
+--set "controller.installPlugins[0]=kubernetes:4423.vb_59f230b_ce53" \
+--set "controller.installPlugins[1]=workflow-aggregator:608.v67378e9d3db_1" \
 --set "controller.installPlugins[2]=git:5.2.2" \
 --set "controller.installPlugins[3]=configuration-as-code:2077.v41f1011a_5110" \
+--set "controller.installPlugins[4]=docker-workflow:634.vedc7242b_eda_7" \
 --set controller.jenkinsOpts="$jkopt1 $jkopt2" \
 --set controller.javaOpts="$jvopt1 $jvopt2 $jvopt3" \
 --set controller.nodeSelector."kubernetes\.io/hostname"=cp-k8s \

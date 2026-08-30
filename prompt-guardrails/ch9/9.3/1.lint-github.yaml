@@ -1,0 +1,30 @@
+# ch9.3 GitHub Actions — lint job (기존 multi-env 파이프라인 맨 앞에 추가)
+# 전체 워크플로우의 lint job 부분. init-and-test가 lint를 needs로 의존.
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: '3.14'
+      - name: Ruff lint
+        run: |
+          uv sync --extra dev
+          uv run ruff check src/
+
+  # 기존 test job에 needs 추가 → lint 통과해야 진행
+  init-and-test:
+    runs-on: ubuntu-latest
+    needs: [lint]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: '3.14'
+      - name: Run test
+        run: |
+          uv sync --extra dev
+          export TESTING=true
+          uv run coverage run --source ./src/worklog -m pytest --disable-warnings -v
+          uv run coverage report

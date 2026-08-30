@@ -5,14 +5,14 @@
 
 # Apply frontend pipeline
 cd ~/workspace/worklog-frontend
-cp ~/_Lecture_cicd_learning.kit/ch8/8.4/1.frontend-build-deploy.groovy Jenkinsfile
+cp ~/_Lecture_cicd_learning.kit/ch7/7.9/1.frontend-build-deploy.groovy Jenkinsfile
 git add .
 git commit -m "cicd: add frontend Jenkins pipeline"
 git push origin main
 
 # Apply backend pipeline
 cd ~/workspace/worklog-backend
-cp ~/_Lecture_cicd_learning.kit/ch8/8.4/2.backend-build-deploy.groovy Jenkinsfile
+cp ~/_Lecture_cicd_learning.kit/ch7/7.9/2.backend-build-deploy.groovy Jenkinsfile
 git add .
 git commit -m "cicd: add backend Jenkins pipeline"
 git push origin main
