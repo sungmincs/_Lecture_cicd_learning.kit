@@ -116,8 +116,6 @@ mode: auto
 
 ### [강의 작성됨, 검증 완료] 10장: 테라폼을 활용한 클라우드 환경 전환
 
-> **검증 현황(2026-07-03)**: 10.4 Terraform EKS는 **실배포로 검증 완료** — EKS **1.36** 생성·노드 3대 Ready·삭제 확인. 이때 수정 2건 반영: `cluster_version` 1.29→1.36, `enable_cluster_creator_admin_permissions = true` 추가(없으면 생성자도 kubectl 401). 모듈은 `~> 20.0` 유지(provider `< 6.0` 고정, v21 연쇄 회피). **10.5(worklog+ALB+ArgoCD)·10.6(GitHub Actions)·10.7(Jenkins) 실배포 검증 완료**. **10.8(GitLab)은 authored YAML 콜론버그 수정+CI lint valid까지 검증하고 실트리거는 생략 확정** — CI→EKS 메커니즘(aws 인증→`kubectl apply`→`argocd sync`)이 10.6/10.7 실배포로 입증됐고 GitLab은 CI 문법만 다르며 그 문법은 lint로 검증됨(EKS 재기동 비용 대비 실익 낮음). 공통 발견: CI IAM 유저에 **`eks:DescribeCluster` 정책 + EKS access entry 둘 다** 필요, deploy_manifest **HTTPRoute→ALB Ingress** 교체. 10.7은 에이전트 이미지에 aws/kubectl/argocd를 넣어야 함(상세 `prompt-guardrails/ch10/10.7-jenkins-eks-pipeline.md`). **→ ch10 검증 완료. run-XX raw는 ch10에 불요(guardrail+result-templates로 대체). Public 동기화는 이후 진행.**
-
 | 학습자 입력 예시 | 유형 | 참조 파일 |
 |---------------|------|-----------|
 | 클라우드로 왜/어떻게 옮겨? 로컬 vs EKS 차이 설명해줘 | 탐색 | `prompt-guardrails/ch10/10.2-cloud-migration-overview.md` |
@@ -185,29 +183,4 @@ mode: auto
 
 ## 학습자 작업 저장소 위치
 
-학습자는 `sungmincs/worklog-*`를 본인 계정으로 **fork**한 뒤 control plane 노드의 `/root/workspace/`에 clone하여 작업한다. 검증용 run-XX 테스트에서는 이 Internal 저장소의 형제 디렉터리에 둔다:
-```
-parent/
-├── _Lecture_cicd_learning.kit-Internal/  ← 이 저장소 (강의 가이드)
-├── worklog-backend-gh/                    ← GitHub Actions용 backend
-├── worklog-frontend/                      ← frontend
-└── worklog-backend-gitlab/               ← GitLab CI용 backend
-```
-
-## ⛔ Public 저장소는 digest.py로만 갱신한다
-
-Public(`_Lecture_cicd_learning.kit`)에 **직접 커밋하지 않는다.** Internal을 고치고
-`python3 scripts/digest.py`로 넘긴다.
-
-```bash
-python3 scripts/digest.py --dry-run   # 무엇이 바뀌는지 먼저
-python3 scripts/digest.py             # 실행 (커밋은 하지 않는다)
-cd ../_Lecture_cicd_learning.kit && git add -A && git commit
-```
-
-**이 원칙이 지켜지지 않아 Public이 3개월 뒤처졌다.** `digest.py`가 책 저장소에서
-차용한 PLACEHOLDER 상태였고, 그동안 Public에 직접 커밋해 왔다. 그 결과
-renumber(2026-06-03)가 반영되지 않아 절 번호가 1씩 밀렸고 `prompt-guardrails`가
-한 번도 나가지 않았다. 2026-08-30에 digest를 강의용으로 다시 쓰고 일괄 동기화했다.
-
-`CLAUDE.md`는 Internal 전용 절을 걷어내고 나간다(441 → 195줄).
+학습자는 `sungmincs/worklog-*`를 본인 계정으로 **fork**한 뒤 control plane 노드의 `/root/workspace/`에 clone하여 작업한다.
