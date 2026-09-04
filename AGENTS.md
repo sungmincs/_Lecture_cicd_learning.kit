@@ -1,54 +1,34 @@
-<!-- ============================================================
-[PLACEHOLDER - 강의용 변환 미완료]
-
-본 파일은 _Book_GitAIOps-Internal에서 차용한 원본입니다.
-ch3 시범 작업 시 _Lecture_cicd_learning.kit 컨텍스트로 변환됩니다.
-============================================================ -->
-
 # AGENTS.md
 
-> 이 책은 **Claude Code**를 기준으로 쓰였습니다. **Codex CLI** 등 다른 에이전트 AI에서도
-> 유사하게 동작합니다. 본 파일은 Codex 한정 차이점만 다루며, 책 본문 가이드는
-> **반드시 같은 디렉터리의 `CLAUDE.md`를 먼저 읽어주세요**.
+이 저장소의 AI 에이전트 규칙은 `CLAUDE.md` 한 곳에 있습니다. 이 파일은 `CLAUDE.md`를 가리키는 입구입니다.
 
-## 1. 실행 명령
+## 먼저 할 일
+
+작업을 시작하기 전에 저장소 루트의 [`CLAUDE.md`](CLAUDE.md)를 읽고, 그 내용을 이 파일에 그대로 적힌 지시로 간주해 따릅니다. 가드레일 모드, 학습자 입력과 참조 파일 매칭, kubectl 안전 규칙, 실행 규칙이 모두 거기에 있습니다.
+
+Claude Code는 `CLAUDE.md`를, Codex를 비롯한 다른 도구는 이 `AGENTS.md`를 읽습니다. 읽는 파일은 달라도 따르는 규칙은 하나입니다.
+
+## 실행 명령
+
+이 강의는 승인 없이 명령이 실행되는 모드를 기준으로 합니다.
 
 | Claude Code | Codex CLI |
 |---|---|
 | `claude --dangerously-skip-permissions` | `codex --full-auto --sandbox danger-full-access` |
 
-`danger-full-access`가 필요한 이유:
-- Codex 기본 sandbox(`workspace-write`)는 외부 네트워크를 차단합니다.
-- 본 책은 외부 클러스터(GKE/AKS/onprem)에 `kubectl`로 접근하므로 네트워크 허용이 필수입니다.
+Codex의 기본 sandbox(`workspace-write`)는 외부 네트워크를 막습니다. 이 강의는 실습용 쿠버네티스 클러스터와 컨테이너 레지스트리에 접근하므로 네트워크 허용이 필요합니다.
 
-## 2. Skill → 직접 명령 매핑
+## 규칙을 고칠 때
 
-Claude Code의 `/skill` 단축은 Codex에 없습니다. 동등한 작업을 직접 진행:
+`CLAUDE.md`만 고칩니다. 이 파일에는 규칙을 옮겨 적지 않습니다. 두 곳에 나뉘면 어느 쪽이 최신인지 알 수 없게 됩니다.
 
-| Claude Skill | Codex 대체 |
-|---|---|
-| `/update-docs` | 수동 진행 — 대응하는 `prompt-guardrails/` 파일 참조 |
+## 최소한 이것만은
 
-## 3. 알려진 제약 (Codex 한정)
+`CLAUDE.md`를 읽지 못한 경우에도 아래는 지킵니다. 어겼을 때 되돌리기가 가장 번거로운 항목들입니다.
 
-- **자동 메모리 없음**: Claude Code의 `~/.claude/projects/.../memory/`에 해당하는 기능이 없습니다.
-  → `notiflex-platform/JOURNEY.md`를 더 자주 갱신하여 진행 상태를 명시적으로 기록하세요.
-- **Subagent 분리 호출 없음**: Claude의 `Agent` 도구로 격리 호출하는 패턴이 없습니다.
-  → 단일 대화에서 진행하면 됩니다 (책 가드레일은 subagent에 직접 의존하지 않음).
-- **statusline·슬래시 명령 차이**: ch2.2의 statusline 절은 Claude Code 전용입니다.
-  → Codex는 자체 statusline을 사용하며, `/h /s /o` 같은 모델 전환 슬래시도 다릅니다 (`/model`).
+- 한국어로 진행합니다. 대화가 요약(compaction)되더라도 한국어를 유지합니다.
+- 비밀값을 커밋하지 않습니다. Docker Hub 토큰, GitLab 액세스 토큰, AWS 액세스 키가 이 강의에 모두 나옵니다. 커밋하면 push할 때 그대로 올라가고 이력에 남아 지워도 되돌릴 수 없습니다. Secret은 클러스터에 직접 만들고 매니페스트는 참조만 합니다.
+- kubectl의 대상 클러스터를 확인합니다. 승인 없이 명령이 실행되므로, 10장에서 EKS를 추가한 뒤에는 `kubectl config use-context` 또는 `--context`로 대상을 명시합니다.
+- AWS 리소스는 요청받은 것만 만듭니다. 10장의 EKS는 켜 둔 시간만큼 과금되므로 실습을 마치면 `terraform destroy`로 지웠는지 확인합니다.
 
-## 4. 책 본문 진행
-
-이하 모든 가이드는 `CLAUDE.md`와 동일하게 따릅니다:
-- `decision-guides/` — 도구 선택 근거
-- `prompt-guardrails/` — 단계별 실행 지침
-- `result-templates/` — 검증 체크리스트
-
-세 디렉터리는 도구 명칭(Edit/Write 등)과 무관하므로 어느 에이전트에서나 동일하게 동작합니다.
-
-## 5. 다른 에이전트 AI
-
-본 패턴은 다른 에이전트 AI (예: Gemini CLI)에도 유사하게 적용 가능합니다.
-각 에이전트의 진입점 파일 컨벤션(`AGENTS.md`, `GEMINI.md` 등)을 따라 본 파일과
-유사한 차이점 어댑터를 추가하면 됩니다.
+나머지 규칙과 배경은 `CLAUDE.md`에서 확인합니다.
