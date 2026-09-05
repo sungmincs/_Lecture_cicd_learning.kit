@@ -1,14 +1,3 @@
-<!-- ============================================================
-[INTERNAL - 강의 자료 저작 작업장]
-
-본 저장소는 「CI/CD Learning Kit」 강의의 Internal 작업장입니다.
-- 공개 저장소: https://github.com/sungmincs/_Lecture_cicd_learning.kit
-- Public 정제 동기화: scripts/digest.py (현재 placeholder)
-- 가드레일 / run-XX / 촬영 메타 / 결정 이력 보관
-
-본 README 본문(강의 목차)은 ch3 시범 작업 시 풀 원고 형태로 확장 예정입니다.
-============================================================ -->
-
 # CI/CD Learning Kit
 
 CI/CD 실습 키트 — GitHub Actions, Jenkins, GitLab CI/CD, Argo CD를 활용한 쿠버네티스 기반 CI/CD 파이프라인 구축 강의 자료
