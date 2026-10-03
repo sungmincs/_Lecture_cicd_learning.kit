@@ -26,6 +26,13 @@ mode: auto
 - **탐색**: "뭘 쓰면 돼?", "어떤 방법이 있어?", "이게 뭐야?" → 해당 챕터의 개요 가드레일(`prompt-guardrails/chN/N.2-*.md` 등)을 참조하여 개념·추천·이유 설명
 - **실행**: "그걸로 진행해줘", "설치해줘", "만들어줘" → `prompt-guardrails/` 파일의 `## 실행 지침`을 따라 작업
 
+### [강의 작성됨] 2장: CI/CD 실습 환경 구성
+
+| 학습자 입력 예시 | 유형 | 참조 파일 |
+|---------------|------|-----------|
+| VirtualBox, Vagrant, Tabby 설치해줘 | 실행 | `prompt-guardrails/ch2/2.3-tools-install.md` |
+| 모든 노드에 Docker 설치해줘 | 실행 | `prompt-guardrails/ch2/2.11-docker-all-nodes.md` |
+
 ### [강의 작성됨] 3장: Docker 빌드와 쿠버네티스로의 배포
 
 | 학습자 입력 예시 | 유형 | 참조 파일 |
@@ -125,6 +132,12 @@ mode: auto
 | GitHub Actions를 EKS로 전환해줘 | 실행 | `prompt-guardrails/ch10/10.6-github-eks-pipeline.md` |
 | Jenkins를 EKS로 전환해줘 | 실행 | `prompt-guardrails/ch10/10.7-jenkins-eks-pipeline.md` |
 | GitLab CI를 EKS로 전환해줘 | 실행 | `prompt-guardrails/ch10/10.8-gitlab-eks-pipeline.md` |
+
+### [강의 작성됨] 부록 A: 보강
+
+| 학습자 입력 예시 | 유형 | 참조 파일 |
+|---------------|------|-----------|
+| AI가 만든 코드에 맞게 CI/CD를 강화해줘 / AI 시대에 CI/CD는 어떻게 바뀌어? | 실행 | `prompt-guardrails/A/A.001-ai-era-cicd.md` |
 
 ## 실행 규칙
 

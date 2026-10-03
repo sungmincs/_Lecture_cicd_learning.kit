@@ -32,7 +32,6 @@ ch4/
 ```
 
 > AI 안내 규칙은 `prompt-guardrails/`가 정본이다. `chN/N.M/`에는 실습 정답 파일만 둔다.
-> (ch2와 A는 아직 `GUARDRAIL.md`를 쓴다 — 정본으로 옮기는 중)
 
 ---
 
