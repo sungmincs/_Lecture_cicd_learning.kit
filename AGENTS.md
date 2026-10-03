@@ -103,7 +103,7 @@ mode: auto
 | GitHub Actions에 Argo CD 연동해줘 | 실행 | `prompt-guardrails/ch6/6.7-github-argocd-pipeline.md` |
 | Jenkins에 Argo CD 연동해줘 | 실행 | `prompt-guardrails/ch6/6.8-jenkins-argocd-pipeline.md` |
 
-### [강의 작성됨] 7장: 실무 배포 전략을 배우고 이를 마이크로서비스에 적용하기
+### [강의 작성됨] 7장: 실무 배포 전략과 마이크로서비스 적용
 
 | 학습자 입력 예시 | 유형 | 참조 파일 |
 |---------------|------|-----------|

@@ -1,4 +1,4 @@
-# 챕터 4. 현업에서 가장 많이 사용되는 CI/CD 도구를 찍먹하기
+# 챕터 4. CI/CD 도구 구조부터 먼저
 
 ### 다루는 내용
 - 4.2: CI/CD 도구 3종 개요와 선택 (GitHub Actions / Jenkins / GitLab CI)

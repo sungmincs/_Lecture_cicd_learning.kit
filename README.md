@@ -78,7 +78,7 @@ Worklog 샘플 앱을 Docker로 빌드하고 쿠버네티스에 수동 배포합
 
 ---
 
-### [챕터 4. 현업에서 가장 많이 사용되는 CI/CD 도구를 찍먹하기](ch4/README.md)
+### [챕터 4. CI/CD 도구 구조부터 먼저](ch4/README.md)
 
 GitHub Actions와 Jenkins 두 도구의 Hello World 파이프라인을 만들어봅니다.
 
@@ -122,7 +122,7 @@ Argo CD를 설치하고, GitOps 기반 배포 파이프라인을 구현합니다
 
 ---
 
-### [챕터 7. K8s 기본 배포를 넘어 Argo Rollouts로 배포 전략 확장하기](ch7/README.md)
+### [챕터 7. 실무 배포 전략과 마이크로서비스 적용](ch7/README.md)
 
 Rolling Update, Blue-Green, Canary 배포 전략을 실습합니다.
 
