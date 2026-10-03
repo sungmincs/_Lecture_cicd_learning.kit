@@ -3,3 +3,4 @@
 - 2.4: 베이그런트(Vagrant)+버추얼박스(VirtualBox)로 쿠버네티스 환경 구축하기 (모두, arm64 사용자)
 
 - 2.11: CI/CD 실습을 위해 도커(Docker)를 모든 노드에 구성하기
+- 2.12: Claude Code와 실습 하네스 구조 (AGENTS.md, 가드레일)

@@ -9,7 +9,7 @@
 - "AI 속도 + 사람 수준의 안전성" 균형 설계
 
 ### 이 단계에서 다루지 않는 것
-- Claude Code 설치 및 기본 사용법 (ch2에서 다룸)
+- Claude Code 설치 및 기본 사용법 (ch2.12에서 다룸)
 - CI/CD 파이프라인 기본 구성 (ch4~ch5에서 다룸)
 - Argo CD 기본 설정 (ch6에서 다룸)
 - 멀티 환경 배포 기초 (ch9에서 다룸)
@@ -19,7 +19,7 @@
 - ch6 완료 (Argo CD 배포)
 - ch8 완료 (Worklog App 전체 스택 배포)
 - ch9 완료 (멀티 환경 배포 — dev/staging/prod namespace)
-- Claude Code 설치 완료 (ch2에서 구성)
+- Claude Code 설치 완료 (ch2.12)
 
 ## 실행 지침
 

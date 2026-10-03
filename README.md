@@ -57,6 +57,7 @@ ch4/
 | 2.3 | Vagrant + VirtualBox로 K8s 환경 구축 (x86-64/amd64) | [ch2/2.3](ch2/2.3) |
 | 2.4 | Vagrant + VirtualBox로 K8s 환경 구축 (arm64) | [ch2/2.4](ch2/2.4) |
 | 2.11 | Docker를 모든 노드에 설치 | [ch2/2.11](ch2/2.11) |
+| 2.12 | Claude Code와 실습 하네스 구조 | [prompt-guardrails/ch2/2.12-ai-agent-harness.md](prompt-guardrails/ch2/2.12-ai-agent-harness.md) |
 
 ---
 

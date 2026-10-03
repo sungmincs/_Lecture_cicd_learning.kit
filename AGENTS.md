@@ -56,6 +56,7 @@ mode: auto
 |---------------|------|-----------|
 | VirtualBox, Vagrant, Tabby 설치해줘 | 실행 | `prompt-guardrails/ch2/2.3-tools-install.md` |
 | 모든 노드에 Docker 설치해줘 | 실행 | `prompt-guardrails/ch2/2.11-docker-all-nodes.md` |
+| 이 저장소 규칙이 어떻게 돼 있어? / 가드레일이 뭐야? / Claude Code 설치해줘 | 탐색 | `prompt-guardrails/ch2/2.12-ai-agent-harness.md` |
 
 ### [강의 작성됨] 3장: Docker 빌드와 쿠버네티스로의 배포
 
