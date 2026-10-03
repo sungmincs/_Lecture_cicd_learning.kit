@@ -81,7 +81,7 @@ mode: auto
 | Jenkins 설치해줘 | 실행 | `prompt-guardrails/ch4/4.5-jenkins-install.md` |
 | Jenkins 파이프라인 만들어줘 | 실행 | `prompt-guardrails/ch4/4.6-jenkins-pipeline.md` |
 
-### [강의 작성됨] 5장: CI/CD 실제 구현
+### [강의 작성됨] 5장: CI 파이프라인 구현: 빌드한 이미지를 레지스트리에 올리기
 
 | 학습자 입력 예시 | 유형 | 참조 파일 |
 |---------------|------|-----------|

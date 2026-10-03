@@ -92,7 +92,7 @@ GitHub Actions와 Jenkins 두 도구의 Hello World 파이프라인을 만들어
 
 ---
 
-### [챕터 5. CI 파이프라인 구현 — 빌드한 이미지를 레지스트리에 올리기](ch5/README.md)
+### [챕터 5. CI 파이프라인 구현: 빌드한 이미지를 레지스트리에 올리기](ch5/README.md)
 
 GitHub Actions / Jenkins로 실제 Docker 이미지 빌드 → 테스트 → Docker Hub push까지의 CI 파이프라인을 구현합니다. 클러스터 배포(CD)는 ch6에서 Argo CD(GitOps)로 다룹니다.
 
