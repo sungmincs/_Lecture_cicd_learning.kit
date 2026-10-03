@@ -8,7 +8,5 @@ PR/Branch/Tag 기반 멀티 환경(dev/staging/prod) 배포와 Full CI/CD(Argo C
 - 8.4: [GitHub] Full CI/CD workflow (Argo CD)
 - 8.5: [Jenkins] PR/Branch/Tag 기반 멀티환경 파이프라인
 - 8.6: [Jenkins] Full CI/CD workflow (Argo CD)
-- 8.7: [GitLab] PR/Branch/Tag 기반 멀티환경 파이프라인
-- 8.8: [GitLab] Full CI/CD workflow (Argo CD)
 
-> 마이크로서비스(Frontend + Backend + MongoDB) 전체 스택의 빌드/배포 자체는 ch7.7~7.10에서 다룹니다. 본 장은 그 위에 멀티환경 + GitOps 패턴을 얹습니다.
+> 마이크로서비스(Frontend + Backend + MongoDB) 전체 스택의 빌드/배포 자체는 ch7.7~7.9에서 다룹니다. 본 장은 그 위에 멀티환경 + GitOps 패턴을 얹습니다.

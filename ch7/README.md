@@ -9,4 +9,3 @@
 - 7.7: worklog 전체 스택 매니페스트 적용
 - 7.8: [GitHub] frontend/backend 배포 파이프라인
 - 7.9: [Jenkins] frontend/backend 배포 파이프라인
-- 7.10: [GitLab] frontend/backend 배포 파이프라인

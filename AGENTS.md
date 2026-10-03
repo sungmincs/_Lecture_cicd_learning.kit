@@ -79,8 +79,6 @@ mode: auto
 | GitHub Actions 빌드 파이프라인 만들어줘 | 실행 | `prompt-guardrails/ch4/4.4-github-actions-pipeline.md` |
 | Jenkins 설치해줘 | 실행 | `prompt-guardrails/ch4/4.5-jenkins-install.md` |
 | Jenkins 파이프라인 만들어줘 | 실행 | `prompt-guardrails/ch4/4.6-jenkins-pipeline.md` |
-| GitLab CI 파이프라인 만들어줘 | 실행 | `prompt-guardrails/ch4/4.7-gitlab-ci-hello.md` |
-| GitLab CI 빌드 파이프라인 만들어줘 | 실행 | `prompt-guardrails/ch4/4.8-gitlab-ci-pipeline.md` |
 
 ### [강의 작성됨] 5장: CI/CD 실제 구현
 
@@ -91,8 +89,6 @@ mode: auto
 | Marketplace Action으로 간소화해줘 | 실행 | `prompt-guardrails/ch5/5.4-github-actions-marketplace.md` |
 | Jenkins로 Docker 빌드 파이프라인 만들어줘 | 실행 | `prompt-guardrails/ch5/5.5-jenkins-build-deploy.md` |
 | Jenkins Docker Plugin으로 간소화해줘 | 실행 | `prompt-guardrails/ch5/5.6-jenkins-plugin.md` |
-| GitLab CI로 빌드 파이프라인 만들어줘 | 실행 | `prompt-guardrails/ch5/5.7-gitlab-ci-build-deploy.md` |
-| GitLab extends로 간소화해줘 | 실행 | `prompt-guardrails/ch5/5.8-gitlab-ci-extension.md` |
 
 ### [강의 작성됨] 6장: GitOps와 Argo CD
 
@@ -105,7 +101,6 @@ mode: auto
 | Argo CD 배포 알림 설정해줘 | 실행 | `prompt-guardrails/ch6/6.6-argocd-notification.md` |
 | GitHub Actions에 Argo CD 연동해줘 | 실행 | `prompt-guardrails/ch6/6.7-github-argocd-pipeline.md` |
 | Jenkins에 Argo CD 연동해줘 | 실행 | `prompt-guardrails/ch6/6.8-jenkins-argocd-pipeline.md` |
-| GitLab CI에 Argo CD 연동해줘 | 실행 | `prompt-guardrails/ch6/6.9-gitlab-argocd-pipeline.md` |
 
 ### [강의 작성됨] 7장: 실무 배포 전략을 배우고 이를 마이크로서비스에 적용하기
 
@@ -119,7 +114,6 @@ mode: auto
 | worklog 전체 스택 매니페스트 적용해줘 | 실행 | `prompt-guardrails/ch7/7.7-fullstack-manifest.md` |
 | GitHub로 frontend/backend 배포 파이프라인 만들어줘 | 실행 | `prompt-guardrails/ch7/7.8-github-fullstack-pipeline.md` |
 | Jenkins로 frontend/backend 배포 파이프라인 만들어줘 | 실행 | `prompt-guardrails/ch7/7.9-jenkins-fullstack-pipeline.md` |
-| GitLab CI로 frontend/backend 배포 파이프라인 만들어줘 | 실행 | `prompt-guardrails/ch7/7.10-gitlab-fullstack-pipeline.md` |
 
 ### [강의 작성됨] 8장: 실무에서 가장 많이 사용되는 배포 패턴 (모범 사례)
 
@@ -130,8 +124,6 @@ mode: auto
 | GitHub Full CI/CD에 Argo CD까지 연동해줘 | 실행 | `prompt-guardrails/ch8/8.4-github-full-cicd.md` |
 | Jenkins로 멀티환경 파이프라인 만들어줘 | 실행 | `prompt-guardrails/ch8/8.5-jenkins-multi-env.md` |
 | Jenkins Full CI/CD에 Argo CD 연동해줘 | 실행 | `prompt-guardrails/ch8/8.6-jenkins-full-cicd.md` |
-| GitLab CI로 멀티환경 파이프라인 만들어줘 | 실행 | `prompt-guardrails/ch8/8.7-gitlab-multi-env.md` |
-| GitLab CI Full CI/CD에 Argo CD 연동해줘 | 실행 | `prompt-guardrails/ch8/8.8-gitlab-full-cicd.md` |
 
 ### [강의 작성됨] 9장: CI/CD 강화 — 품질과 보안 게이트 구축하기
 
@@ -145,7 +137,7 @@ mode: auto
 | prod 수동 승인 게이트 설정해줘 | 실행 | `prompt-guardrails/ch9/9.7-prod-approval.md` |
 | 자동 롤백 설정해줘 | 실행 | `prompt-guardrails/ch9/9.8-auto-rollback.md` |
 
-### [강의 작성됨, 검증 완료] 10장: 테라폼을 활용한 클라우드 환경 전환
+### [강의 작성됨] 10장: Terraform으로 클라우드 전환하고 GitLab CI로 인프라까지 관리하기
 
 | 학습자 입력 예시 | 유형 | 참조 파일 |
 |---------------|------|-----------|
@@ -155,7 +147,9 @@ mode: auto
 | EKS에 worklog 앱이랑 Argo CD 배포해줘 | 실행 | `prompt-guardrails/ch10/10.5-eks-worklog-argocd.md` |
 | GitHub Actions를 EKS로 전환해줘 | 실행 | `prompt-guardrails/ch10/10.6-github-eks-pipeline.md` |
 | Jenkins를 EKS로 전환해줘 | 실행 | `prompt-guardrails/ch10/10.7-jenkins-eks-pipeline.md` |
-| GitLab CI를 EKS로 전환해줘 | 실행 | `prompt-guardrails/ch10/10.8-gitlab-eks-pipeline.md` |
+| GitLab CI는 뭐가 달라? GitHub Actions·Jenkins와 비교해줘 | 탐색 | `prompt-guardrails/ch10/10.8-gitlab-overview.md` |
+| GitLab CI로 빌드하고 Argo CD로 EKS에 배포해줘 | 실행 | `prompt-guardrails/ch10/10.9-gitlab-ci-argocd.md` |
+| Terraform state를 GitLab으로 옮겨줘 / GitLab 파이프라인으로 EKS 정리해줘 | 실행 | `prompt-guardrails/ch10/10.10-gitlab-terraform-state.md` |
 
 ### [강의 작성됨] 부록 A: 보강
 
@@ -210,10 +204,10 @@ mode: auto
 - **컨테이너**: backend `python:3.14-bookworm-slim`(uv), frontend `node:24-bookworm-slim`, DB `mongo:8.0`
 - **인프라**: Vagrant + VirtualBox 기반 로컬 K8s (cp-k8s 1대 + worker 3대, K8s 1.35.2, containerd 2.2.2)
 - **외부 노출**: NGINX Gateway Fabric v2.3.0 (Gateway API, LB 192.168.1.99)
-- **CI/CD 도구**: GitHub Actions / Jenkins(2.541.3) / GitLab CI — 3종 병행
+- **CI/CD 도구**: GitHub Actions / Jenkins(2.541.3) 2종을 ch4~ch10에서 병행. GitLab CI는 ch10 후반(10.8~10.10)에서 EKS 위에서 다룬다
 - **GitOps**: Argo CD v3.4.3 (+ Argo Rollouts v1.9.0)
 - **배포 전략**: Rolling → Blue/Green → Canary (ch7)
-- **클라우드 전환**: Terraform + AWS EKS (ch10)
+- **클라우드 전환**: Terraform + AWS EKS (ch10). EKS는 10.4에서 만들어 10.10에서 GitLab 파이프라인으로 지운다
 
 > 정확한 버전 조합은 `prompt-guardrails/shared/compatible-versions.md`를 단일 출처로 참조한다.
 

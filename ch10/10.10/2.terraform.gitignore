@@ -1,0 +1,6 @@
+# eks-infra 저장소의 .gitignore로 쓴다.
+# state 파일에는 클러스터 인증서와 리소스 정보가 평문으로 들어 있다. 절대 커밋하지 않는다.
+*.tfstate
+*.tfstate.*
+.terraform/
+plan.cache

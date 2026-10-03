@@ -6,9 +6,9 @@ CI/CD 실습 키트 — GitHub Actions, Jenkins, GitLab CI/CD, Argo CD를 활용
 
 | 도구 | 유형 | 초기 구성 | 이후 사용 |
 |------|------|----------|----------|
-| **GitHub Actions** | SaaS | [ch4/4.3](ch4/4.3) | ch5, ch6, ch8, ch9, ch10 |
-| **Jenkins** | K8s Helm 설치 | [ch4/4.5](ch4/4.5) | ch5, ch6, ch8, ch9, ch10 |
-| **GitLab CI/CD** | SaaS | [ch4/4.7](ch4/4.7) | ch5, ch6, ch8, ch9, ch10 |
+| **GitHub Actions** | SaaS | [ch4/4.3](ch4/4.3) | ch5, ch6, ch7, ch8, ch9, ch10 |
+| **Jenkins** | K8s Helm 설치 | [ch4/4.5](ch4/4.5) | ch5, ch6, ch7, ch8, ch9, ch10 |
+| **GitLab CI/CD** | SaaS | [ch10/10.9](ch10/10.9) | ch10 (EKS 위에서, Terraform state 관리까지) |
 | **Argo CD** | K8s Manifest 설치 | [ch6/6.3](ch6/6.3) | ch6, ch8, ch9, ch10 |
 
 ## 사용하는 배포 전략 도구
@@ -79,23 +79,21 @@ Worklog 샘플 앱을 Docker로 빌드하고 쿠버네티스에 수동 배포합
 
 ### [챕터 4. 현업에서 가장 많이 사용되는 CI/CD 도구를 찍먹하기](ch4/README.md)
 
-GitHub Actions, Jenkins, GitLab CI/CD 3개 도구의 Hello World 파이프라인을 만들어봅니다.
+GitHub Actions와 Jenkins 두 도구의 Hello World 파이프라인을 만들어봅니다.
 
 | 섹션 | 내용 | 디렉토리 |
 |------|------|---------|
-| 4.2 | CI/CD 도구 3종 개요와 선택 | [prompt-guardrails/ch4/4.2-cicd-tools-overview.md](prompt-guardrails/ch4/4.2-cicd-tools-overview.md) |
+| 4.2 | CI/CD 도구 개요와 선택 | [prompt-guardrails/ch4/4.2-cicd-tools-overview.md](prompt-guardrails/ch4/4.2-cicd-tools-overview.md) |
 | 4.3 | [GitHub] 파이프라인 Hello World | [ch4/4.3](ch4/4.3) |
 | 4.4 | [GitHub] 빌드 파이프라인 구조 만들기 | [ch4/4.4](ch4/4.4) |
 | 4.5 | [Jenkins] 파이프라인 Hello World | [ch4/4.5](ch4/4.5) |
 | 4.6 | [Jenkins] 빌드 파이프라인 구조 만들기 | [ch4/4.6](ch4/4.6) |
-| 4.7 | [GitLab] 파이프라인 Hello World | [ch4/4.7](ch4/4.7) |
-| 4.8 | [GitLab] 빌드 파이프라인 구조 만들기 | [ch4/4.8](ch4/4.8) |
 
 ---
 
 ### [챕터 5. CI 파이프라인 구현 — 빌드한 이미지를 레지스트리에 올리기](ch5/README.md)
 
-GitHub Actions / Jenkins / GitLab CI로 실제 Docker 이미지 빌드 → 테스트 → Docker Hub push까지의 CI 파이프라인을 구현합니다. 클러스터 배포(CD)는 ch6에서 Argo CD(GitOps)로 다룹니다.
+GitHub Actions / Jenkins로 실제 Docker 이미지 빌드 → 테스트 → Docker Hub push까지의 CI 파이프라인을 구현합니다. 클러스터 배포(CD)는 ch6에서 Argo CD(GitOps)로 다룹니다.
 
 | 섹션 | 내용 | 디렉토리 |
 |------|------|---------|
@@ -104,8 +102,6 @@ GitHub Actions / Jenkins / GitLab CI로 실제 Docker 이미지 빌드 → 테�
 | 5.4 | [GitHub] Marketplace Action 활용 간소화 | [ch5/5.4](ch5/5.4) |
 | 5.5 | [Jenkins] 빌드 파이프라인 실제로 구현하기 | [ch5/5.5](ch5/5.5) |
 | 5.6 | [Jenkins] Plugin 활용 간소화 | [ch5/5.6](ch5/5.6) |
-| 5.7 | [GitLab] 빌드 파이프라인 실제로 구현하기 | [ch5/5.7](ch5/5.7) |
-| 5.8 | [GitLab] Extension 활용 간소화 | [ch5/5.8](ch5/5.8) |
 
 ---
 
@@ -122,7 +118,6 @@ Argo CD를 설치하고, GitOps 기반 배포 파이프라인을 구현합니다
 | 6.6 | Argo CD 배포 알림 설정하기 (Slack) | [ch6/6.6](ch6/6.6) |
 | 6.7 | [GitHub] Argo CD 적용해 파이프라인 구현하기 | [ch6/6.7](ch6/6.7) |
 | 6.8 | [Jenkins] Argo CD 적용해 파이프라인 구현하기 | [ch6/6.8](ch6/6.8) |
-| 6.9 | [GitLab] Argo CD 적용해 파이프라인 구현하기 | [ch6/6.9](ch6/6.9) |
 
 ---
 
@@ -140,13 +135,12 @@ Rolling Update, Blue-Green, Canary 배포 전략을 실습합니다.
 | 7.7 | worklog 전체 스택 매니페스트 적용 | [ch7/7.7](ch7/7.7) |
 | 7.8 | [GitHub] frontend/backend 배포 파이프라인 | [ch7/7.8](ch7/7.8) |
 | 7.9 | [Jenkins] frontend/backend 배포 파이프라인 | [ch7/7.9](ch7/7.9) |
-| 7.10 | [GitLab] frontend/backend 배포 파이프라인 | [ch7/7.10](ch7/7.10) |
 
 ---
 
 ### [챕터 8. 실무에서 가장 많이 사용되는 배포 패턴 (모범 사례)](ch8/README.md)
 
-PR/Branch/Tag 기반 멀티 환경(dev/staging/prod) 배포와 Full CI/CD(Argo CD 자동 sync) 워크플로우를 GitHub/Jenkins/GitLab으로 각각 구현합니다.
+PR/Branch/Tag 기반 멀티 환경(dev/staging/prod) 배포와 Full CI/CD(Argo CD 자동 sync) 워크플로우를 GitHub Actions/Jenkins로 각각 구현합니다.
 
 | 섹션 | 내용 | 디렉토리 |
 |------|------|---------|
@@ -155,8 +149,6 @@ PR/Branch/Tag 기반 멀티 환경(dev/staging/prod) 배포와 Full CI/CD(Argo C
 | 8.4 | [GitHub] Full CI/CD workflow (Argo CD) | [ch8/8.4](ch8/8.4) |
 | 8.5 | [Jenkins] PR/Branch/Tag 기반 멀티환경 파이프라인 | [ch8/8.5](ch8/8.5) |
 | 8.6 | [Jenkins] Full CI/CD workflow (Argo CD) | [ch8/8.6](ch8/8.6) |
-| 8.7 | [GitLab] PR/Branch/Tag 기반 멀티환경 파이프라인 | [ch8/8.7](ch8/8.7) |
-| 8.8 | [GitLab] Full CI/CD workflow (Argo CD) | [ch8/8.8](ch8/8.8) |
 
 ---
 
@@ -176,19 +168,21 @@ ch8에서 구축한 멀티환경 파이프라인에 lint·보안 스캔·커버�
 
 ---
 
-### [챕터 10. 테라폼을 활용해 기존 환경을 클라우드 환경으로 전환하기](ch10/README.md)
+### [챕터 10. Terraform으로 클라우드 전환하고 GitLab CI로 인프라까지 관리하기](ch10/README.md)
 
-Terraform으로 AWS EKS를 구성하고, 기존 CI/CD 파이프라인을 클라우드로 전환합니다.
+Terraform으로 AWS EKS를 구성하고 기존 CI/CD 파이프라인을 클라우드로 전환합니다. 이어서 같은 EKS 위에서 GitLab CI가 무엇이 다른지 보고, Terraform state까지 GitLab에 맡겨 인프라를 파이프라인으로 관리합니다.
 
 | 섹션 | 내용 | 디렉토리 |
 |------|------|---------|
 | 10.2 | 클라우드 전환 개요 (로컬 K8s → AWS EKS) | [prompt-guardrails/ch10/10.2-cloud-migration-overview.md](prompt-guardrails/ch10/10.2-cloud-migration-overview.md) |
 | 10.3 | AWS 환경 설정하기 | [ch10/10.3](ch10/10.3) |
-| 10.4 | Terraform을 이용한 EKS 배포와 삭제 | [ch10/10.4](ch10/10.4) |
+| 10.4 | Terraform을 이용한 EKS 배포 | [ch10/10.4](ch10/10.4) |
 | 10.5 | [공통] EKS에 Worklog App과 Argo CD 배포하기 | [ch10/10.5](ch10/10.5) |
 | 10.6 | [GitHub] 기존 파이프라인을 EKS로 전환하기 | [ch10/10.6](ch10/10.6) |
 | 10.7 | [Jenkins] 기존 파이프라인을 EKS로 전환하기 | [ch10/10.7](ch10/10.7) |
-| 10.8 | [GitLab] 기존 파이프라인을 EKS로 전환하기 | [ch10/10.8](ch10/10.8) |
+| 10.8 | GitLab CI는 무엇이 다른가 | [prompt-guardrails/ch10/10.8-gitlab-overview.md](prompt-guardrails/ch10/10.8-gitlab-overview.md) |
+| 10.9 | [GitLab] 실습 1: CI로 빌드하고 Argo CD로 EKS에 배포하기 | [ch10/10.9](ch10/10.9) |
+| 10.10 | [GitLab] 실습 2: Terraform state를 GitLab에 맡기고 파이프라인으로 EKS 정리하기 | [ch10/10.10](ch10/10.10) |
 
 ---
 

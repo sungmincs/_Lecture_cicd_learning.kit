@@ -8,4 +8,3 @@
 - 6.6: Argo CD 배포 알림 설정하기 (Slack)
 - 6.7: [GitHub] Argo CD 적용해 파이프라인 구현하기
 - 6.8: [Jenkins] Argo CD 적용해 파이프라인 구현하기
-- 6.9: [GitLab] Argo CD 적용해 파이프라인 구현하기

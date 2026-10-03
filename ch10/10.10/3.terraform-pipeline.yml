@@ -1,0 +1,61 @@
+# 10.10 GitLab CI로 Terraform 인프라 관리: plan은 자동, apply와 destroy는 사람이 버튼을 누를 때만.
+# state는 이 프로젝트의 Terraform state 저장소(Operate > Terraform states)에 있다.
+#
+# GitLab CI/CD Variables (masked, protected 모두 켠다):
+#   AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY  ← 10.3에서 Terraform용으로 만든 IAM 사용자의 키
+# GitLab 18.0에서 Terraform CI 템플릿이 제거되어 템플릿 없이 job을 직접 쓴다.
+
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+
+stages:
+  - plan
+  - apply
+  - destroy
+
+variables:
+  AWS_REGION: ap-northeast-2
+  TF_STATE_NAME: eks
+  TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE_NAME}
+  # http backend 인증. 사람의 토큰 대신 이 job만의 토큰(CI_JOB_TOKEN)을 쓴다
+  TF_HTTP_ADDRESS: ${TF_ADDRESS}
+  TF_HTTP_LOCK_ADDRESS: ${TF_ADDRESS}/lock
+  TF_HTTP_UNLOCK_ADDRESS: ${TF_ADDRESS}/lock
+  TF_HTTP_LOCK_METHOD: POST
+  TF_HTTP_UNLOCK_METHOD: DELETE
+  TF_HTTP_USERNAME: gitlab-ci-token
+  TF_HTTP_PASSWORD: ${CI_JOB_TOKEN}
+  TF_HTTP_RETRY_WAIT_MIN: "5"
+  TF_IN_AUTOMATION: "true"
+
+default:
+  # 버전은 학습자가 로컬에서 쓰는 Terraform과 맞춘다(_prepublish_updates/terraform.md)
+  image:
+    name: hashicorp/terraform:1.15.7
+    entrypoint: [""]
+  before_script:
+    - terraform init -input=false
+
+plan:
+  stage: plan
+  script:
+    - terraform plan -input=false -out=plan.cache
+  artifacts:
+    paths:
+      - plan.cache
+    expire_in: 1 day
+
+apply:
+  stage: apply
+  needs: [plan]
+  when: manual
+  script:
+    - terraform apply -input=false plan.cache
+
+destroy:
+  stage: destroy
+  needs: []
+  when: manual
+  script:
+    - terraform destroy -input=false -auto-approve

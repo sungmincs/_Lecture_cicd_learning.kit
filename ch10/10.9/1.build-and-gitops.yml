@@ -1,5 +1,12 @@
+# 10.9 GitLab CI: 테스트 -> 이미지 빌드 -> 매니페스트 갱신. 배포는 EKS의 Argo CD가 한다.
+# 구조 변경 전 ch6.9(로컬 클러스터)에서 검증한 파이프라인과 같다. 클러스터가 EKS로 바뀌어도 CI 쪽은 바뀌지 않는다.
+# Argo CD가 Git을 당겨 가는 구조라 이 파이프라인에는 AWS 자격 증명이 필요 없다.
+#
+# GitLab CI/CD Variables: DOCKERHUB_USERNAME, DOCKERHUB_TOKEN(masked), GITLAB_TOKEN(masked, write_repository)
+
 workflow:
   rules:
+    # 매니페스트 갱신 커밋이 파이프라인을 다시 돌리지 않도록 이 규칙을 맨 앞에 둔다
     - if: '$CI_COMMIT_MESSAGE =~ /\[skip ci\]/'
       when: never
     - if: $CI_COMMIT_BRANCH == "main"
@@ -11,7 +18,6 @@ stages:
 
 variables:
   DOCKER_REPOSITORY: <dockerhub_username>/worklog-backend
-  # DOCKERHUB_USERNAME, DOCKERHUB_TOKEN, GITLAB_TOKEN: GitLab CI Variables로 등록
   DOCKER_CONFIG: "/tmp/docker_config"
   DOCKER_HOST: tcp://docker:2375
 
@@ -56,5 +62,6 @@ deploy:
     - 'sed -i "s|value: .* # IMAGE_TAG|value: \"$SHORT_SHA\" # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml'
     - git add deploy_manifest/
     - 'git diff --staged --quiet || git commit -m "deploy: update image tag to $SHORT_SHA [skip ci]"'
-    - git pull --rebase origin main || true
+    # 충돌 시 이 커밋을 채택한다. '|| true'로 넘기면 push가 아무것도 안 올리고 초록불로 끝난다(ch8 참조)
+    - git pull --rebase -X theirs origin main
     - git push origin HEAD:main

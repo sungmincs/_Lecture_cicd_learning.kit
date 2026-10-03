@@ -6,5 +6,3 @@
 - 4.4: [GitHub] 빌드 파이프라인 구조 만들기
 - 4.5: [Jenkins] 파이프라인 Hello World
 - 4.6: [Jenkins] 빌드 파이프라인 구조 만들기
-- 4.7: [GitLab] 파이프라인 Hello World
-- 4.8: [GitLab] 빌드 파이프라인 구조 만들기
