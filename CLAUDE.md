@@ -161,11 +161,10 @@ mode: auto
    - `prompt-guardrails/` 파일의 `## 사전 조건`이 있으면 먼저 확인한다.
    - `## 실행 지침`을 따라 작업을 수행한다.
    - 에러가 발생하면 `## 트러블슈팅`을 참고하여 해결한다.
-3. 작업 완료 후, 대응하는 `result-templates/` 파일을 읽어서 실제 결과와 비교하여 보여준다.
-   - 예: `prompt-guardrails/ch3/3.6-k8s-deploy.md` → `result-templates/ch3/3.6-verify.md`
+3. 작업 완료 후, 대응하는 `result-templates/` 파일이 있으면 읽어서 실제 결과와 비교하여 보여준다.
+   - 예: `prompt-guardrails/ch3/3.3-worklog-download.md` → `result-templates/ch3/3.3-verify.md`
    - 체크리스트 항목을 하나씩 검증한다.
 4. `💬 질문` 블록이 있으면 독자에게 "이런 질문을 해볼 수 있습니다"라고 안내한다.
-5. 각 장의 마지막 섹션 완료 후, 독자에게 `/update-docs` 실행을 요청한다. 독자가 `/update-docs`를 입력하면 즉시 실행한다.
 
 ## 프로젝트 컨텍스트
 
