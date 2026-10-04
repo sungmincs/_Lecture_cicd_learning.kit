@@ -23,7 +23,7 @@ terraform {
 }
 
 provider "aws" {
-  region = "ap-northeast-2"
+  # 리전은 aws configure 값을 쓴다 (10.3 단계 5)
 }
 
 data "aws_caller_identity" "current" {}
@@ -58,7 +58,7 @@ terraform plan
 terraform apply -auto-approve
 
 # Configure kubectl for EKS
-aws eks update-kubeconfig --region ap-northeast-2 --name cicd-learning-eks
+aws eks update-kubeconfig --name cicd-learning-eks
 
 # Verify EKS cluster
 kubectl get nodes

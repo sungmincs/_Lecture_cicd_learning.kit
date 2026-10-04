@@ -6,7 +6,7 @@ pipeline {
         GITHUB_CREDENTIALS = credentials('github-token')
         AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
-        AWS_REGION = 'ap-northeast-2'
+        AWS_REGION = '<aws_region>'   // 10.3 단계 4에서 정한 리전 (기존 계정 ap-northeast-2, 새 가입 방식 ap-southeast-2)
         EKS_CLUSTER_NAME = 'cicd-learning-eks'
     }
     stages {

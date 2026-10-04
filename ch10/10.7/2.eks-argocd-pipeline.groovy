@@ -7,7 +7,7 @@ pipeline {
         AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
         ARGOCD_ADMIN_PASSWORD = credentials('argocd-admin-password')
-        AWS_REGION = 'ap-northeast-2'
+        AWS_REGION = '<aws_region>'   // 10.3 단계 4에서 정한 리전 (기존 계정 ap-northeast-2, 새 가입 방식 ap-southeast-2)
         EKS_CLUSTER_NAME = 'cicd-learning-eks'
         ARGOCD_APP_NAME = 'worklog-backend'
     }
@@ -79,7 +79,7 @@ pipeline {
                     argocd login \${ARGOCD_SERVER} \\
                         --username admin \\
                         --password ${ARGOCD_ADMIN_PASSWORD} \\
-                        --insecure
+                        --plaintext
                     argocd app sync ${ARGOCD_APP_NAME}
                     argocd app wait ${ARGOCD_APP_NAME} --health --timeout 120
                     echo "Argo CD sync completed for ${ARGOCD_APP_NAME}"

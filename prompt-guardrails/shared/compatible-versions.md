@@ -90,9 +90,12 @@ Jenkins helm 차트도 같은 방식이다: `k8s-edu/Lkv1_main`의 `helm-charts/
 | terraform-aws-modules/vpc | ~> 5.0 | provider `< 6.0` 유지용 |
 | provider aws | ~> 5.0 | 〃 |
 | Terraform CLI | 1.15.x | 호스트 brew 설치 기준 |
-| EKS 노드 | t3.medium × 3 (min2/max4) | 학습 비용 기준 |
+| EKS 노드 | **c7i-flex.large** × 3 (min2/max4) | 무료 플랜은 무료 등급 대상만 실행(t3.medium 거부). 2026-10-04 실검증 |
+| 서비스 계정 권한 | **EKS Pod Identity** (`eks-pod-identity-agent`), `enable_irsa = false` | 새 가입 방식 SCP가 OIDC provider 생성 거부(IRSA 불가). 2026-10-04 실검증 |
+| AWS Load Balancer Controller | v3.5.0 (helm `eks/aws-load-balancer-controller`) | Pod Identity로 설치. 2026-10-04 실검증 |
+| 리전 | aws configure 한 곳 (파일에 적지 않음) | 기존 계정 ap-northeast-2, 새 가입 방식(한국) ap-southeast-2 |
 | 외부 노출 | **AWS Load Balancer Controller + ALB Ingress** | ingress-nginx·HTTPRoute 사용 안 함 (NGF는 로컬 전용) |
-| Argo CD (EKS) | v3.4.3 | 로컬과 동일 버전, LoadBalancer 노출 |
+| Argo CD (EKS) | v3.4.3 | ch6.3 매니페스트(공식 stable install 아님), LoadBalancer 노출, `argocd login --plaintext` |
 
 ## sungmincs 정본 저장소 상태
 

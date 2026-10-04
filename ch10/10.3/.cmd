@@ -27,11 +27,12 @@ aws --version
 aws configure
 ### AWS Access Key ID: <aws_access_key_id>
 ### AWS Secret Access Key: <aws_secret_access_key>
-### Default region name: ap-northeast-2
+### Default region name: <aws_region>   # 리전 선택이 있는 기존 계정은 ap-northeast-2, 새 가입 방식(한국)은 ap-southeast-2
 ### Default output format: json
 
 # Verify AWS access
 aws sts get-caller-identity
+aws ec2 describe-availability-zones --query 'AvailabilityZones[].ZoneName' --output text   # 3개 이상이면 리전도 맞음
 
 # Install eksctl (optional but helpful)
 ## Linux

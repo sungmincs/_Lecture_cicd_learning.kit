@@ -1,7 +1,7 @@
 variable "region" {
-  description = "AWS region"
+  description = "AWS region. 비워 두면 aws configure(또는 AWS_REGION)의 리전을 쓴다"
   type        = string
-  default     = "ap-northeast-2"
+  default     = null
 }
 
 variable "cluster_name" {

@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "aws" {
-  region = "ap-northeast-2"
+  # 리전은 aws configure 값을 쓴다 (10.3 단계 5)
 }
 
 data "aws_caller_identity" "current" {}

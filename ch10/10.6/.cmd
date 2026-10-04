@@ -6,7 +6,7 @@
 ## Settings -> Secrets and variables -> Actions
 ### AWS_ACCESS_KEY_ID: AWS 액세스 키
 ### AWS_SECRET_ACCESS_KEY: AWS 시크릿 키
-### AWS_REGION: ap-northeast-2
+### AWS_REGION: <aws_region>   # 10.3 단계 4에서 정한 리전
 ### EKS_CLUSTER_NAME: cicd-learning-eks
 
 # Apply EKS deployment pipeline

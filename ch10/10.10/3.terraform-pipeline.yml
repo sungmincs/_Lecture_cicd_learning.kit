@@ -3,6 +3,7 @@
 #
 # GitLab CI/CD Variables (masked, protected 모두 켠다):
 #   AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY  ← 10.3에서 Terraform용으로 만든 IAM 사용자의 키
+#   AWS_REGION                                ← 10.3 단계 4에서 정한 리전 (masked 아님)
 # GitLab 18.0에서 Terraform CI 템플릿이 제거되어 템플릿 없이 job을 직접 쓴다.
 
 workflow:
@@ -15,7 +16,6 @@ stages:
   - destroy
 
 variables:
-  AWS_REGION: ap-northeast-2
   TF_STATE_NAME: eks
   TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE_NAME}
   # http backend 인증. 사람의 토큰 대신 이 job만의 토큰(CI_JOB_TOKEN)을 쓴다

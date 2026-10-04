@@ -8,8 +8,16 @@ terraform {
   }
 }
 
+# 리전은 aws configure(또는 AWS_REGION)에 적은 값을 쓴다. 한 곳에서만 정한다.
+# AWS 새 가입 방식은 리전이 연락처 국가로 고정된다(한국은 ap-southeast-2). 10.3 참조.
 provider "aws" {
   region = var.region
+}
+
+data "aws_region" "current" {}
+
+data "aws_availability_zones" "available" {
+  state = "available"
 }
 
 module "vpc" {
@@ -19,7 +27,7 @@ module "vpc" {
   name = "${var.cluster_name}-vpc"
   cidr = "10.0.0.0/16"
 
-  azs             = ["${var.region}a", "${var.region}b", "${var.region}c"]
+  azs             = slice(data.aws_availability_zones.available.names, 0, 3)
   private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
   public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
 
@@ -55,9 +63,20 @@ module "eks" {
   # "You must be logged in to the server (401)"이 발생한다. (실배포 검증으로 확인)
   enable_cluster_creator_admin_permissions = true
 
+  # IRSA 대신 EKS Pod Identity를 쓴다. IRSA에 필요한 OIDC provider는 AWS 새 가입 방식의
+  # SCP(iam:*Provider*)가 플랜과 상관없이 거부한다. Pod Identity는 두 가입 방식 모두에서 동작한다.
+  # (2026-10-04 신규 무료 플랜 계정 실검증)
+  enable_irsa = false
+
+  cluster_addons = {
+    eks-pod-identity-agent = {}
+  }
+
   eks_managed_node_groups = {
     default = {
-      instance_types = ["t3.medium"]
+      # 무료 플랜은 무료 등급 대상이 아닌 인스턴스(t3.medium 등) 실행을 거부한다.
+      # c7i-flex.large는 무료 등급 대상이고 t3.medium과 같은 2 vCPU, 4GB다.
+      instance_types = ["c7i-flex.large"]
       min_size       = 2
       max_size       = 4
       desired_size   = 3
