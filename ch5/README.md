@@ -5,4 +5,4 @@
 - 5.3: [GitHub] 빌드 파이프라인 실제로 구현하기
 - 5.4: [GitHub] Marketplace Action 활용 간소화
 - 5.5: [Jenkins] 빌드 파이프라인 실제로 구현하기
-- 5.6: [Jenkins] Plugin 활용 간소화
+- 5.6: [Jenkins] 플러그인 활용 간소화

@@ -105,7 +105,7 @@ docker build . -t <username>/worklog-backend:buildtest1
 docker push <username>/worklog-backend:buildtest1
 ```
 
-backend는 Python에 Poetry를 쓰는 멀티스테이지 빌드라 frontend보다 좀 더 빨라요. 이미 docker login도 끝나 있어서 push도 바로 됩니다.
+backend는 Python에 uv를 쓰는 멀티스테이지 빌드라 frontend보다 좀 더 빨라요. 이미 docker login도 끝나 있어서 push도 바로 됩니다.
 
 ### Docker Hub 웹에서 확인 (~1분)
 

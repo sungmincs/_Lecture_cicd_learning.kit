@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    // 컨트롤러에는 docker가 없으므로 docker.sock을 가진 k8s 에이전트(JCasC kubernetes cloud)에서 실행.
+    // agent any면 컨트롤러 실행기(numExecutors: 2)로 갈 수 있고 그때 'docker: not found'로 실패한다(run-38 7.9).
+    agent { label 'jenkins-jenkins-agent' }
     environment {
         DOCKER_REPOSITORY = '<dockerhub_username>/worklog-backend'
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
@@ -9,6 +11,13 @@ pipeline {
         stage('Init') {
             steps {
                 script {
+                    // Jenkins가 남긴 배포 커밋(deploy_manifest만 변경)이면 다시 빌드하지 않는다.
+                    // 없으면 스캔할 때마다 배포 커밋을 빌드해 또 배포 커밋을 만든다(run-38 8.5에서 확인).
+                    // 태그는 건너뛰지 않는다. main 최신 커밋(대개 배포 커밋)에 태그를 붙이기 때문이다.
+                    if (!env.TAG_NAME && sh(script: 'git log -1 --format=%an', returnStdout: true).trim() == 'jenkins') {
+                        currentBuild.result = 'NOT_BUILT'
+                        error('skip: deploy commit by jenkins')
+                    }
                     env.SHORT_SHA = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
                     env.COMMIT_MESSAGE = sh(script: 'git log -1 --pretty=%B', returnStdout: true).trim()
                     if (env.TAG_NAME) {
@@ -66,10 +75,12 @@ pipeline {
                 script {
                     def imageTag = env.IMAGE_TAG
                     def targetEnv = env.TARGET_ENV
-                    def branch = env.BRANCH_NAME
+                    // 태그 빌드는 태그에 push할 수 없으므로 main의 매니페스트를 고친다(prod Application이 main을 본다)
+                    def branch = env.TAG_NAME ? 'main' : env.BRANCH_NAME
                     sh """
                         git rebase --abort 2>/dev/null || true
                         sed -i "s|image: .*worklog-backend:.*|image: ${DOCKER_REPOSITORY}:${imageTag}|" deploy_manifest/worklog-backend.yaml
+                        sed -i "s|value: .* # IMAGE_TAG|value: \\"${imageTag}\\" # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml
                         git config user.name "jenkins"
                         git config user.email "jenkins@myk8s.local"
                         git remote set-url origin "https://\$GITHUB_CREDENTIALS_USR:\$GITHUB_CREDENTIALS_PSW@github.com/${GITHUB_CREDENTIALS_USR}/worklog-backend.git"

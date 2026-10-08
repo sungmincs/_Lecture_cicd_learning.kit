@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    // 컨트롤러에는 docker가 없으므로 docker.sock을 가진 k8s 에이전트(JCasC kubernetes cloud)에서 실행.
+    // agent any면 컨트롤러 실행기(numExecutors: 2)로 갈 수 있고 그때 'docker: not found'로 실패한다(run-38 7.9).
+    agent { label 'jenkins-jenkins-agent' }
 
     environment {
         DOCKER_REPOSITORY = 'worklog-frontend-mock'
@@ -26,7 +28,7 @@ pipeline {
                     # ⚠️ frontend(Node/yarn)는 amd64 QEMU 에뮬레이션 빌드 시 Jenkins 에이전트(로컬 VM) 메모리
                     #    과부하로 빌드가 멈출 수 있다. VM 아키텍처에 맞춘 단일 플랫폼 사용을 권장한다.
                     #    (Apple Silicon=linux/arm64, Intel=linux/amd64) 멀티아치는 클라우드 러너(GitHub/GitLab)에서.
-                    docker buildx build --platform linux/arm64 \\
+                    docker buildx build --platform linux/amd64,linux/arm64 \\
                         -t ${DOCKERHUB_CREDENTIALS_USR}/${DOCKER_REPOSITORY}:${env.SHORT_SHA} \\
                         --push .
                 """

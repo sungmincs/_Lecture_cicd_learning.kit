@@ -1,3 +1,6 @@
+# 6.3 install.sh가 넣은 알림 카탈로그에 병합한다(apply로 바꾸면 카탈로그가 사라진다).
+#   kubectl patch configmap argocd-notifications-cm -n argocd --type merge --patch-file 1.argocd-notifications-cm.yaml
+# token은 Slack 앱의 Bot User OAuth Token(xoxb-)이다. 값은 argocd-notifications-secret의 slack-token에 둔다.
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -22,6 +25,3 @@ data:
   trigger.on-sync-failed: |
     - send: [app-sync-failed]
       when: app.status.operationState.phase in ['Error', 'Failed']
-  defaultTriggers: |
-    - on-sync-succeeded
-    - on-sync-failed

@@ -102,7 +102,7 @@ GitHub Actions / Jenkins로 실제 Docker 이미지 빌드 → 테스트 → Doc
 | 5.3 | [GitHub] 빌드 파이프라인 실제로 구현하기 | [ch5/5.3](ch5/5.3) |
 | 5.4 | [GitHub] Marketplace Action 활용 간소화 | [ch5/5.4](ch5/5.4) |
 | 5.5 | [Jenkins] 빌드 파이프라인 실제로 구현하기 | [ch5/5.5](ch5/5.5) |
-| 5.6 | [Jenkins] Plugin 활용 간소화 | [ch5/5.6](ch5/5.6) |
+| 5.6 | [Jenkins] 플러그인 활용 간소화 | [ch5/5.6](ch5/5.6) |
 
 ---
 

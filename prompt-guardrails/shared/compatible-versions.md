@@ -2,12 +2,12 @@
 
 이 강의가 빌드·녹화·검증에 사용하는 **단일 진실(source of truth)** 버전 세트다.
 코드·매니페스트·가드레일 생성 시 이 표의 값을 참조한다. 변경 이력은 각 `ch*/CHANGELOG.md`,
-변경 근거는 `_INTERNAL_NOTES/decisions.md`에 기록한다.
+변경 근거는 Internal 저장소의 결정 기록에 남긴다.
 
 > 최종 갱신: 2026-08-30 · 검증 기준: run-37(ch2~ch9 완주, 2026-06-16) + ch10 실배포(2026-07-03)
 >
 > **이 문서는 지금 쓰는 값만 담는다.** 강의 전 최신화 여부와 변경 시 고쳐야 할 곳은
-> [[../../_prepublish_updates/README.md]]에 있다.
+> Internal 저장소의 녹화 전 점검 문서에 있다.
 
 ## 🔒 고정 — bump 금지
 
@@ -15,7 +15,7 @@
 |---------|------|------|
 | Kubernetes | **1.35.2** | 다른 sysnet4admin 강의(k8s_learning.kit 등)와 일관성 |
 | containerd | **2.2.2** | 〃 |
-| Debian (이미지 베이스) | **bookworm** | ch9.6 Trivy 게이트 데모 — 의도적 저버전 ([[../../_INTERNAL_NOTES/decisions.md]] 2026-06-01) |
+| Debian (이미지 베이스) | **bookworm** | ch9.6 Trivy 게이트 데모 — 의도적 저버전 (결정 기록 2026-06-01) |
 | Trivy | **:latest** | 취약점 DB가 최신이어야 데모 의미. 갱신 트리거: bookworm LTS 종료(2028-06-30) |
 
 ## ⬆️ 애플리케이션·도구 버전 (현재 값 — sysnet4admin/main 기준)
@@ -32,7 +32,7 @@
 | mongo | **8.0** | 이전 7/8.0 혼재 → 통일(a5e084e, ch3.6·7.7·8.2). 최신 stable major |
 | docker (CI 이미지) | **24** (+24-dind) | 통일 완료(이슈 #48). docker:27 사용 금지 |
 | Argo Rollouts | **v1.9.0** | 이미 최신 |
-| **Argo CD** | **v3.4.3** | 강의 install manifest를 v3.4.3로 교체(공식 install.yaml + server.insecure/TZ 커스터마이징). ✅ run-12 클린 설치 검증 완료(`test-scenarios/run-12/raw/20-ch6.2-argocd-install.md` → `argocd: v3.4.3+1801122`), run-33~37 재확인. 업그레이드 함정은 [[../../_prepublish_updates/argocd.md]] |
+| **Argo CD** | **v3.4.3** | 강의 install manifest를 v3.4.3로 교체(공식 install.yaml + server.insecure/TZ 커스터마이징). ✅ run-12 클린 설치 검증 완료(`argocd: v3.4.3+1801122`), run-33~37 재확인. 업그레이드 함정은 Internal 저장소의 녹화 전 점검 문서(argocd)에 있다 |
 
 ## 호스트 설치 도구 (학습자 PC)
 
@@ -40,6 +40,8 @@
 |---------|------|------|
 | VirtualBox | v7.0.18 | `ch2/2.3/virtualbox-v7.0.18/` |
 | Vagrant | v2.4.1 | `ch2/2.3/vagrant-v2.4.1/` |
+| VirtualBox (2.4, arm64) | v7.1.10 | `ch2/2.4/virtualbox-v7.1.10/` |
+| Vagrant (2.4, arm64) | v2.4.7 | `ch2/2.4/vagrant-v2.4.7/` |
 | Tabby | v1.0.207 | `ch2/2.3/tabby-v1.0.207/`, `ch2/2.4/` |
 
 > VirtualBox와 Vagrant는 짝이다. 한쪽만 올리면 `vagrant up`이 실패한다.
@@ -59,7 +61,7 @@
 
 Jenkins helm 차트도 같은 방식이다: `k8s-edu/Lkv1_main`의 `helm-charts/v1.35/cicd/`.
 경로의 `v1.35`가 쿠버네티스 버전이며 주로 5단계마다 올린다(다음 **v1.40**).
-자세한 절차는 [[../../_prepublish_updates/cluster-addons.md]].
+자세한 절차는 Internal 저장소의 녹화 전 점검 문서(cluster-addons)에 있다.
 
 ## ch9 게이트 도구
 
@@ -99,7 +101,7 @@ Jenkins helm 차트도 같은 방식이다: `k8s-edu/Lkv1_main`의 `helm-charts/
 
 ## sungmincs 정본 저장소 상태
 
-학습자가 fork하는 정본. **현황과 처리 방침은 [[../../_prepublish_updates/fork-repos.md]]에 있다.**
+학습자가 fork하는 정본. **현황과 처리 방침은 Internal 저장소의 녹화 전 점검 문서(fork-repos)에 있다.**
 
 | 저장소 | 상태 (2026-08-30) |
 |--------|------|

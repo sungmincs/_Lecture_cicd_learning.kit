@@ -25,6 +25,9 @@
 - 비밀값을 커밋하지 않는다. Docker Hub 토큰, GitHub·GitLab 액세스 토큰, AWS 액세스 키가 이
   강의에 모두 나온다. 커밋하면 push할 때 그대로 올라가고 이력에 남아 지워도 되돌릴 수 없다.
   Secret은 클러스터에 직접 만들고 매니페스트는 참조만 한다.
+  - 예외: `deploy_manifest/worklog-backend.yaml`의 MongoDB Secret(`worklog-mongodb-creds`)은 실습용 데모
+    비밀번호라 Git에 둔다. Argo CD가 이 폴더 전체를 동기화하고 prune하므로 Secret이 빠지면 지워진다(10.9).
+    실무에서는 이렇게 하지 않는다. 이 예외를 다른 비밀값으로 넓히지 않는다.
 - AWS 리소스는 요청받은 것만 만든다. 10장의 EKS는 켜 둔 시간만큼 과금되므로 실습을 마치면
   `terraform destroy`로 지웠는지 확인한다.
 
@@ -165,6 +168,7 @@ mode: auto
 | 파일 | 역할 | 참조 시점 |
 |------|------|----------|
 | `compatible-versions.md` | 검증된 도구 버전 조합 | 코드/매니페스트 생성 시 버전 참조 |
+| `one-pipeline.md` | 파이프라인은 한 번에 하나만 켜는 규칙과 절별 정리 | ch5~ch9 각 절의 단계 0 |
 
 ### 챕터 구조 (개요 → 개념/준비 → 실습)
 
@@ -186,6 +190,13 @@ mode: auto
 >
 > 이 강의는 AI 에이전트를 승인 없이 명령이 실행되는 모드로 쓴다(위 "AI 에이전트별 차이"). 그러므로 kubectl이 잘못된 클러스터를 대상으로 동작하지 않도록 주의한다. ch10에서 EKS를 추가한 뒤에는 `kubectl config use-context` 또는 `--context`로 대상 클러스터를 명시한다.
 
+**AI 에이전트가 클러스터에 닿는 방법 (2026-10-08 결정)**
+
+- AI 에이전트(Claude Code)는 학습자의 호스트 PC에서 실행한다. cp 노드에서 띄우지 않는다. 호스트에서 실행해야 ch10에서 EKS 같은 다른 클러스터를 함께 다룰 수 있다.
+- AI가 kubectl을 실행할 때는 호스트에서 `ssh root@192.168.1.10 'kubectl ...'`처럼 cp 노드에서 실행한다. cp의 파일(`/root/workspace/...`, `/root/ch7/...`)을 읽거나 고칠 때도 ssh로 한다.
+- 2.12에서 호스트의 SSH 키를 cp에 등록하므로 비밀번호를 묻지 않는다. 키가 없어 `Permission denied`나 비밀번호 프롬프트가 나오면 2.12 단계 1-1로 돌려보낸다.
+- 호스트에 kubectl을 설치하거나 cp의 kubeconfig를 호스트로 복사하지 않는다. ch10의 EKS는 호스트의 `aws eks update-kubeconfig`로 접근하며, 그때부터 로컬 클러스터는 ssh, EKS는 호스트 kubectl로 대상이 갈린다.
+
 ### 공통 실행 규칙
 
 1. 독자가 입력하면, mode에 따라 가드레일 참조 여부를 결정한다.
@@ -202,7 +213,7 @@ mode: auto
 
 - **앱**: Worklog — 업무 기록 관리 앱 (frontend + backend + MongoDB)
 - **언어**: backend Python(uv), frontend Node(Vite)
-- **컨테이너**: backend `python:3.14-bookworm-slim`(uv), frontend `node:24-bookworm-slim`, DB `mongo:8.0`
+- **컨테이너**: backend `python:3.14-slim-bookworm`(빌드 스테이지 `ghcr.io/astral-sh/uv:python3.14-bookworm-slim`), frontend `node:24-bookworm-slim`, DB `mongo:8.0`
 - **인프라**: Vagrant + VirtualBox 기반 로컬 K8s (cp-k8s 1대 + worker 3대, K8s 1.35.2, containerd 2.2.2)
 - **외부 노출**: NGINX Gateway Fabric v2.3.0 (Gateway API, LB 192.168.1.99)
 - **CI/CD 도구**: GitHub Actions / Jenkins(2.541.3) 2종을 ch4~ch10에서 병행. GitLab CI는 ch10 후반(10.8~10.10)에서 EKS 위에서 다룬다

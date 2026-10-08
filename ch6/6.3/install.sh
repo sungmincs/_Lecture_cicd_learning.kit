@@ -12,4 +12,4 @@ kubectl apply -f ./argocd-httproute.yaml
 
 
 # To enable notification for the argo app
-# kubectl patch app <my-app> -n argocd -p '{"metadata": {"annotations": {"notifications.argoproj.io/subscribe.on-deployed.slack":"dev_bots", "notifications.argoproj.io/subscribe.on-health-degraded.slack":"dev_bots", "notifications.argoproj.io/subscribe.on-sync-failed.slack":"dev_bots"}}}' --type merge
+# kubectl patch app <my-app> -n argocd -p '{"metadata": {"annotations": {"notifications.argoproj.io/subscribe.on-deployed.slack":"argocd-alerts", "notifications.argoproj.io/subscribe.on-health-degraded.slack":"argocd-alerts", "notifications.argoproj.io/subscribe.on-sync-failed.slack":"argocd-alerts"}}}' --type merge
