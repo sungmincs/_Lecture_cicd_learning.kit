@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: worklog-frontend
-        image: <dockerhub_username>/worklog-frontend-mock:buildtest1
+        image: <dockerhub_username>/worklog-frontend:mock-buildtest1
         ports:
         - containerPort: 5173
         env:

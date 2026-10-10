@@ -16,7 +16,7 @@ spec:
         - name: dockerhub-creds
       containers:
         - name: worklog-frontend
-          image: <dockerhub_username>/worklog-frontend-mock:<image_tag>
+          image: <dockerhub_username>/worklog-frontend:buildtest1
           ports:
             - containerPort: 5173
           env:

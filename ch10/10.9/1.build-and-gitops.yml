@@ -1,8 +1,8 @@
 # 10.9 GitLab CI: 테스트 -> 이미지 빌드 -> 매니페스트 갱신. 배포는 EKS의 Argo CD가 한다.
-# 구조 변경 전 ch6.9(로컬 클러스터)에서 검증한 파이프라인과 같다. 클러스터가 EKS로 바뀌어도 CI 쪽은 바뀌지 않는다.
+# EKS 노드가 amd64라 linux/amd64만 빌드한다(run-40에서 이 구성으로 통과).
 # Argo CD가 Git을 당겨 가는 구조라 이 파이프라인에는 AWS 자격 증명이 필요 없다.
 #
-# GitLab CI/CD Variables: DOCKERHUB_USERNAME, DOCKERHUB_TOKEN(masked), GITLAB_TOKEN(masked, write_repository)
+# GitLab CI/CD Variables: DOCKERHUB_USERNAME, DOCKERHUB_TOKEN(masked), GITLAB_TOKEN(masked, scope api)
 
 workflow:
   rules:
@@ -43,13 +43,13 @@ build:
     - SHORT_SHA=$(echo $CI_COMMIT_SHA | cut -c1-8)
     - docker buildx rm mybuilder 2>/dev/null || true
     - docker buildx create --name mybuilder --driver docker-container --use
-    - docker buildx build --platform linux/amd64,linux/arm64
+    - docker buildx build --platform linux/amd64
         -t $DOCKER_REPOSITORY:$SHORT_SHA
         --push .
 
 deploy:
   stage: deploy
-  image: alpine:latest
+  image: alpine:3.22
   needs: [build]
   before_script:
     - apk add --no-cache git

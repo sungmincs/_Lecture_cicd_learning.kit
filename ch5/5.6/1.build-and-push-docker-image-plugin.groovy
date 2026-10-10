@@ -14,7 +14,7 @@ pipeline {
     // docker.build()/withRegistry()가 동작하려면 이 에이전트가 필수. label은 ch4.5 jenkins-config.yaml과 일치.
     agent { label 'jenkins-jenkins-agent' }
     environment {
-        DOCKER_REPOSITORY = 'sungminl/worklog-backend'
+        DOCKER_REPOSITORY = '<dockerhub_username>/worklog-backend'
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
     }
     stages {

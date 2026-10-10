@@ -28,20 +28,21 @@ ssh root@192.168.1.10
 ```
 curl -fsSL https://deb.nodesource.com/setup_24.x | bash -
 apt-get install -y nodejs
-npm install -g yarn
+npm install -g yarn@1.22.22
 ```
 
 설치가 끝나면 `node --version`, `yarn --version`으로 확인합니다.
 
 ### 앱 받아오기 (~2분)
 
-GitHub에서 `sungmincs/worklog-frontend-mock` 저장소를 본인 계정으로 fork합니다. 그리고 control plane 노드 안에서 fork한 저장소를 clone합니다.
+GitHub에서 `sungmincs/worklog-frontend` 저장소를 본인 계정으로 fork하고 `mock` 브랜치를 씁니다. 그리고 control plane 노드 안에서 fork한 저장소를 clone합니다.
 
 ```
 mkdir -p /root/workspace
 cd /root/workspace
-git clone https://github.com/<여러분의-username>/worklog-frontend-mock.git
-cd worklog-frontend-mock
+gh repo fork sungmincs/worklog-frontend --clone
+cd worklog-frontend
+git checkout mock
 ```
 
 ### 의존성 설치 + dev server 실행 (~3분)

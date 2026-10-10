@@ -30,7 +30,7 @@ variables:
   TF_IN_AUTOMATION: "true"
 
 default:
-  # 버전은 학습자가 로컬에서 쓰는 Terraform과 맞춘다(_prepublish_updates/terraform.md)
+  # 버전은 노드에서 쓰는 Terraform(10.4 단계 1)과 맞춘다. state를 더 높은 버전으로 쓰면 낮은 버전이 읽지 못한다
   image:
     name: hashicorp/terraform:1.15.7
     entrypoint: [""]

@@ -4,7 +4,7 @@ pipeline {
     agent { label 'jenkins-jenkins-agent' }
 
     environment {
-        DOCKER_REPOSITORY = 'worklog-frontend-mock'
+        DOCKER_REPOSITORY = 'worklog-frontend'
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
         GITHUB_CREDENTIALS = credentials('github-token')
     }
@@ -21,16 +21,12 @@ pipeline {
         stage('Build Image') {
             steps {
                 sh """
-                    docker run --privileged --rm tonistiigi/binfmt --install all 2>/dev/null || true
-                    docker buildx rm frontend-builder 2>/dev/null || true
-                    docker buildx create --name frontend-builder --driver docker-container --use
                     echo ${DOCKERHUB_CREDENTIALS_PSW} | docker login --username ${DOCKERHUB_CREDENTIALS_USR} --password-stdin
-                    # ⚠️ frontend(Node/yarn)는 amd64 QEMU 에뮬레이션 빌드 시 Jenkins 에이전트(로컬 VM) 메모리
-                    #    과부하로 빌드가 멈출 수 있다. VM 아키텍처에 맞춘 단일 플랫폼 사용을 권장한다.
-                    #    (Apple Silicon=linux/arm64, Intel=linux/amd64) 멀티아치는 클라우드 러너(GitHub/GitLab)에서.
-                    docker buildx build --platform linux/amd64,linux/arm64 \\
-                        -t ${DOCKERHUB_CREDENTIALS_USR}/${DOCKER_REPOSITORY}:${env.SHORT_SHA} \\
-                        --push .
+                    # frontend(Node/yarn)는 --platform을 주지 않고 에이전트 노드의 아키텍처 하나로만 빌드한다.
+                    # 다른 아키텍처를 QEMU로 함께 빌드하면 로컬 VM의 메모리가 모자라 에이전트가 끊긴다(run-15).
+                    # 멀티 아키텍처 이미지는 7.8처럼 GitHub의 러너에서 만든다.
+                    docker build -t ${DOCKERHUB_CREDENTIALS_USR}/${DOCKER_REPOSITORY}:${env.SHORT_SHA} .
+                    docker push ${DOCKERHUB_CREDENTIALS_USR}/${DOCKER_REPOSITORY}:${env.SHORT_SHA}
                 """
                 echo "Built: ${env.SHORT_SHA}"
             }
@@ -39,10 +35,10 @@ pipeline {
         stage('Update Manifest') {
             steps {
                 sh """
-                    sed -i "s|image: .*/worklog-frontend-mock:.*|image: ${DOCKERHUB_CREDENTIALS_USR}/${DOCKER_REPOSITORY}:${env.SHORT_SHA}|" deploy_manifest/worklog-frontend.yaml
+                    sed -i "s|image: .*/worklog-frontend:.*|image: ${DOCKERHUB_CREDENTIALS_USR}/${DOCKER_REPOSITORY}:${env.SHORT_SHA}|" deploy_manifest/worklog-frontend.yaml
                     git config user.name "jenkins"
                     git config user.email "jenkins@myk8s.local"
-                    git remote set-url origin https://${GITHUB_CREDENTIALS_USR}:${GITHUB_CREDENTIALS_PSW}@github.com/${GITHUB_CREDENTIALS_USR}/worklog-frontend-mock.git
+                    git remote set-url origin https://${GITHUB_CREDENTIALS_USR}:${GITHUB_CREDENTIALS_PSW}@github.com/${GITHUB_CREDENTIALS_USR}/worklog-frontend.git
                     git add deploy_manifest/
                     git diff --staged --quiet || git commit -m "deploy: update frontend image to ${env.SHORT_SHA}"
                     git pull --rebase origin main || true

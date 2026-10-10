@@ -27,13 +27,13 @@ cd /root/workspace
 git clone https://github.com/<여러분의-username>/worklog-backend.git
 ```
 
-이제 workspace 안에 frontend-mock과 backend 두 개가 나란히 있을 거예요.
+이제 workspace 안에 frontend와 backend 두 개가 나란히 있을 거예요.
 
 ### Frontend(mock) 이미지 빌드 (~4분)
 
 ```
-cd /root/workspace/worklog-frontend-mock
-docker build . -t <Docker Hub username>/worklog-frontend-mock:buildtest1
+cd /root/workspace/worklog-frontend
+docker build . -t <Docker Hub username>/worklog-frontend:mock-buildtest1
 ```
 
 처음 빌드는 3분 정도 걸립니다. Node.js 24 베이스 이미지를 받고, yarn install이 안에서 실행되거든요. 빌드가 끝나면 `docker images`로 확인해보세요.
@@ -45,7 +45,7 @@ docker build . -t <Docker Hub username>/worklog-frontend-mock:buildtest1
 이미지가 빌드됐으니 Docker Hub에 올려볼게요.
 
 ```
-docker push <username>/worklog-frontend-mock:buildtest1
+docker push <username>/worklog-frontend:mock-buildtest1
 ```
 
 여기서 이렇게 나올 거예요.
@@ -90,7 +90,7 @@ cat /root/.docker/config.json
 이제 다시 push.
 
 ```
-docker push <username>/worklog-frontend-mock:buildtest1
+docker push <username>/worklog-frontend:mock-buildtest1
 ```
 
 이번엔 layer들이 차례로 올라가면서 마지막에 digest가 출력될 거예요. 성공입니다.

@@ -22,7 +22,7 @@ pipeline {
         stage('Run Test') {
             steps {
                 sh '''
-                    curl -LsSf https://astral.sh/uv/install.sh | sh
+                    curl -LsSf https://astral.sh/uv/0.11.18/install.sh | sh
                     export PATH="$HOME/.local/bin:$PATH"
                     uv sync --extra dev
                     TESTING=true uv run coverage run --source ./src/worklog -m pytest --disable-warnings -v

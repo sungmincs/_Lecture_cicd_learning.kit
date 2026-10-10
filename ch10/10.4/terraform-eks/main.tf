@@ -72,6 +72,20 @@ module "eks" {
     eks-pod-identity-agent = {}
   }
 
+  # 노드끼리는 모든 포트를 연다. 모듈 v20의 노드 보안 그룹은 노드 사이에 1025 이상 포트만 허용한다.
+  # backend 컨테이너는 80번을 쓰므로, 이 규칙이 없으면 다른 노드의 frontend가 backend를 부를 때 응답이 없다.
+  # (2026-10-10 run-40: ALB 주소의 /api 요청 절반이 504)
+  node_security_group_additional_rules = {
+    ingress_self_all = {
+      description = "Node to node all ports/protocols"
+      protocol    = "-1"
+      from_port   = 0
+      to_port     = 0
+      type        = "ingress"
+      self        = true
+    }
+  }
+
   eks_managed_node_groups = {
     default = {
       # 무료 플랜은 무료 등급 대상이 아닌 인스턴스(t3.medium 등) 실행을 거부한다.

@@ -4,7 +4,6 @@ pipeline {
     environment {
         DOCKER_REPOSITORY = '<dockerhub_username>/worklog-backend'
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
-        GITHUB_CREDENTIALS = credentials('github-token')
         AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
         AWS_REGION = '<aws_region>'   // 10.3 단계 4에서 정한 리전 (기존 계정 ap-northeast-2, 새 가입 방식 ap-southeast-2)
@@ -22,7 +21,7 @@ pipeline {
         stage('Test') {
             steps {
                 sh '''
-                    curl -LsSf https://astral.sh/uv/install.sh | sh
+                    curl -LsSf https://astral.sh/uv/0.11.18/install.sh | sh
                     export PATH="$HOME/.local/bin:$PATH"
                     uv sync --extra dev
                     TESTING=true uv run coverage run --source ./src/worklog -m pytest --disable-warnings -v

@@ -33,21 +33,21 @@
 
 ## 가드레일 설정
 
-아래 `mode` 값에 따라 동작한다. 값이 `(미설정)`이면 독자에게 선택지를 보여주고, 선택 후 이 파일의 mode 값을 업데이트한다.
+아래 `mode` 값에 따라 동작한다. 값이 `(미설정)`이면 학습자에게 선택지를 보여주고, 선택 후 이 파일의 mode 값을 업데이트한다.
 
 mode: auto
 
 | mode | 동작 |
 |------|------|
-| `auto` | 독자가 입력하면 자동으로 가드레일 파일을 참조하여 실행한다 |
-| `off` | 가드레일 없이 독자의 입력만으로 자유롭게 실행한다 |
+| `auto` | 학습자가 입력하면 자동으로 가드레일 파일을 참조하여 실행한다 |
+| `off` | 가드레일 없이 학습자의 입력만으로 자유롭게 실행한다 |
 | `ask` | 매번 "가드레일을 참조할까요?"라고 물어본다 |
 
-> 독자가 "가드레일 모드 변경해줘"라고 말하면 이 값을 업데이트한다.
+> 학습자가 "가드레일 모드 변경해줘"라고 말하면 이 값을 업데이트한다.
 
-## 독자 입력 → 참조 파일 매칭
+## 학습자 입력 → 참조 파일 매칭
 
-독자가 자연어로 입력하면 아래 테이블에서 가장 가까운 항목을 찾아 유형에 맞는 참조 파일을 사용한다.
+학습자가 자연어로 입력하면 아래 테이블에서 가장 가까운 항목을 찾아 유형에 맞는 참조 파일을 사용한다.
 
 **유형 설명:**
 - **탐색**: "뭘 쓰면 돼?", "어떤 방법이 있어?", "이게 뭐야?" → 해당 챕터의 개요 가드레일(`prompt-guardrails/chN/N.2-*.md` 등)을 참조하여 개념·추천·이유 설명
@@ -57,9 +57,11 @@ mode: auto
 
 | 학습자 입력 예시 | 유형 | 참조 파일 |
 |---------------|------|-----------|
-| VirtualBox, Vagrant, Tabby 설치해줘 | 실행 | `prompt-guardrails/ch2/2.3-tools-install.md` |
+| VirtualBox, Vagrant, Tabby 설치해줘 (x86-64/amd64) | 실행 | `prompt-guardrails/ch2/2.3-tools-install.md` |
+| VirtualBox, Vagrant, Tabby 설치해줘 (arm64, Apple Silicon 맥) | 실행 | `prompt-guardrails/ch2/2.4-tools-install-arm64.md` |
 | 모든 노드에 Docker 설치해줘 | 실행 | `prompt-guardrails/ch2/2.11-docker-all-nodes.md` |
 | 이 저장소 규칙이 어떻게 돼 있어? / 가드레일이 뭐야? / Claude Code 설치해줘 | 탐색 | `prompt-guardrails/ch2/2.12-ai-agent-harness.md` |
+| 직접 할 일과 네가 할 일이 어떻게 나뉘어? / 라벨이 뭐야? / 노드에 gh 설치해줘 | 탐색 | `prompt-guardrails/ch2/2.13-ai-practice-method.md` |
 
 ### [강의 작성됨] 3장: Docker 빌드와 쿠버네티스로의 배포
 
@@ -169,37 +171,40 @@ mode: auto
 |------|------|----------|
 | `compatible-versions.md` | 검증된 도구 버전 조합 | 코드/매니페스트 생성 시 버전 참조 |
 | `one-pipeline.md` | 파이프라인은 한 번에 하나만 켜는 규칙과 절별 정리 | ch5~ch9 각 절의 단계 0 |
+| `step-labels.md` | 단계 라벨(`[학습자 직접]`, `[AI 프롬프트]`), 위치 표기, 용어 기준 | 가드레일을 새로 쓰거나 고칠 때 |
 
 ### 챕터 구조 (개요 → 개념/준비 → 실습)
 
 각 챕터는 다음 구조로 균일하게 구성된다:
 
 - **x.1 개요**: 챕터 전체 도입(본문, 산출물 없음)
-- **x.2 개념/준비**: 그 챕터에 필요한 개념 설명 또는 사전 준비(pre-requirement). `prompt-guardrails/chN/N.2-*.md`로 제공되며, 독자의 "이게 뭐야?"(탐색) 질문에 응답한다.
+- **x.2 개념/준비**: 그 챕터에 필요한 개념 설명 또는 사전 준비(pre-requirement). `prompt-guardrails/chN/N.2-*.md`로 제공되며, 학습자의 "이게 뭐야?"(탐색) 질문에 응답한다.
 - **x.3~ 실습**: 실제 도구별 구현. `prompt-guardrails/chN/N.M-*.md`의 `## 실행 지침`을 따른다.
 
-> 독자가 개념 단계를 건너뛰고 바로 "Argo CD 설치해줘"라고 하면 즉시 실행 단계로 진입한다. 개요→개념→실습은 권장 흐름이지 강제가 아니다.
+> 학습자가 개념 단계를 건너뛰고 바로 "Argo CD 설치해줘"라고 하면 즉시 실행 단계로 진입한다. 개요→개념→실습은 권장 흐름이지 강제가 아니다.
 
 ### kubectl 안전 규칙
 
 > **[강의 표준]** 본 강의는 Vagrant + VirtualBox 기반 로컬 K8s 클러스터에서 실습합니다.
-> - 학습자는 호스트에서 `ssh root@192.168.1.10`(비밀번호 `vagrant`)로 control plane 노드에 접속
-> - kubectl은 **control plane 노드 안에서 root 사용자로** 실행
-> - 호스트 머신에서 직접 cluster를 다루지 않음
+> - 학습자는 호스트에서 `ssh root@192.168.1.10`(비밀번호 `vagrant`)로 컨트롤 플레인 노드에 접속
+> - **3장부터 10장까지 모든 실습은 컨트롤 플레인 노드 안에서 root 사용자로** 한다. kubectl, docker, git push, 10장의 aws·terraform·helm까지 노드에서 실행한다
+> - 호스트에서 쓰는 것은 ssh, 브라우저, Claude Code뿐이다. 호스트에 kubectl, kubeconfig, Node.js, gh 같은 실습 도구를 두지 않는다
 > - 단일 클러스터 환경이라 책처럼 `--context` 강제 불필요. 단, 학습자가 여러 클러스터(예: ch10의 EKS) 추가 시점부터는 context 명시 권장.
 >
-> 이 강의는 AI 에이전트를 승인 없이 명령이 실행되는 모드로 쓴다(위 "AI 에이전트별 차이"). 그러므로 kubectl이 잘못된 클러스터를 대상으로 동작하지 않도록 주의한다. ch10에서 EKS를 추가한 뒤에는 `kubectl config use-context` 또는 `--context`로 대상 클러스터를 명시한다.
+> 이 강의는 AI 에이전트를 승인 없이 명령이 실행되는 모드로 쓴다(위 "AI 에이전트별 차이"). 그러므로 kubectl이 잘못된 클러스터를 대상으로 동작하지 않도록 주의한다. ch10에서 EKS를 노드의 kubectl 설정에 추가한 뒤에는 `kubectl config use-context` 또는 `--context`로 대상 클러스터를 명시한다.
 
-**AI 에이전트가 클러스터에 닿는 방법 (2026-10-08 결정)**
+**AI 에이전트가 노드에 닿는 방법 (2026-10-08 결정 1, 2026-10-09 결정 2)**
 
-- AI 에이전트(Claude Code)는 학습자의 호스트 PC에서 실행한다. cp 노드에서 띄우지 않는다. 호스트에서 실행해야 ch10에서 EKS 같은 다른 클러스터를 함께 다룰 수 있다.
-- AI가 kubectl을 실행할 때는 호스트에서 `ssh root@192.168.1.10 'kubectl ...'`처럼 cp 노드에서 실행한다. cp의 파일(`/root/workspace/...`, `/root/ch7/...`)을 읽거나 고칠 때도 ssh로 한다.
-- 2.12에서 호스트의 SSH 키를 cp에 등록하므로 비밀번호를 묻지 않는다. 키가 없어 `Permission denied`나 비밀번호 프롬프트가 나오면 2.12 단계 1-1로 돌려보낸다.
-- 호스트에 kubectl을 설치하거나 cp의 kubeconfig를 호스트로 복사하지 않는다. ch10의 EKS는 호스트의 `aws eks update-kubeconfig`로 접근하며, 그때부터 로컬 클러스터는 ssh, EKS는 호스트 kubectl로 대상이 갈린다.
+- AI 에이전트(Claude Code)는 학습자의 호스트 PC에서 실행한다. 컨트롤 플레인 노드에서 띄우지 않는다.
+- AI는 `ssh root@192.168.1.10`으로 컨트롤 플레인 노드에서 일한다. kubectl은 `ssh root@192.168.1.10 'kubectl ...'`처럼 실행하고, 파일은 노드의 `/root/workspace/<저장소>/`에 읽고 쓴다(학습자 fork의 clone). 저장소에 들어가지 않는 산출물은 그 절의 폴더(`/root/ch7/` 같은 것)에 둔다. 가드레일이 경로를 적어 두므로 그 경로를 따른다.
+- 호스트의 작업 디렉터리(강의 저장소)에는 실습 파일을 만들지 않는다. 정답 파일(`chN/N.M/`)은 호스트 clone에서 읽어도 되고 노드의 `/root/_Lecture_cicd_learning.kit`에서 읽어도 된다. 같은 내용이다.
+- 2.12에서 호스트의 SSH 키를 노드에 등록하므로 비밀번호를 묻지 않는다. 키가 없어 `Permission denied`나 비밀번호 프롬프트가 나오면 2.12 단계 1-1로 돌려보낸다.
+- 호스트에 kubectl을 설치하거나 노드의 kubeconfig를 호스트로 복사하라고 안내하지 않는다. ch10의 EKS도 노드에서 `aws eks update-kubeconfig`로 노드의 kubectl 설정에 추가한다.
+- 노드에서 git push에 쓰는 GitHub 인증은 2.13의 `gh auth login`이다. 인증 프롬프트가 나오면 2.13 단계 3으로 돌려보낸다. 자격 증명을 AI가 묻거나 대신 입력하지 않는다.
 
 ### 공통 실행 규칙
 
-1. 독자가 입력하면, mode에 따라 가드레일 참조 여부를 결정한다.
+1. 학습자가 입력하면, mode에 따라 가드레일 참조 여부를 결정한다.
 2. 가드레일을 참조하는 경우:
    - `prompt-guardrails/` 파일의 `## 사전 조건`이 있으면 먼저 확인한다.
    - `## 실행 지침`을 따라 작업을 수행한다.
@@ -207,7 +212,7 @@ mode: auto
 3. 작업 완료 후, 대응하는 `result-templates/` 파일이 있으면 읽어서 실제 결과와 비교하여 보여준다.
    - 예: `prompt-guardrails/ch3/3.3-worklog-download.md` → `result-templates/ch3/3.3-verify.md`
    - 체크리스트 항목을 하나씩 검증한다.
-4. `💬 질문` 블록이 있으면 독자에게 "이런 질문을 해볼 수 있습니다"라고 안내한다.
+4. `💬 질문` 블록이 있으면 학습자에게 "이런 질문을 해볼 수 있습니다"라고 안내한다.
 
 ## 프로젝트 컨텍스트
 
@@ -225,4 +230,4 @@ mode: auto
 
 ## 학습자 작업 저장소 위치
 
-학습자는 `sungmincs/worklog-*`를 본인 계정으로 **fork**한 뒤 control plane 노드의 `/root/workspace/`에 clone하여 작업한다.
+학습자는 `sungmincs/worklog-*`를 본인 계정으로 **fork**한 뒤 컨트롤 플레인 노드의 `/root/workspace/`에 clone하여 작업한다(3.3, `gh repo fork --clone`).

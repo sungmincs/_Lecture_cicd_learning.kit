@@ -96,19 +96,19 @@ backend 쪽은 Swagger UI가 뜨거나 JSON 응답이 보일 거예요. API를 �
 운영에서 가장 자주 일어나는 흐름이에요. 코드를 한 줄 바꾸고, 새 이미지 만들고, 클러스터에 갈아끼우는 거.
 
 ```
-cd /root/workspace/worklog-frontend-mock
+cd /root/workspace/worklog-frontend
 grep -rn "Summary" src/
 ```
 
 `Summary`라는 텍스트가 있는 파일을 찾고, "Summary"를 "Dates"로 바꿔달라고 AI에 요청합니다. `[AI 프롬프트]`
 
-> 수강생 입력 예시: "worklog-frontend-mock 소스에서 Summary를 Dates로 바꿔줘."
+> 수강생 입력 예시: "worklog-frontend 소스에서 Summary를 Dates로 바꿔줘."
 
 빌드와 push는 수강생이 직접 합니다. `[학습자 직접]`
 
 ```
-docker build . -t <username>/worklog-frontend-mock:buildtest2
-docker push <username>/worklog-frontend-mock:buildtest2
+docker build . -t <username>/worklog-frontend:mock-buildtest2
+docker push <username>/worklog-frontend:mock-buildtest2
 ```
 
 build와 push는 ch3.3에서 한 거랑 똑같죠. 이번엔 태그를 `buildtest2`로.

@@ -91,7 +91,7 @@ pipeline {
         stage('Scan') {   // 9.6: HIGH 이상이 있으면 여기서 멈추고 매니페스트를 고치지 않는다
             steps {
                 sh """
-                    curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /tmp
+                    curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/v0.75.0/contrib/install.sh | sh -s -- -b /tmp v0.75.0
                     /tmp/trivy image --exit-code 1 --severity CRITICAL,HIGH --ignore-unfixed --format table ${DOCKER_REPOSITORY}:${IMAGE_TAG}
                 """
             }
