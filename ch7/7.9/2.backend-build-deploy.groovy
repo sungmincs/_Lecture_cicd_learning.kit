@@ -1,6 +1,6 @@
 pipeline {
     // 컨트롤러에는 docker가 없으므로 docker.sock을 가진 k8s 에이전트(JCasC kubernetes cloud)에서 실행.
-    // agent any면 컨트롤러 실행기(numExecutors: 2)로 갈 수 있고 그때 'docker: not found'로 실패한다(run-38 7.9).
+    // agent any면 컨트롤러 실행기(numExecutors: 2)로 갈 수 있고 그때 'docker: not found'로 실패한다.
     agent { label 'jenkins-jenkins-agent' }
 
     environment {
@@ -56,7 +56,7 @@ pipeline {
                     git remote set-url origin https://${GITHUB_CREDENTIALS_USR}:${GITHUB_CREDENTIALS_PSW}@github.com/${GITHUB_CREDENTIALS_USR}/worklog-backend.git
                     git add deploy_manifest/
                     git diff --staged --quiet || git commit -m "deploy: update backend image to ${env.SHORT_SHA}"
-                    git pull --rebase origin main || true
+                    git pull --rebase -X theirs origin main
                     git push origin HEAD:main
                 """
                 echo "Deployed: ${env.SHORT_SHA}"

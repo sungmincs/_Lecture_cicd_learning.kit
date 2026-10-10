@@ -1,5 +1,5 @@
 # 10.9 GitLab CI: 테스트 -> 이미지 빌드 -> 매니페스트 갱신. 배포는 EKS의 Argo CD가 한다.
-# EKS 노드가 amd64라 linux/amd64만 빌드한다(run-40에서 이 구성으로 통과).
+# EKS 노드가 amd64라 linux/amd64만 빌드한다.
 # Argo CD가 Git을 당겨 가는 구조라 이 파이프라인에는 AWS 자격 증명이 필요 없다.
 #
 # GitLab CI/CD Variables: DOCKERHUB_USERNAME, DOCKERHUB_TOKEN(masked), GITLAB_TOKEN(masked, scope api)

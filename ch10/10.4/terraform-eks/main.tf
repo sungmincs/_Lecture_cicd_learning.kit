@@ -74,7 +74,7 @@ module "eks" {
 
   # 노드끼리는 모든 포트를 연다. 모듈 v20의 노드 보안 그룹은 노드 사이에 1025 이상 포트만 허용한다.
   # backend 컨테이너는 80번을 쓰므로, 이 규칙이 없으면 다른 노드의 frontend가 backend를 부를 때 응답이 없다.
-  # (2026-10-10 run-40: ALB 주소의 /api 요청 절반이 504)
+  # 이 규칙이 없으면 ALB 주소의 /api 요청 가운데 절반쯤이 504가 된다.
   node_security_group_additional_rules = {
     ingress_self_all = {
       description = "Node to node all ports/protocols"

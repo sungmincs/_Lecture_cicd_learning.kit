@@ -66,9 +66,9 @@ ADDRESS 컬럼에 EXTERNAL-IP가 보일 거예요. 우리 환경에서는 `192.1
 kubectl apply -f ./worklog_manifests
 ```
 
-여러 리소스가 한꺼번에 생성됩니다. Gateway, HTTPRoute 두 개, Secret, PVC, Service 세 개, Deployment 세 개. `kubectl get pods,svc,gateway,httproute`로 상태를 보세요.
+여러 리소스가 한꺼번에 생성됩니다. HTTPRoute 두 개, Secret, PVC, Service 세 개, Deployment 세 개. Gateway는 클러스터를 만들 때 이미 있던 것을 씁니다. `kubectl get pods,svc,gateway,httproute`로 상태를 보세요.
 
-1-2분 정도 기다리면 세 Pod 모두 Running이 됩니다. mongodb가 가장 늦게 Ready되는 경향이 있어요. NFS PVC를 mount하느라 시간이 좀 걸립니다. backend는 mongodb가 Ready되어야 자기 `/health`를 통과시키니까, mongodb를 기다리는 것처럼 보일 수 있습니다.
+1-2분 정도 기다리면 세 Pod 모두 Running이 됩니다. mongodb가 가장 늦게 Ready되는 경향이 있어요. NFS PVC를 mount하느라 시간이 좀 걸립니다. backend의 `/health`는 DB 연결을 확인하지 않아서 mongodb보다 먼저 Ready가 될 수 있습니다.
 
 Gateway 상태도 확인해보세요.
 

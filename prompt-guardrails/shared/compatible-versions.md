@@ -1,13 +1,11 @@
 # 강의 고정 버전 (Lecture Fixed Versions)
 
 이 강의가 빌드·녹화·검증에 사용하는 **단일 진실(source of truth)** 버전 세트다.
-코드·매니페스트·가드레일 생성 시 이 표의 값을 참조한다. 변경 이력은 각 `ch*/CHANGELOG.md`,
-변경 근거는 Internal 저장소의 결정 기록에 남긴다.
+코드·매니페스트·가드레일 생성 시 이 표의 값을 참조한다.
 
 > 최종 갱신: 2026-08-30 · 검증 기준: run-37(ch2~ch9 완주, 2026-06-16) + ch10 실배포(2026-07-03)
 >
-> **이 문서는 지금 쓰는 값만 담는다.** 강의 전 최신화 여부와 변경 시 고쳐야 할 곳은
-> Internal 저장소의 녹화 전 점검 문서에 있다.
+> **이 문서는 지금 쓰는 값만 담는다.**
 
 ## 🔒 고정 — bump 금지
 
@@ -32,7 +30,7 @@
 | mongo | **8.0** | 이전 7/8.0 혼재 → 통일(a5e084e, ch3.6·7.7·8.2). 최신 stable major |
 | docker (CI 이미지) | **24** (+24-dind) | 통일 완료(이슈 #48). docker:27 사용 금지 |
 | Argo Rollouts | **v1.9.0** | 이미 최신 |
-| **Argo CD** | **v3.4.3** | 강의 install manifest를 v3.4.3로 교체(공식 install.yaml + server.insecure/TZ 커스터마이징). ✅ run-12 클린 설치 검증 완료(`argocd: v3.4.3+1801122`), run-33~37 재확인. 업그레이드 함정은 Internal 저장소의 녹화 전 점검 문서(argocd)에 있다 |
+| **Argo CD** | **v3.4.3** | 강의 install manifest를 v3.4.3로 교체(공식 install.yaml + server.insecure/TZ 커스터마이징). ✅ run-12 클린 설치 검증 완료(`argocd: v3.4.3+1801122`), run-33~37 재확인. |
 | Argo CD CLI | **v3.4.3** | 서버와 같은 버전. 노드 설치(6.4)와 파이프라인 안 설치(6.8, 10.6) 모두 `releases/download/v3.4.3/`로 고정(2026-10-09). `releases/latest`를 쓰지 않는다 |
 
 ## 호스트 설치 도구 (학습자 PC)
@@ -62,7 +60,6 @@
 
 Jenkins helm 차트도 같은 방식이다: `k8s-edu/Lkv1_main`의 `helm-charts/v1.35/cicd/`.
 경로의 `v1.35`가 쿠버네티스 버전이며 주로 5단계마다 올린다(다음 **v1.40**).
-자세한 절차는 Internal 저장소의 녹화 전 점검 문서(cluster-addons)에 있다.
 
 ## ch9 게이트 도구
 
@@ -105,7 +102,7 @@ Jenkins helm 차트도 같은 방식이다: `k8s-edu/Lkv1_main`의 `helm-charts/
 
 ## sungmincs 정본 저장소 상태
 
-학습자가 fork하는 정본. **현황과 처리 방침은 Internal 저장소의 녹화 전 점검 문서(fork-repos)에 있다.**
+학습자가 fork하는 정본.
 
 | 저장소 | 상태 (2026-10-10) |
 |--------|------|

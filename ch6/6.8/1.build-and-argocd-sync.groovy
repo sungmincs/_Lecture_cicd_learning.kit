@@ -73,7 +73,7 @@ pipeline {
                         git remote set-url origin https://${GITHUB_CREDENTIALS_USR}:${GITHUB_CREDENTIALS_PSW}@github.com/${GITHUB_CREDENTIALS_USR}/worklog-backend.git
                         git add deploy_manifest/
                         git diff --staged --quiet || git commit -m "deploy: update image tag to ${shortSHA}"
-                        git pull --rebase origin main || true
+                        git pull --rebase -X theirs origin main
                         git push origin HEAD:main
                     """
                     echo "Manifest updated: ${shortSHA}"
