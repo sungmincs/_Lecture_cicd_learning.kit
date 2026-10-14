@@ -15,7 +15,6 @@ pipeline {
     agent { label 'jenkins-jenkins-agent' }
     environment {
         DOCKER_REPOSITORY = '<dockerhub_username>/worklog-backend'
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
     }
     stages {
         stage('Init Variables') {
