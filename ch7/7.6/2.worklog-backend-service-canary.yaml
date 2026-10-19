@@ -6,6 +6,6 @@ spec:
   selector:
     app: worklog-backend
   ports:
-    - name: http   # Git의 deploy_manifest와 같은 이름. 다르면 NGINX Gateway Fabric이 503을 낸다(7.7 트러블슈팅)
+    - name: http   # 저장소의 deploy_manifest와 같은 이름. 다르면 NGINX Gateway Fabric이 503을 낸다(7.7 트러블슈팅)
       port: 80
       targetPort: 80

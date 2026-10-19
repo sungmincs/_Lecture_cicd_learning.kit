@@ -6,9 +6,6 @@
 
 workflow:
   rules:
-    # 매니페스트 갱신 커밋이 파이프라인을 다시 돌리지 않도록 이 규칙을 맨 앞에 둔다
-    - if: '$CI_COMMIT_MESSAGE =~ /\[skip ci\]/'
-      when: never
     - if: $CI_COMMIT_BRANCH == "main"
 
 stages:
@@ -61,6 +58,7 @@ deploy:
     - 'sed -i "s|image: .*worklog-backend:.*|image: $DOCKER_REPOSITORY:$SHORT_SHA|" deploy_manifest/worklog-backend.yaml'
     - 'sed -i "s|value: .* # IMAGE_TAG|value: \"$SHORT_SHA\" # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml'
     - git add deploy_manifest/
+    # 메시지에 [skip ci]가 있으면 GitLab이 이 커밋의 파이프라인을 실행하지 않는다(skipped). 빠지면 파이프라인이 끝없이 반복된다
     - 'git diff --staged --quiet || git commit -m "deploy: update image tag to $SHORT_SHA [skip ci]"'
     # 충돌 시 이 커밋을 채택한다. '|| true'로 넘기면 push가 아무것도 안 올리고 초록불로 끝난다(ch8 참조)
     - git pull --rebase -X theirs origin main

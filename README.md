@@ -170,7 +170,7 @@ ch8에서 구축한 멀티환경 파이프라인에 lint·보안 스캔·커버�
 
 ---
 
-### [챕터 10. Terraform으로 클라우드 전환하고 GitLab CI로 인프라까지 관리하기](ch10/README.md)
+### [챕터 10. Terraform으로 클라우드 전환하고 GitLab CI로 인프라까지 확장해서 관리하기](ch10/README.md)
 
 Terraform으로 AWS EKS를 구성하고 기존 CI/CD 파이프라인을 클라우드로 전환합니다. 이어서 같은 EKS 위에서 GitLab CI가 무엇이 다른지 보고, Terraform state까지 GitLab에 맡겨 인프라를 파이프라인으로 관리합니다.
 

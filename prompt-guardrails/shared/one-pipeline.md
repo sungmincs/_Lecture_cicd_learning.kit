@@ -4,7 +4,7 @@ ch4.5부터 ch9까지 GitHub Actions 워크플로와 Jenkins 파이프라인을 
 push 한 번에 여러 파이프라인이 함께 돈다. 같은 이미지를 두세 번 빌드하고, 둘 이상이 `deploy_manifest/`를 고치면
 늦게 끝난 쪽이 매니페스트를 옛 태그로 되돌린다(run-38 6.7과 6.8, 7.8과 7.9, 8.3과 8.4에서 실제로 일어났다).
 
-그래서 각 절의 **단계 0**에서 이 규칙을 적용한다.
+그래서 각 절의 **단계 1**에서 이 규칙을 적용한다.
 
 ## 규칙
 
@@ -15,7 +15,7 @@ push 한 번에 여러 파이프라인이 함께 돈다. 같은 이미지를 두
 - Jenkins는 따로 끄지 않는다. 이 강의의 Multibranch job은 'Scan Multibranch Pipeline Now'를 누를 때만 빌드한다(웹훅과 주기 스캔을 쓰지 않는다).
   GitHub 절을 실습하는 동안 스캔을 누르지 않으면 된다.
 - 6.7부터는 파이프라인이 fork의 main에 매니페스트 커밋을 올린다. 노드의 clone에서는 add, commit, `git pull --rebase`, push 순서로 한다(커밋하지 않은 수정이 있으면 pull --rebase가 멈춘다).
-- Jenkins 절을 마쳐도 GitHub 워크플로를 다시 켜지 않는다. 다음 GitHub 절의 단계 0이 무엇을 켤지 정한다.
+- Jenkins 절을 마쳐도 GitHub 워크플로를 다시 켜지 않는다. 다음 GitHub 절의 단계 1이 무엇을 켤지 정한다.
 
 ## 끄고 켜는 방법
 
@@ -34,22 +34,22 @@ gh workflow enable  <워크플로 파일 이름> -R <github_username>/worklog-ba
 
 ## 절별 정리
 
-| 절 | 도구 | 단계 0에서 할 일 |
+| 절 | 도구 | 단계 1에서 할 일 |
 |---|---|---|
-| 4.5, 4.6 | Jenkins | ch4 워크플로(4.3 hello 두 개, 4.4 빌드 파이프라인)를 끈다. 4.4는 실패 예시로 끝나 있어 켜 두면 push마다 실패가 쌓인다 |
-| 5.3 | GitHub | ch4 워크플로 세 개가 꺼져 있는지 확인한다(4.5 단계 0에서 껐다). 새 워크플로 파일을 만든다 |
+| 4.5, 4.6 | Jenkins | ch4 워크플로(4.3 hello 2개, 4.4 빌드 파이프라인)를 끈다. 4.4는 실패 예시로 끝나 있어 켜 두면 push마다 실패가 쌓인다 |
+| 5.3 | GitHub | ch4 워크플로 3개가 꺼져 있는지 확인한다(4.5 단계 1에서 껐다). 새 워크플로 파일을 만든다 |
 | 5.4 | GitHub | 5.3 파일을 고친다. 그대로 |
 | 5.5, 5.6 | Jenkins | 5.3/5.4 워크플로를 끈다 |
 | 6.7 | GitHub | 5.3/5.4 워크플로를 다시 켠다(이 절에서 그 파일을 고친다) |
 | 6.8 | Jenkins | 6.7 워크플로를 끈다 |
 | 7.8 | GitHub | backend의 6.7 워크플로가 꺼져 있는지 본다. frontend는 처음 만든다 |
-| 7.9 | Jenkins | 두 저장소의 7.8 워크플로를 끈다 |
+| 7.9 | Jenkins | 저장소 2개의 7.8 워크플로를 끈다 |
 | 8.3 | GitHub | backend의 7.8 워크플로가 꺼져 있는지 본다 |
 | 8.4 | GitHub | 8.3 파일을 고친다. 그대로 |
 | 8.5, 8.6 | Jenkins | 8.3/8.4 워크플로를 끈다 |
-| 9.3~9.5 | 둘 다 | ch8 워크플로가 꺼져 있는지 본다(9.3 단계 0). 이 구간의 GitHub `ci.yaml`은 게이트만 있고 배포가 없어 Jenkins와 충돌하지 않는다. `ci.yaml`을 켜 둔 채 Jenkins도 스캔한다 |
-| 9.6 | 둘 다 | `ci.yaml`에 deploy가 붙는다. GitHub로 먼저 끝까지 하고(Jenkins 스캔을 누르지 않는다), 단계 5에서 `ci.yaml`을 끈 뒤 Jenkins로 한다 |
-| 9.7 | GitHub | 단계 0에서 `ci.yaml`을 다시 켠다. Jenkins 스캔을 누르지 않는다 |
+| 9.3~9.5 | 둘 다 | ch8 워크플로가 꺼져 있는지 본다(9.3 단계 1). 이 구간의 GitHub `ci.yaml`은 게이트만 있고 배포가 없어 Jenkins와 충돌하지 않는다. `ci.yaml`을 켜 둔 채 Jenkins도 스캔한다 |
+| 9.6 | 둘 다 | `ci.yaml`에 deploy가 붙는다. GitHub로 먼저 끝까지 하고(Jenkins 스캔을 누르지 않는다), 단계 7에서 AI가 `ci.yaml`을 끈 뒤 Jenkins로 한다 |
+| 9.7 | GitHub | 단계 1에서 AI가 `ci.yaml`을 다시 켠다. Jenkins 스캔을 누르지 않는다 |
 | 9.8 | 없음 | 파이프라인을 쓰지 않는다. kubectl로 Rollout을 올린다 |
 | 10.6 | GitHub | ch9 `ci.yaml`을 끈다. EKS용 워크플로가 같은 저장소 main에서 돈다 |
 | 10.7 | Jenkins | 10.6 워크플로를 끈다 |

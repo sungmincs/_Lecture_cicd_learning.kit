@@ -82,10 +82,10 @@ CLI에서 username/password로 직접 login하고 싶다면 `docker login -u <us
 로그인이 끝나면 한 번 확인해볼게요.
 
 ```
-cat /root/.docker/config.json
+grep index.docker.io /root/.docker/config.json
 ```
 
-`auths`에 `https://index.docker.io/v1/` 항목이 보이면 OK. 빈 `{}`면 login이 실제로는 안 된 거예요.
+`"https://index.docker.io/v1/"` 줄이 나오면 OK. 아무것도 나오지 않으면 login이 실제로는 안 된 거예요. 파일 전체를 `cat`으로 열지는 않아요. 그 안의 값은 토큰을 base64로만 바꾼 것이라 화면에 나오면 되살릴 수 있거든요.
 
 이제 다시 push.
 

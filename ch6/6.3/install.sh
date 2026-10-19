@@ -2,8 +2,9 @@
 set -x
 
 kubectl create namespace argocd || true
-# ArgoCD v3.4.3 manifest는 대용량(33K줄)이라 client-side apply 시 annotation 한도 초과 →
-# server-side apply 사용 (CRD 포함 정상 적용)
+# ApplicationSet 같은 일부 CRD는 크기가 커서 client-side apply가 남기는
+# last-applied annotation 한도(262KB)를 넘는다. server-side apply는 이 annotation을
+# 저장하지 않으므로 한도에 걸리지 않는다(Argo CD v3.4.3 공식 설치 안내)
 kubectl apply -n argocd --server-side --force-conflicts -f ./argocd-manifest.yaml
 kubectl apply -n argocd -f ./argocd-notification-catalog.yaml
 

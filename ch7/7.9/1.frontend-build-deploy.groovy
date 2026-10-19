@@ -21,7 +21,7 @@ pipeline {
         stage('Build Image') {
             steps {
                 sh """
-                    echo ${DOCKERHUB_CREDENTIALS_PSW} | docker login --username ${DOCKERHUB_CREDENTIALS_USR} --password-stdin
+                    echo "\$DOCKERHUB_CREDENTIALS_PSW" | docker login --username "\$DOCKERHUB_CREDENTIALS_USR" --password-stdin
                     # frontend(Node/yarn)는 --platform을 주지 않고 에이전트 노드의 아키텍처 하나로만 빌드한다.
                     # 다른 아키텍처를 QEMU로 함께 빌드하면 로컬 VM의 메모리가 모자라 에이전트가 끊긴다.
                     # 멀티 아키텍처 이미지는 7.8처럼 GitHub의 러너에서 만든다.
@@ -38,7 +38,7 @@ pipeline {
                     sed -i "s|image: .*/worklog-frontend:.*|image: ${DOCKERHUB_CREDENTIALS_USR}/${DOCKER_REPOSITORY}:${env.SHORT_SHA}|" deploy_manifest/worklog-frontend.yaml
                     git config user.name "jenkins"
                     git config user.email "jenkins@myk8s.local"
-                    git remote set-url origin https://${GITHUB_CREDENTIALS_USR}:${GITHUB_CREDENTIALS_PSW}@github.com/${GITHUB_CREDENTIALS_USR}/worklog-frontend.git
+                    git remote set-url origin "https://\$GITHUB_CREDENTIALS_USR:\$GITHUB_CREDENTIALS_PSW@github.com/${GITHUB_CREDENTIALS_USR}/worklog-frontend.git"
                     git add deploy_manifest/
                     git diff --staged --quiet || git commit -m "deploy: update frontend image to ${env.SHORT_SHA}"
                     git pull --rebase -X theirs origin main

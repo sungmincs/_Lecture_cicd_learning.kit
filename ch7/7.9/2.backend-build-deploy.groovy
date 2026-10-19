@@ -37,7 +37,7 @@ pipeline {
                     docker run --privileged --rm tonistiigi/binfmt --install all 2>/dev/null || true
                     docker buildx rm backend-builder 2>/dev/null || true
                     docker buildx create --name backend-builder --driver docker-container --use
-                    echo ${DOCKERHUB_CREDENTIALS_PSW} | docker login --username ${DOCKERHUB_CREDENTIALS_USR} --password-stdin
+                    echo "\$DOCKERHUB_CREDENTIALS_PSW" | docker login --username "\$DOCKERHUB_CREDENTIALS_USR" --password-stdin
                     docker buildx build --platform linux/amd64,linux/arm64 \\
                         -t ${DOCKERHUB_CREDENTIALS_USR}/${DOCKER_REPOSITORY}:${env.SHORT_SHA} \\
                         --push .
@@ -53,7 +53,7 @@ pipeline {
                     sed -i "s|value: .* # IMAGE_TAG|value: \"${env.SHORT_SHA}\" # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml
                     git config user.name "jenkins"
                     git config user.email "jenkins@myk8s.local"
-                    git remote set-url origin https://${GITHUB_CREDENTIALS_USR}:${GITHUB_CREDENTIALS_PSW}@github.com/${GITHUB_CREDENTIALS_USR}/worklog-backend.git
+                    git remote set-url origin "https://\$GITHUB_CREDENTIALS_USR:\$GITHUB_CREDENTIALS_PSW@github.com/${GITHUB_CREDENTIALS_USR}/worklog-backend.git"
                     git add deploy_manifest/
                     git diff --staged --quiet || git commit -m "deploy: update backend image to ${env.SHORT_SHA}"
                     git pull --rebase -X theirs origin main

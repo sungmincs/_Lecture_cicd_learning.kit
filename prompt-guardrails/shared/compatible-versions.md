@@ -90,8 +90,8 @@ Jenkins helm 차트도 같은 방식이다: `k8s-edu/Lkv1_main`의 `helm-charts/
 | terraform-aws-modules/vpc | ~> 5.0 | provider `< 6.0` 유지용 |
 | provider aws | ~> 5.0 | 〃 |
 | Terraform CLI | **1.15.7** | 노드에 HashiCorp apt 저장소로 설치(`terraform=1.15.7-1`). 10.10 파이프라인 이미지(`hashicorp/terraform:1.15.7`)와 같은 값 |
-| AWS CLI v2 | **2.35.17** | 노드에 버전이 붙은 zip으로 설치(10.3 단계 3). Jenkins 에이전트 이미지도 같은 버전(10.7 단계 1) |
-| kubectl (Jenkins 에이전트 이미지) | v1.36.0 | EKS 1.36에 맞춤(10.7 단계 1) |
+| AWS CLI v2 | **2.35.17** | 노드에 버전이 붙은 zip으로 설치(10.3 단계 3). Jenkins 에이전트 이미지도 같은 버전(10.7 단계 2) |
+| kubectl (Jenkins 에이전트 이미지) | v1.36.0 | EKS 1.36에 맞춤(10.7 단계 2) |
 | Jenkins 에이전트 이미지(10.7) | 베이스 `sungminl/inbound-agent-docker:3248.v65ecb_254c298-3-jdk17`, 학습자가 `<dockerhub_username>/inbound-agent-docker:eks`로 빌드 | aws, kubectl, argocd를 더한다. 로컬 ConfigMap에 보이는 `jenkins/inbound-agent`는 쓰이지 않는 차트 기본값이다 |
 | EKS 노드 | **c7i-flex.large** × 3 (min2/max4) | 무료 플랜은 무료 등급 대상만 실행(t3.medium 거부). 2026-10-04 실검증 |
 | 서비스 계정 권한 | **EKS Pod Identity** (`eks-pod-identity-agent`), `enable_irsa = false` | 새 가입 방식 SCP가 OIDC provider 생성 거부(IRSA 불가). 2026-10-04 실검증 |

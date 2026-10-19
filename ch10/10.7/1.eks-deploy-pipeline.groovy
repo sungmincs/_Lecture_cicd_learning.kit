@@ -1,5 +1,5 @@
 pipeline {
-    // docker, aws, kubectl, argocd가 든 에이전트 이미지(단계 2)에서 실행한다. agent any면 컨트롤러로 갈 수 있다
+    // docker, aws, kubectl, argocd가 든 에이전트 이미지(단계 3)에서 실행한다. agent any면 컨트롤러로 갈 수 있다
     agent { label 'jenkins-jenkins-agent' }
     environment {
         DOCKER_REPOSITORY = '<dockerhub_username>/worklog-backend'
@@ -35,7 +35,7 @@ pipeline {
                     docker run --privileged --rm tonistiigi/binfmt --install all 2>/dev/null || true
                     docker buildx rm backend-builder 2>/dev/null || true
                     docker buildx create --name backend-builder --driver docker-container --use
-                    echo ${DOCKERHUB_CREDENTIALS_PSW} | docker login --username ${DOCKERHUB_CREDENTIALS_USR} --password-stdin
+                    echo "\$DOCKERHUB_CREDENTIALS_PSW" | docker login --username "\$DOCKERHUB_CREDENTIALS_USR" --password-stdin
                     docker buildx build --platform linux/amd64 \\
                         -t ${DOCKER_REPOSITORY}:${SHORT_SHA} \\
                         --push .

@@ -52,7 +52,7 @@ pipeline {
                         docker run --privileged --rm tonistiigi/binfmt --install all 2>/dev/null || true
                         docker buildx rm backend-builder 2>/dev/null || true
                         docker buildx create --name backend-builder --driver docker-container --use
-                        echo ${DOCKERHUB_CREDENTIALS_PSW} | docker login --username ${DOCKERHUB_CREDENTIALS_USR} --password-stdin
+                        echo "\$DOCKERHUB_CREDENTIALS_PSW" | docker login --username "\$DOCKERHUB_CREDENTIALS_USR" --password-stdin
                         docker buildx build --platform linux/amd64,linux/arm64 \\
                             -t ${DOCKER_REPOSITORY}:${fullSHA} \\
                             -t ${DOCKER_REPOSITORY}:${shortSHA} \\
@@ -70,7 +70,7 @@ pipeline {
                         sed -i "s|value: .* # IMAGE_TAG|value: \"${shortSHA}\" # IMAGE_TAG|" deploy_manifest/worklog-backend.yaml
                         git config user.name "jenkins"
                         git config user.email "jenkins@myk8s.local"
-                        git remote set-url origin https://${GITHUB_CREDENTIALS_USR}:${GITHUB_CREDENTIALS_PSW}@github.com/${GITHUB_CREDENTIALS_USR}/worklog-backend.git
+                        git remote set-url origin "https://\$GITHUB_CREDENTIALS_USR:\$GITHUB_CREDENTIALS_PSW@github.com/${GITHUB_CREDENTIALS_USR}/worklog-backend.git"
                         git add deploy_manifest/
                         git diff --staged --quiet || git commit -m "deploy: update image tag to ${shortSHA}"
                         git pull --rebase -X theirs origin main
@@ -90,8 +90,8 @@ pipeline {
                         chmod +x /tmp/argocd
                         /tmp/argocd login ${ARGOCD_SERVER} \\
                             --username admin \\
-                            --password ${ARGOCD_ADMIN_PASSWORD} \\
-                            --plaintext --insecure
+                            --password "\$ARGOCD_ADMIN_PASSWORD" \\
+                            --plaintext
                         /tmp/argocd app sync ${ARGOCD_APP_NAME}
                         /tmp/argocd app wait ${ARGOCD_APP_NAME} --health --timeout 120
                     """
